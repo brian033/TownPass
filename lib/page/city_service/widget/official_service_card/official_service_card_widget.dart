@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:town_pass/page/city_service/widget/official_service_card/official_service_card_bottom_left.dart';
 import 'package:town_pass/page/city_service/widget/official_service_card/official_service_card_bottom_right.dart';
+import 'package:town_pass/page/city_service/widget/official_service_card/official_service_card_new.dart';
 import 'package:town_pass/page/city_service/widget/official_service_card/official_service_card_top_left.dart';
 import 'package:town_pass/page/city_service/widget/official_service_card/official_service_card_top_right.dart';
 import 'package:town_pass/util/tp_constant.dart';
@@ -15,30 +16,36 @@ class OfficialServiceCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Table(
-        columnWidths: const {
-          0: FlexColumnWidth(goldenRatio),
-          1: FixedColumnWidth(8.0),
-          2: FlexColumnWidth(1.0),
-        },
+      child: Column(
         children: [
-          const TableRow(
+          Table(
+            columnWidths: const {
+              0: FlexColumnWidth(goldenRatio),
+              1: FixedColumnWidth(8.0),
+              2: FlexColumnWidth(1.0),
+            },
             children: [
-              OfficialServiceCardTopLeft(),
-              SizedBox.shrink(),
-              OfficialServiceCardTopRight(),
+              const TableRow(
+                children: [
+                  OfficialServiceCardTopLeft(),
+                  SizedBox.shrink(),
+                  OfficialServiceCardTopRight(),
+                ],
+              ),
+              TableRow(
+                children: List.filled(3, const SizedBox(height: 8.0)),
+              ),
+              const TableRow(
+                children: [
+                  OfficialServiceCardBottomLeft(),
+                  SizedBox.shrink(),
+                  OfficialServiceCardBottomRight(),
+                ],
+              ),
             ],
           ),
-          TableRow(
-            children: List.filled(3, const SizedBox(height: 8.0)),
-          ),
-          const TableRow(
-            children: [
-              OfficialServiceCardBottomLeft(),
-              SizedBox.shrink(),
-              OfficialServiceCardBottomRight(),
-            ],
-          ),
+          const SizedBox(height: 8.0),
+          const OfficialServiceCardNew(),
         ],
       ),
     );
