@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
+import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_info_card.dart';
@@ -26,8 +28,22 @@ class _ExerciseRecommendationViewState
       GlobalKey<ExerciseInfoCardState>();
   final GlobalKey<JourneyTrackerWidgetState> _journeyTrackerKey =
       GlobalKey<JourneyTrackerWidgetState>();
+  Timer? _statusTimer;
 
-  bool _isRouteExpanded = false; // 捷運路線摺疊狀態
+  @override
+  void initState() {
+    super.initState();
+    // 每秒調用一次 function B，以便秒數顯示能即時更新
+    _statusTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      controller.getCurrentStatus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _statusTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +74,6 @@ class _ExerciseRecommendationViewState
                 timerCardKey: _timerCardKey,
                 exerciseInfoCardKey: _exerciseInfoCardKey,
               ),
-            const SizedBox(height: 24),
-            _buildCollapsibleRouteSection(),
             const SizedBox(height: 24),
             TPText(
               '推薦運動',
@@ -142,45 +156,6 @@ class _ExerciseRecommendationViewState
     );
   }
 
-  Widget _buildCollapsibleRouteSection() {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {
-            setState(() {
-              _isRouteExpanded = !_isRouteExpanded;
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: TPColors.primary50,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: TPColors.primary200),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const TPText(
-                  '捷運路線',
-                  style: TPTextStyles.h3SemiBold,
-                  color: TPColors.grayscale900,
-                ),
-                Icon(
-                  _isRouteExpanded ? Icons.expand_less : Icons.expand_more,
-                  color: TPColors.primary500,
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (_isRouteExpanded) ...[
-          const SizedBox(height: 16),
-          _buildRouteSection(),
-        ],
-      ],
-    );
-  }
 
   Widget _buildDebugExercisesCard() {
     final exercises = controller.routeResult?.exercises ?? [];
