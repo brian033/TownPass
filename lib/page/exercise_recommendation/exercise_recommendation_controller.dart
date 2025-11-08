@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
-import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/bean/body_part.dart';
+import 'package:town_pass/bean/mrt_connection.dart';
+import 'package:town_pass/bean/mrt_station.dart';
 
 class ExerciseRecommendationController extends GetxController {
   // 接收的參數
@@ -8,6 +9,7 @@ class ExerciseRecommendationController extends GetxController {
   late MrtStation endStation;
   late BodyPart bodyPart;
   late int estimatedMinutes;
+  MrtRouteResult? routeResult;
 
   final Rxn<ExerciseRecommendation> _exercise = Rxn<ExerciseRecommendation>();
   final RxBool isLoading = false.obs;
@@ -24,6 +26,7 @@ class ExerciseRecommendationController extends GetxController {
     endStation = args['endStation'] as MrtStation;
     bodyPart = args['bodyPart'] as BodyPart;
     estimatedMinutes = args['estimatedMinutes'] as int;
+    routeResult = args['routeResult'] as MrtRouteResult?;
 
     // TODO: 根據參數推薦適合的運動
     loadRecommendedExercises();
@@ -68,4 +71,3 @@ class ExerciseRecommendation {
   final String imageUrl;
   final String description;
 }
-
