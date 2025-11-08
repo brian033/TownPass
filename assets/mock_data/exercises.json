@@ -10,11 +10,7 @@
       "duration": 60,
       "calories": 5,
       "description": "放鬆肩膀，促進血液循環",
-      "instructions": [
-        "坐直，雙手放在大腿上",
-        "慢慢向前繞肩膀 10 次",
-        "再向後繞肩膀 10 次"
-      ],
+      "instructions": ["坐直，雙手放在大腿上", "慢慢向前繞肩膀 10 次", "再向後繞肩膀 10 次"],
       "tips": "保持呼吸順暢，動作放慢",
       "imageUrl": "",
       "videoUrl": "",
@@ -89,11 +85,7 @@
       "duration": 60,
       "calories": 4,
       "description": "放鬆手臂與肩膀肌肉",
-      "instructions": [
-        "右手向上伸直，再彎曲手肘向後",
-        "左手輕壓右手肘，維持 15 秒",
-        "換邊重複"
-      ],
+      "instructions": ["右手向上伸直，再彎曲手肘向後", "左手輕壓右手肘，維持 15 秒", "換邊重複"],
       "tips": "呼吸保持平穩",
       "imageUrl": "",
       "videoUrl": "",

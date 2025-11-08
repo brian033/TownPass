@@ -13,6 +13,7 @@ class NewComponentViewController extends GetxController {
   final RxList<MrtStation> mrtStations = <MrtStation>[].obs;
   final RxList<BodyPart> bodyParts = <BodyPart>[].obs;
   final RxList<Exercise> exercises = <Exercise>[].obs;
+  final List<RecommendedExercise> _exercisesForRecommendation = [];
 
   // 使用者選擇
   final Rx<MrtStation?> selectedStartStation = Rx<MrtStation?>(null);
@@ -26,9 +27,6 @@ class NewComponentViewController extends GetxController {
   final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
   final Map<String, MrtStation> _stationById = <String, MrtStation>{};
   final Map<String, MrtStation> _stationByName = <String, MrtStation>{};
-  MrtRouteResult? _cachedRoute;
-  String? _cachedStartId;
-  String? _cachedEndId;
 
   // 預估時間（分鐘）
   int get estimatedMinutes {
@@ -71,6 +69,7 @@ class NewComponentViewController extends GetxController {
         loadMrtStations(),
         loadBodyParts(),
         loadExercises(),
+        loadExercisesForRecommendation(),
       ]);
 
       await loadMrtConnections();
@@ -125,6 +124,22 @@ class NewComponentViewController extends GetxController {
     }
   }
 
+  // 載入運動推薦資料
+  Future<void> loadExercisesForRecommendation() async {
+    try {
+      final String jsonString = await rootBundle.loadString(
+        'assets/mock_data/exercise.json',
+      );
+      final List<dynamic> jsonData = json.decode(jsonString);
+      _exercisesForRecommendation.clear();
+      _exercisesForRecommendation.addAll(
+        jsonData.map((e) => RecommendedExercise.fromJson(e as Map<String, dynamic>)),
+      );
+    } catch (e) {
+      print('Error loading exercises for recommendation: $e');
+    }
+  }
+
   // 開始規劃運動
   void startPlanning() {
     if (!canStart) {
@@ -164,9 +179,6 @@ class NewComponentViewController extends GetxController {
     selectedStartStation.value = null;
     selectedEndStation.value = null;
     selectedBodyPart.value = null;
-    _cachedRoute = null;
-    _cachedStartId = null;
-    _cachedEndId = null;
   }
 
   Future<void> loadMrtConnections() async {
@@ -274,18 +286,9 @@ class NewComponentViewController extends GetxController {
       return null;
     }
 
-    if (_cachedRoute != null &&
-        _cachedStartId == start.id &&
-        _cachedEndId == end.id) {
-      return _cachedRoute;
-    }
-
+    // 注意：不使用快取，因為需要根據當前選擇的 bodyPart 重新篩選運動
+    // 如果未來需要優化效能，應該將 bodyPart 也加入快取 key
     final route = _computeRoute(start.id, end.id);
-    if (route != null) {
-      _cachedRoute = route;
-      _cachedStartId = start.id;
-      _cachedEndId = end.id;
-    }
     return route;
   }
 
@@ -370,11 +373,41 @@ class NewComponentViewController extends GetxController {
       );
     }
 
+    // 篩選符合選擇部位的運動
+    final filteredExercises = _filterExercisesByBodyPart();
+
     return MrtRouteResult(
       startStation: startStation,
       endStation: endStation,
       legs: legs,
+      exercises: filteredExercises,
     );
+  }
+
+  /// 根據選擇的身體部位篩選運動
+  List<RecommendedExercise> _filterExercisesByBodyPart() {
+    final selectedPart = selectedBodyPart.value;
+    if (selectedPart == null) {
+      print('DEBUG: selectedPart is null');
+      return [];
+    }
+
+    print('DEBUG: selectedPart.id = ${selectedPart.id}');
+    print('DEBUG: _exercisesForRecommendation.length = ${_exercisesForRecommendation.length}');
+
+    for (var i = 0; i < _exercisesForRecommendation.length; i++) {
+      final ex = _exercisesForRecommendation[i];
+      print('DEBUG: Exercise $i: name=${ex.name}, parts=${ex.parts}');
+    }
+
+    // 篩選 parts 陣列中包含選擇部位的運動
+    final filtered = _exercisesForRecommendation
+        .where((exercise) => exercise.parts.contains(selectedPart.id))
+        .toList();
+
+    print('DEBUG: Filtered exercises count = ${filtered.length}');
+
+    return filtered;
   }
 }
 

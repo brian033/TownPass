@@ -3,16 +3,31 @@ import 'package:get/get.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
+import 'package:town_pass/page/exercise_recommendation/widget/exercise_info_card.dart';
+import 'package:town_pass/page/exercise_recommendation/widget/journey_tracker_widget.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
 
-class ExerciseRecommendationView extends StatelessWidget {
-  ExerciseRecommendationView({super.key});
+class ExerciseRecommendationView extends StatefulWidget {
+  const ExerciseRecommendationView({super.key});
 
+  @override
+  State<ExerciseRecommendationView> createState() =>
+      _ExerciseRecommendationViewState();
+}
+
+class _ExerciseRecommendationViewState
+    extends State<ExerciseRecommendationView> {
   final controller = Get.put(ExerciseRecommendationController());
   final GlobalKey<ExerciseTimerCardState> _timerCardKey =
       GlobalKey<ExerciseTimerCardState>();
+  final GlobalKey<ExerciseInfoCardState> _exerciseInfoCardKey =
+      GlobalKey<ExerciseInfoCardState>();
+  final GlobalKey<JourneyTrackerWidgetState> _journeyTrackerKey =
+      GlobalKey<JourneyTrackerWidgetState>();
+
+  bool _isRouteExpanded = false; // 捷運路線摺疊狀態
 
   @override
   Widget build(BuildContext context) {
@@ -34,86 +49,27 @@ class ExerciseRecommendationView extends StatelessWidget {
             const SizedBox(height: 16),
             _buildInfoCard(),
             const SizedBox(height: 24),
-            TPText(
-              '捷運路線',
-              style: TPTextStyles.h3SemiBold,
-              color: TPColors.grayscale900,
-            ),
-            const SizedBox(height: 16),
-            _buildRouteSection(),
+            _buildDebugExercisesCard(),
+            const SizedBox(height: 24),
+            if (controller.routeResult != null)
+              JourneyTrackerWidget(
+                key: _journeyTrackerKey,
+                routeResult: controller.routeResult!,
+                timerCardKey: _timerCardKey,
+                exerciseInfoCardKey: _exerciseInfoCardKey,
+              ),
+            const SizedBox(height: 24),
+            _buildCollapsibleRouteSection(),
             const SizedBox(height: 24),
             TPText(
               '推薦運動',
               style: TPTextStyles.h3SemiBold,
               color: TPColors.grayscale900,
             ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ElevatedButton.icon(
-                onPressed: controller.loadSampleExercises,
-                icon: const Icon(Icons.playlist_add, size: 18),
-                label: const Text('載入範例運動'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TPColors.primary500,
-                  foregroundColor: TPColors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  textStyle: TPTextStyles.bodySemiBold,
-                ),
-              ),
-            ),
             const SizedBox(height: 16),
             ExerciseTimerCard(key: _timerCardKey),
             const SizedBox(height: 16),
-            Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(TPColors.primary500),
-                  ),
-                );
-              }
-              final exercise = controller.exercise.value;
-              if (exercise == null) {
-                return const Center(
-                  child: TPText(
-                    '目前尚未有推薦的運動，請先載入範例資料。',
-                    style: TPTextStyles.bodyRegular,
-                    color: TPColors.grayscale500,
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-              return _buildExerciseCard(exercise);
-            }),
-            const SizedBox(height: 16),
-            // 測試按鈕 (之後要移除)
-            ElevatedButton(
-              onPressed: () {
-                _timerCardKey.currentState?.setDisplayCard(
-                  '深蹲',
-                  100,
-                  '伏地挺身',
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: TPColors.primary500,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const TPText(
-                '測試開始運動 (Mock)',
-                style: TPTextStyles.bodyRegular,
-                color: TPColors.white,
-              ),
-            ),
+            ExerciseInfoCard(key: _exerciseInfoCardKey),
           ],
         ),
       ),
@@ -186,77 +142,131 @@ class ExerciseRecommendationView extends StatelessWidget {
     );
   }
 
-  Widget _buildExerciseCard(ExerciseRecommendation exercise) {
-    return Container(
-      decoration: BoxDecoration(
-        color: TPColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: TPColors.grayscale200),
-        boxShadow: [
-          BoxShadow(
-            color: TPColors.grayscale200.withOpacity(0.4),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Image.network(
-              exercise.imageUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Container(
-                  color: TPColors.grayscale100,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(TPColors.primary500),
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: TPColors.grayscale100,
-                  child: const Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      color: TPColors.grayscale400,
-                      size: 32,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
+  Widget _buildCollapsibleRouteSection() {
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            setState(() {
+              _isRouteExpanded = !_isRouteExpanded;
+            });
+          },
+          child: Container(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            decoration: BoxDecoration(
+              color: TPColors.primary50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: TPColors.primary200),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TPText(
-                  exercise.name,
-                  style: TPTextStyles.bodySemiBold,
+                const TPText(
+                  '捷運路線',
+                  style: TPTextStyles.h3SemiBold,
                   color: TPColors.grayscale900,
                 ),
-                const SizedBox(height: 8),
-                TPText(
-                  exercise.description,
-                  style: TPTextStyles.bodyRegular,
-                  color: TPColors.grayscale600,
+                Icon(
+                  _isRouteExpanded ? Icons.expand_less : Icons.expand_more,
+                  color: TPColors.primary500,
                 ),
               ],
             ),
           ),
+        ),
+        if (_isRouteExpanded) ...[
+          const SizedBox(height: 16),
+          _buildRouteSection(),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildDebugExercisesCard() {
+    final exercises = controller.routeResult?.exercises ?? [];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: TPColors.grayscale100,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: TPColors.grayscale300,
+          width: 2,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.bug_report,
+                color: TPColors.grayscale700,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              TPText(
+                'DEBUG: 推薦運動資料 (${exercises.length} 項)',
+                style: TPTextStyles.bodySemiBold,
+                color: TPColors.grayscale900,
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (exercises.isEmpty)
+            const TPText(
+              '無推薦運動資料',
+              style: TPTextStyles.bodyRegular,
+              color: TPColors.grayscale600,
+            )
+          else
+            ...exercises.asMap().entries.map((entry) {
+              final index = entry.key;
+              final exercise = entry.value;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (index > 0) const Divider(height: 24),
+                  TPText(
+                    '${index + 1}. ${exercise.name}',
+                    style: TPTextStyles.bodySemiBold,
+                    color: TPColors.grayscale900,
+                  ),
+                  const SizedBox(height: 8),
+                  TPText(
+                    'calPerSec: ${exercise.calPerSec}',
+                    style: TPTextStyles.caption,
+                    color: TPColors.grayscale700,
+                  ),
+                  const SizedBox(height: 4),
+                  TPText(
+                    'doInCrowded: ${exercise.doInCrowded}',
+                    style: TPTextStyles.caption,
+                    color: TPColors.grayscale700,
+                  ),
+                  const SizedBox(height: 4),
+                  TPText(
+                    'parts: [${exercise.parts.join(", ")}]',
+                    style: TPTextStyles.caption,
+                    color: TPColors.grayscale700,
+                  ),
+                  const SizedBox(height: 4),
+                  TPText(
+                    'media: ${exercise.media}',
+                    style: TPTextStyles.caption,
+                    color: TPColors.grayscale700,
+                  ),
+                  const SizedBox(height: 4),
+                  TPText(
+                    'description: ${exercise.description}',
+                    style: TPTextStyles.caption,
+                    color: TPColors.grayscale700,
+                  ),
+                ],
+              );
+            }).toList(),
         ],
       ),
     );
