@@ -446,6 +446,45 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
     return name; // Return full name without truncation
   }
 
+  /// 获取站在 path 中的索引
+  int _getStationIndex(MrtStation? station, List<MrtStation> path) {
+    if (station == null) return -1;
+    for (int i = 0; i < path.length; i++) {
+      if (path[i].id == station.id) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /// 检查两个站是否在 path 中是连续的（索引差为1）
+  bool _areStationsConsecutive(MrtStation? station1, MrtStation? station2, List<MrtStation> path) {
+    if (station1 == null || station2 == null) return false;
+    final index1 = _getStationIndex(station1, path);
+    final index2 = _getStationIndex(station2, path);
+    if (index1 == -1 || index2 == -1) return false;
+    return (index2 - index1).abs() == 1;
+  }
+
+  /// 绘制虚线
+  Widget _buildDashedLine({Color color = TPColors.primary300, double height = 3}) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const dashWidth = 4.0;
+        const dashSpace = 4.0;
+        
+        return CustomPaint(
+          size: Size(constraints.maxWidth, height),
+          painter: _DashedLinePainter(
+            color: color,
+            dashWidth: dashWidth,
+            dashSpace: dashSpace,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final path = widget.path;
@@ -503,7 +542,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
         Expanded(
           flex: 2,
           child: Container(
-            height: 2,
+            height: 3,
             color: TPColors.primary300,
           ),
         ),
@@ -531,7 +570,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
         Expanded(
           flex: 2,
           child: Container(
-            height: 2,
+            height: 3,
             color: TPColors.primary300,
           ),
         ),
@@ -545,7 +584,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
         Expanded(
           flex: 2,
           child: Container(
-            height: 2,
+            height: 3,
             color: TPColors.primary300,
           ),
         ),
@@ -642,10 +681,12 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             ),
             Expanded(
               flex: 2,
-              child: Container(
-                height: 2,
-                color: TPColors.primary300,
-              ),
+              child: _areStationsConsecutive(startStation, currentStation, path)
+                  ? Container(
+                      height: 3,
+                      color: TPColors.primary300,
+                    )
+                  : _buildDashedLine(color: TPColors.primary300, height: 3),
             ),
             // Middle-left: shows next station at start, shows current station after moving, shows previous station at last stop
             Expanded(
@@ -663,7 +704,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             Expanded(
               flex: 2,
               child: Container(
-                height: 2,
+                height: 3,
                 color: TPColors.primary300,
               ),
             ),
@@ -689,10 +730,12 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
                 currentIndex <= path.length - 1)
               Expanded(
                 flex: 2,
-                child: Container(
-                  height: 2,
-                  color: TPColors.primary300,
-                ),
+                child: _areStationsConsecutive(nextStation, destinationStation, path)
+                    ? Container(
+                        height: 3,
+                        color: TPColors.primary300,
+                      )
+                    : _buildDashedLine(color: TPColors.primary300, height: 3),
               ),
             // Destination (right) - becomes current when at last stop
             Expanded(
@@ -767,14 +810,19 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
           child: Container(
             width: 24,
             height: 24,
-            decoration: BoxDecoration(
-              color: isActive ? TPColors.primary500 : TPColors.grayscale400,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isActive ? TPColors.primary700 : TPColors.grayscale300,
-                width: 2,
-              ),
-            ),
+            decoration: isActive
+                ? BoxDecoration(
+                    color: TPColors.primary500,
+                    shape: BoxShape.circle,
+                  )
+                : BoxDecoration(
+                    color: TPColors.grayscale400,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: TPColors.grayscale300,
+                      width: 2,
+                    ),
+                  ),
           ),
         ),
         const SizedBox(height: 8),
@@ -802,14 +850,19 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       child: Container(
         width: 24,
         height: 24,
-        decoration: BoxDecoration(
-          color: isActive ? TPColors.primary500 : TPColors.grayscale400,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: isActive ? TPColors.primary700 : TPColors.grayscale300,
-            width: 2,
-          ),
-        ),
+        decoration: isActive
+            ? BoxDecoration(
+                color: TPColors.primary500,
+                shape: BoxShape.circle,
+              )
+            : BoxDecoration(
+                color: TPColors.grayscale400,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: TPColors.grayscale300,
+                  width: 2,
+                ),
+              ),
       ),
     );
   }
@@ -908,6 +961,43 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
         textAlign: TextAlign.center,
       ),
     );
+  }
+}
+
+/// 虚线绘制器
+class _DashedLinePainter extends CustomPainter {
+  final Color color;
+  final double dashWidth;
+  final double dashSpace;
+
+  _DashedLinePainter({
+    required this.color,
+    required this.dashWidth,
+    required this.dashSpace,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = size.height
+      ..style = PaintingStyle.fill;
+
+    double startX = 0;
+    while (startX < size.width) {
+      canvas.drawRect(
+        Rect.fromLTWH(startX, 0, dashWidth, size.height),
+        paint,
+      );
+      startX += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedLinePainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.dashWidth != dashWidth ||
+        oldDelegate.dashSpace != dashSpace;
   }
 }
 

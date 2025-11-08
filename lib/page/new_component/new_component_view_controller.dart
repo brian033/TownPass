@@ -1,13 +1,19 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:collection/collection.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/bean/body_part.dart';
 import 'package:town_pass/bean/exercise.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_view.dart';
+<<<<<<< HEAD
 import 'package:town_pass/service/train_crowding_service.dart';
+=======
+import 'package:town_pass/service/geo_locator_service.dart';
+>>>>>>> release/1.0
 
 class NewComponentViewController extends GetxController {
   // 資料列表
@@ -19,38 +25,60 @@ class NewComponentViewController extends GetxController {
   // 使用者選擇
   final Rx<MrtStation?> selectedStartStation = Rx<MrtStation?>(null);
   final Rx<MrtStation?> selectedEndStation = Rx<MrtStation?>(null);
-  final Rx<BodyPart?> selectedBodyPart = Rx<BodyPart?>(null);
+  final RxList<BodyPart> selectedBodyParts = <BodyPart>[].obs;
 
-  // 站點便利存取
+  // 載入狀態
+  final RxBool isLoading = true.obs;
+
+  // GPS 位置
+  Position? _userPosition;
+  final GeoLocatorService _geoLocatorService = Get.find<GeoLocatorService>();
+
+  // 取得按距離排序的起點站列表
   List<MrtStation> get sortedStartStations {
-    final stations = List<MrtStation>.from(mrtStations);
-    stations.sort((a, b) => a.displayName.compareTo(b.displayName));
-    return stations;
-  }
-
-  Map<String, List<MrtStation>> get groupedEndStations {
-    final grouped = <String, List<MrtStation>>{};
-
-    for (final station in mrtStations) {
-      for (var i = 0; i < station.lines.length; i++) {
-        final line = station.lines[i];
-        final list = grouped.putIfAbsent(line, () => <MrtStation>[]);
-        final exists = list.any((item) => item.id == station.id);
-        if (!exists) {
-          list.add(station);
-        }
-      }
+    if (_userPosition == null) {
+      return mrtStations.toList();
     }
 
-    for (final entry in grouped.entries) {
-      entry.value.sort((a, b) => a.displayName.compareTo(b.displayName));
+    final stationsWithDistance = mrtStations.map((station) {
+      final distance = _calculateDistance(
+        _userPosition!.latitude,
+        _userPosition!.longitude,
+        station.location.lat,
+        station.location.lng,
+      );
+      return _StationWithDistance(station, distance);
+    }).toList();
+
+    // 按距離排序
+    stationsWithDistance.sort((a, b) => a.distance.compareTo(b.distance));
+
+    return stationsWithDistance.map((e) => e.station).toList();
+  }
+
+  // 取得按線路分組的終點站列表（排除起點）
+  Map<String, List<MrtStation>> get groupedEndStations {
+    final Map<String, List<MrtStation>> grouped = {};
+
+    for (final station in mrtStations) {
+      // 排除已選的起點站
+      if (selectedStartStation.value != null &&
+          station.id == selectedStartStation.value!.id) {
+        continue;
+      }
+
+      // 對於多線站點，在每條線都加入一次
+      for (int i = 0; i < station.lines.length; i++) {
+        final line = station.lines[i];
+        if (!grouped.containsKey(line)) {
+          grouped[line] = [];
+        }
+        grouped[line]!.add(station);
+      }
     }
 
     return grouped;
   }
-
-  // 載入狀態
-  final RxBool isLoading = true.obs;
 
   // 路線資料
   final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
@@ -82,8 +110,32 @@ class NewComponentViewController extends GetxController {
   bool get canStart {
     return selectedStartStation.value != null &&
         selectedEndStation.value != null &&
-        selectedBodyPart.value != null &&
+        selectedBodyParts.isNotEmpty &&
         selectedStartStation.value!.id != selectedEndStation.value!.id;
+  }
+
+  // 計算兩點間的距離（Haversine formula）單位：公里
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    // 如果座標為 0，返回一個很大的距離
+    if (lat2 == 0.0 && lon2 == 0.0) {
+      return double.infinity;
+    }
+
+    const double earthRadius = 6371; // 地球半徑（公里）
+    final dLat = _degreesToRadians(lat2 - lat1);
+    final dLon = _degreesToRadians(lon2 - lon1);
+
+    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degreesToRadians(lat1)) *
+        math.cos(_degreesToRadians(lat2)) *
+        math.sin(dLon / 2) * math.sin(dLon / 2);
+
+    final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  double _degreesToRadians(double degrees) {
+    return degrees * math.pi / 180;
   }
 
   @override
@@ -102,7 +154,11 @@ class NewComponentViewController extends GetxController {
         loadBodyParts(),
         loadExercises(),
         loadExercisesForRecommendation(),
+<<<<<<< HEAD
         _crowdingService.initialize(), // 初始化擁擠度服務
+=======
+        _loadUserPosition(),
+>>>>>>> release/1.0
       ]);
 
       await loadMrtConnections();
@@ -111,6 +167,17 @@ class NewComponentViewController extends GetxController {
     } catch (e) {
       print('Error loading data: $e');
       isLoading.value = false;
+    }
+  }
+
+  // 載入使用者位置
+  Future<void> _loadUserPosition() async {
+    try {
+      _userPosition = await _geoLocatorService.position();
+      print('User position loaded: ${_userPosition?.latitude}, ${_userPosition?.longitude}');
+    } catch (e) {
+      print('Could not get user position: $e');
+      // 不影響其他功能，繼續執行
     }
   }
 
@@ -200,7 +267,7 @@ class NewComponentViewController extends GetxController {
       arguments: {
         'startStation': selectedStartStation.value,
         'endStation': selectedEndStation.value,
-        'bodyPart': selectedBodyPart.value,
+        'bodyParts': selectedBodyParts.toList(),
         'estimatedMinutes': estimatedMinutes,
         'routeResult': route,
       },
@@ -211,7 +278,22 @@ class NewComponentViewController extends GetxController {
   void resetSelection() {
     selectedStartStation.value = null;
     selectedEndStation.value = null;
-    selectedBodyPart.value = null;
+    selectedBodyParts.clear();
+  }
+  
+  // 切換身體部位的選擇狀態
+  void toggleBodyPart(BodyPart bodyPart) {
+    final index = selectedBodyParts.indexWhere((part) => part.id == bodyPart.id);
+    if (index >= 0) {
+      selectedBodyParts.removeAt(index);
+    } else {
+      selectedBodyParts.add(bodyPart);
+    }
+  }
+  
+  // 檢查身體部位是否已選擇
+  bool isBodyPartSelected(BodyPart bodyPart) {
+    return selectedBodyParts.any((part) => part.id == bodyPart.id);
   }
 
   Future<void> loadMrtConnections() async {
@@ -319,8 +401,8 @@ class NewComponentViewController extends GetxController {
       return null;
     }
 
-    // 注意：不使用快取，因為需要根據當前選擇的 bodyPart 重新篩選運動
-    // 如果未來需要優化效能，應該將 bodyPart 也加入快取 key
+    // 注意：不使用快取，因為需要根據當前選擇的 bodyParts 重新篩選運動
+    // 如果未來需要優化效能，應該將 bodyParts 也加入快取 key
     final route = _computeRoute(start.id, end.id);
     return route;
   }
@@ -443,23 +525,19 @@ class NewComponentViewController extends GetxController {
 
   /// 根據選擇的身體部位篩選運動
   List<RecommendedExercise> _filterExercisesByBodyPart() {
-    final selectedPart = selectedBodyPart.value;
-    if (selectedPart == null) {
-      print('DEBUG: selectedPart is null');
+    if (selectedBodyParts.isEmpty) {
+      print('DEBUG: selectedBodyParts is empty');
       return [];
     }
 
-    print('DEBUG: selectedPart.id = ${selectedPart.id}');
+    // 取得所有選擇的部位 ID
+    final selectedPartIds = selectedBodyParts.map((part) => part.id).toSet();
+    print('DEBUG: selectedPartIds = $selectedPartIds');
     print('DEBUG: _exercisesForRecommendation.length = ${_exercisesForRecommendation.length}');
 
-    for (var i = 0; i < _exercisesForRecommendation.length; i++) {
-      final ex = _exercisesForRecommendation[i];
-      print('DEBUG: Exercise $i: name=${ex.name}, parts=${ex.parts}');
-    }
-
-    // 篩選 parts 陣列中包含選擇部位的運動
+    // 篩選 parts 陣列中包含任何選擇部位的運動
     final filtered = _exercisesForRecommendation
-        .where((exercise) => exercise.parts.contains(selectedPart.id))
+        .where((exercise) => exercise.parts.any((part) => selectedPartIds.contains(part)))
         .toList();
 
     print('DEBUG: Filtered exercises count = ${filtered.length}');
@@ -501,4 +579,11 @@ class _PreviousNode {
   final String fromStationId;
   final String toStationId;
   final _GraphEdge edge;
+}
+
+class _StationWithDistance {
+  _StationWithDistance(this.station, this.distance);
+
+  final MrtStation station;
+  final double distance;
 }
