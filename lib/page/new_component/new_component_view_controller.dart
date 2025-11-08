@@ -77,6 +77,26 @@ class NewComponentViewController extends GetxController {
     return grouped;
   }
 
+  // 取得所有終點站列表（去重，排除起點）
+  List<MrtStation> get allEndStations {
+    final allStations = <MrtStation>[];
+    final seen = <String>{};
+
+    for (final station in mrtStations) {
+      // 排除已選的起點站
+      if (selectedStartStation.value != null &&
+          station.id == selectedStartStation.value!.id) {
+        continue;
+      }
+
+      if (seen.add(station.id)) {
+        allStations.add(station);
+      }
+    }
+
+    return allStations;
+  }
+
   // 路線資料
   final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
   final Map<String, MrtStation> _stationById = <String, MrtStation>{};

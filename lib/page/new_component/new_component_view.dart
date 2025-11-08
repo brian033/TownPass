@@ -526,110 +526,110 @@ class NewComponentView extends GetView<NewComponentViewController> {
     Iterable<MrtStation> options,
     double dropdownWidth,
   ) {
-    final filteredGrouped = <String, List<MrtStation>>{};
-    final seenByLine = <String, Set<String>>{};
     final optionList = options.toList();
+    final allEndStations = controller.allEndStations;
+    
+    // 判斷是否有查詢：如果選項數量少於所有站點數量，表示有查詢
+    final hasSearchQuery = optionList.length < allEndStations.length;
 
-    for (final station in optionList) {
-      for (var i = 0; i < station.lines.length; i++) {
-        final line = station.lines[i];
-        final list = filteredGrouped.putIfAbsent(line, () => []);
-        final seen = seenByLine.putIfAbsent(line, () => <String>{});
-        if (seen.add(station.id)) {
-          list.add(station);
-        }
-      }
+    if (!hasSearchQuery) {
+      // 沒有查詢時，使用分組顯示方式（直接使用 controller.groupedEndStations）
+      final grouped = controller.groupedEndStations;
+
+      return Align(
+        alignment: Alignment.topLeft,
+        child: Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(12),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: dropdownWidth,
+              maxHeight: 300,
+            ),
+            child: Container(
+              width: dropdownWidth,
+              decoration: BoxDecoration(
+                color: TPColors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: TPColors.grayscale300,
+                  width: 1,
+                ),
+              ),
+              child: ListView(
+                padding: const EdgeInsets.all(8),
+                shrinkWrap: true,
+                children: _buildGroupedStationList(grouped, onSelected),
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      // 有查詢時，使用合併顯示方式（顯示所有線路的點，然後顯示站名）
+      return Align(
+        alignment: Alignment.topLeft,
+        child: Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(12),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: dropdownWidth,
+              maxHeight: 300,
+            ),
+            child: Container(
+              width: dropdownWidth,
+              decoration: BoxDecoration(
+                color: TPColors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: TPColors.grayscale300,
+                  width: 1,
+                ),
+              ),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                shrinkWrap: true,
+                itemCount: optionList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final station = optionList[index];
+                  return InkWell(
+                    onTap: () {
+                      onSelected(station);
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
+                      child: Row(
+                        children: [
+                          // 顯示所有線路的點
+                          for (final colorHex in station.lineColors)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 6),
+                              child: _buildColorDot(colorHex),
+                            ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: TPText(
+                              station.displayName,
+                              style: TPTextStyles.bodyRegular,
+                              color: TPColors.grayscale900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
     }
-
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Material(
-        elevation: 4,
-        borderRadius: BorderRadius.circular(12),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: dropdownWidth,
-            maxHeight: 300,
-          ),
-          child: Container(
-            width: dropdownWidth,
-            decoration: BoxDecoration(
-              color: TPColors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: TPColors.grayscale300,
-                width: 1,
-              ),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.all(8),
-              shrinkWrap: true,
-              children: _buildGroupedStationList(filteredGrouped, onSelected),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 建立通用下拉選單的視圖
-  Widget _buildDropdownOptionsView<T extends Object>(
-    BuildContext context,
-    AutocompleteOnSelected<T> onSelected,
-    Iterable<T> options,
-    double dropdownWidth,
-    String Function(T) itemBuilder,
-  ) {
-    final optionList = options.toList();
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Material(
-        elevation: 4,
-        borderRadius: BorderRadius.circular(12),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: dropdownWidth,
-            maxHeight: 240,
-          ),
-          child: Container(
-            width: dropdownWidth,
-            decoration: BoxDecoration(
-              color: TPColors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: TPColors.grayscale300,
-                width: 1,
-              ),
-            ),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(8),
-              shrinkWrap: true,
-              itemCount: optionList.length,
-              itemBuilder: (BuildContext context, int index) {
-                final option = optionList[index];
-                return InkWell(
-                  onTap: () {
-                    onSelected(option);
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
-                    ),
-                    child: TPText(
-                      itemBuilder(option),
-                      style: TPTextStyles.bodyRegular,
-                      color: TPColors.grayscale900,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   // 將 hex 字串轉換為 Color
@@ -656,115 +656,6 @@ class NewComponentView extends GetView<NewComponentViewController> {
       default:
         return Icons.fitness_center;
     }
-  }
-
-  Widget _buildDropdownField<T extends Object>({
-    required String label,
-    required String hint,
-    required T? value,
-    required List<T> items,
-    required ValueChanged<T?> onChanged,
-    required String Function(T) itemBuilder,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TPText(
-          label,
-          style: TPTextStyles.bodySemiBold,
-          color: TPColors.grayscale900,
-        ),
-        const SizedBox(height: 8),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final dropdownWidth = constraints.maxWidth;
-            return Autocomplete<T>(
-              key: ValueKey('${label}_${value != null ? itemBuilder(value) : 'none'}'),
-              initialValue:
-                  value != null ? TextEditingValue(text: itemBuilder(value)) : const TextEditingValue(),
-              optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text.isEmpty) {
-                  return items;
-                }
-                final searchText = textEditingValue.text.toLowerCase();
-                return items.where((item) {
-                  final itemText = itemBuilder(item).toLowerCase();
-                  return itemText.contains(searchText);
-                });
-              },
-              onSelected: (selection) {
-                onChanged(selection);
-              },
-              displayStringForOption: itemBuilder,
-              fieldViewBuilder: (
-                BuildContext context,
-                TextEditingController textEditingController,
-                FocusNode focusNode,
-                VoidCallback onFieldSubmitted,
-              ) {
-                if (!focusNode.hasFocus) {
-                  if (value == null && textEditingController.text.isNotEmpty) {
-                    textEditingController.clear();
-                  } else if (value != null &&
-                      textEditingController.text != itemBuilder(value)) {
-                    textEditingController.text = itemBuilder(value);
-                  }
-                }
-
-                return Container(
-                  decoration: BoxDecoration(
-                    color: TPColors.grayscale50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: TPColors.grayscale300,
-                      width: 1,
-                    ),
-                  ),
-                  child: TextField(
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    onTapOutside: (_) {
-                      focusNode.unfocus();
-                    },
-                    style: TPTextStyles.bodyRegular.copyWith(
-                      color: TPColors.grayscale900,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      hintStyle: TPTextStyles.bodyRegular.copyWith(
-                        color: TPColors.grayscale500,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      border: InputBorder.none,
-                      suffixIcon: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: TPColors.grayscale700,
-                      ),
-                    ),
-                  ),
-                );
-              },
-              optionsViewBuilder: (
-                BuildContext context,
-                AutocompleteOnSelected<T> onSelected,
-                Iterable<T> options,
-              ) {
-                return _buildDropdownOptionsView(
-                  context,
-                  onSelected,
-                  options,
-                  dropdownWidth,
-                  itemBuilder,
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
   }
 
   // 建立身體部位多選界面

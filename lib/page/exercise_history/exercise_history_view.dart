@@ -431,76 +431,113 @@ class ExerciseHistoryView extends StatelessWidget {
             const SizedBox(height: 12),
             const Divider(height: 1, color: TPColors.grayscale200),
             const SizedBox(height: 12),
-            TPText(
-              '運動項目 (${history.exercises.length})',
-              style: TPTextStyles.bodySemiBold,
-              color: TPColors.grayscale700,
-            ),
-            const SizedBox(height: 8),
-            ...history.exercises.asMap().entries.map((entry) {
-              final index = entry.key;
-              final exercise = entry.value;
-              return Padding(
-                padding: EdgeInsets.only(
-                  bottom: index < history.exercises.length - 1 ? 6 : 0,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [TPColors.primary400, TPColors.primary600],
+            Obx(() {
+              final isExpanded = controller.isExpanded(history.id);
+              return InkWell(
+                onTap: () => controller.toggleExerciseExpansion(history.id),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      TPText(
+                        '運動項目 (${history.exercises.length})',
+                        style: TPTextStyles.bodySemiBold,
+                        color: TPColors.grayscale700,
+                      ),
+                      const SizedBox(width: 8),
+                      AnimatedRotation(
+                        turns: isExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: TPColors.grayscale600,
+                          size: 20,
                         ),
-                        shape: BoxShape.circle,
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TPText(
-                        exercise.exerciseName,
-                        style: TPTextStyles.bodyRegular,
-                        color: TPColors.grayscale800,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: TPColors.grayscale100,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.timer_outlined,
-                            size: 12,
-                            color: TPColors.grayscale600,
-                          ),
-                          const SizedBox(width: 4),
-                          TPText(
-                            exercise.durationDisplay,
-                            style: TPTextStyles.caption,
-                            color: TPColors.grayscale600,
-                          ),
-                          const SizedBox(width: 6),
-                          const Icon(
-                            Icons.whatshot,
-                            size: 12,
-                            color: TPColors.orange500,
-                          ),
-                          const SizedBox(width: 2),
-                          TPText(
-                            '${exercise.calories}',
-                            style: TPTextStyles.caption,
-                            color: TPColors.grayscale600,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+              );
+            }),
+            Obx(() {
+              final isExpanded = controller.isExpanded(history.id);
+              return AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                child: isExpanded
+                    ? Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          ...history.exercises.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final exercise = entry.value;
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: index < history.exercises.length - 1 ? 6 : 0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [TPColors.primary400, TPColors.primary600],
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: TPText(
+                                      exercise.exerciseName,
+                                      style: TPTextStyles.bodyRegular,
+                                      color: TPColors.grayscale800,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: TPColors.grayscale100,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.timer_outlined,
+                                          size: 12,
+                                          color: TPColors.grayscale600,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        TPText(
+                                          exercise.durationDisplay,
+                                          style: TPTextStyles.caption,
+                                          color: TPColors.grayscale600,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        const Icon(
+                                          Icons.whatshot,
+                                          size: 12,
+                                          color: TPColors.orange500,
+                                        ),
+                                        const SizedBox(width: 2),
+                                        TPText(
+                                          '${exercise.calories}',
+                                          style: TPTextStyles.caption,
+                                          color: TPColors.grayscale600,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
               );
             }),
           ],

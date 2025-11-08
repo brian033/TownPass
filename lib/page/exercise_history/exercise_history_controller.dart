@@ -11,6 +11,7 @@ class ExerciseHistoryController extends GetxController {
   final RxInt totalCount = 0.obs;
   final RxInt totalCalories = 0.obs;
   final RxInt totalDuration = 0.obs; // 分鐘
+  final RxMap<String, bool> expandedStates = <String, bool>{}.obs; // 追蹤每個歷史記錄的展開狀態
 
   @override
   void onInit() {
@@ -186,5 +187,15 @@ class ExerciseHistoryController extends GetxController {
   void refresh() {
     loadHistories();
     loadStatistics();
+  }
+
+  /// 切換指定歷史記錄的展開/收合狀態
+  void toggleExerciseExpansion(String historyId) {
+    expandedStates[historyId] = !(expandedStates[historyId] ?? false);
+  }
+
+  /// 檢查指定歷史記錄是否展開
+  bool isExpanded(String historyId) {
+    return expandedStates[historyId] ?? false;
   }
 }
