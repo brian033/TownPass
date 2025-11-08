@@ -135,7 +135,7 @@ class NewComponentView extends GetView<NewComponentViewController> {
     );
   }
 
-  Widget _buildDropdownField<T>({
+  Widget _buildDropdownField<T extends Object>({
     required String label,
     required String hint,
     required T? value,
@@ -152,47 +152,119 @@ class NewComponentView extends GetView<NewComponentViewController> {
           color: TPColors.grayscale900,
         ),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: TPColors.grayscale50,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: TPColors.grayscale300,
-              width: 1,
-            ),
-          ),
-          child: DropdownButtonFormField<T>(
-            value: value,
-            hint: TPText(
-              hint,
-              style: TPTextStyles.bodyRegular,
-              color: TPColors.grayscale500,
-            ),
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
+        Autocomplete<T>(
+          initialValue:
+              value != null ? TextEditingValue(text: itemBuilder(value)) : null,
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            if (textEditingValue.text.isEmpty) {
+              return items;
+            }
+            return items.where((T item) {
+              final itemText = itemBuilder(item).toLowerCase();
+              final searchText = textEditingValue.text.toLowerCase();
+              return itemText.contains(searchText);
+            });
+          },
+          onSelected: (T selection) {
+            onChanged(selection);
+          },
+          displayStringForOption: itemBuilder,
+          fieldViewBuilder: (
+            BuildContext context,
+            TextEditingController textEditingController,
+            FocusNode focusNode,
+            VoidCallback onFieldSubmitted,
+          ) {
+            // 同步初始值
+            if (value != null && textEditingController.text.isEmpty) {
+              textEditingController.text = itemBuilder(value);
+            }
+
+            return Container(
+              decoration: BoxDecoration(
+                color: TPColors.grayscale50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: TPColors.grayscale300,
+                  width: 1,
+                ),
               ),
-              border: InputBorder.none,
-            ),
-            isExpanded: true,
-            icon: const Icon(
-              Icons.keyboard_arrow_down,
-              color: TPColors.grayscale700,
-            ),
-            dropdownColor: TPColors.white,
-            items: items.map((item) {
-              return DropdownMenuItem<T>(
-                value: item,
-                child: TPText(
-                  itemBuilder(item),
-                  style: TPTextStyles.bodyRegular,
+              child: TextField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                onTapOutside: (event) {
+                  focusNode.unfocus();
+                },
+                style: TPTextStyles.bodyRegular.copyWith(
                   color: TPColors.grayscale900,
                 ),
-              );
-            }).toList(),
-            onChanged: onChanged,
-          ),
+                decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle: TPTextStyles.bodyRegular.copyWith(
+                    color: TPColors.grayscale500,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  border: InputBorder.none,
+                  suffixIcon: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: TPColors.grayscale700,
+                  ),
+                ),
+              ),
+            );
+          },
+          optionsViewBuilder: (
+            BuildContext context,
+            AutocompleteOnSelected<T> onSelected,
+            Iterable<T> options,
+          ) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  decoration: BoxDecoration(
+                    color: TPColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: TPColors.grayscale300,
+                      width: 1,
+                    ),
+                  ),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final T option = options.elementAt(index);
+                      return InkWell(
+                        onTap: () {
+                          onSelected(option);
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          child: TPText(
+                            itemBuilder(option),
+                            style: TPTextStyles.bodyRegular,
+                            color: TPColors.grayscale900,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
