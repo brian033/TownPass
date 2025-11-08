@@ -13,21 +13,31 @@ class ExerciseTimerCard extends StatefulWidget {
 class ExerciseTimerCardState extends State<ExerciseTimerCard> {
   String? _currentExercise;
   int? _remainingSeconds;
-  String? _nextExercise;
   Timer? _timer;
   bool _isTimerFinished = false;
+  bool _showFinalMessage = false;
+
+  /// 清空顯示內容
+  void clear({bool showFinalMessage = false}) {
+    _timer?.cancel();
+    setState(() {
+      _currentExercise = null;
+      _remainingSeconds = null;
+      _isTimerFinished = false;
+      _showFinalMessage = showFinalMessage;
+    });
+  }
 
   /// 設置卡片顯示內容並開始倒數計時
-  void setDisplayCard(
-      String currentExercise, int remainingSeconds, String nextExercise) {
+  void setDisplayCard(String currentExercise, int remainingSeconds) {
     // 取消之前的計時器
     _timer?.cancel();
 
     setState(() {
       _currentExercise = currentExercise;
       _remainingSeconds = remainingSeconds;
-      _nextExercise = nextExercise;
       _isTimerFinished = false;
+      _showFinalMessage = false;
     });
 
     // 開始倒數計時
@@ -75,11 +85,15 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
             width: 1,
           ),
         ),
-        child: const Center(
+        child: Center(
           child: TPText(
-            '等待運動開始...',
+            _showFinalMessage
+                ? '已抵達最後一站，請點選完成旅程結束本次捷運動'
+                : '等待運動開始...',
             style: TPTextStyles.bodyRegular,
-            color: TPColors.grayscale500,
+            color: _showFinalMessage
+                ? TPColors.primary500
+                : TPColors.grayscale500,
           ),
         ),
       );

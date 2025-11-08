@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
+import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
@@ -13,11 +14,13 @@ class JourneyTrackerWidget extends StatefulWidget {
     required this.routeResult,
     required this.timerCardKey,
     required this.exerciseInfoCardKey,
+    this.onJourneyCompleted,
   });
 
   final MrtRouteResult routeResult;
   final GlobalKey<ExerciseTimerCardState> timerCardKey;
   final GlobalKey<ExerciseInfoCardState> exerciseInfoCardKey;
+  final void Function(Duration totalDuration)? onJourneyCompleted;
 
   @override
   State<JourneyTrackerWidget> createState() => JourneyTrackerWidgetState();
@@ -26,14 +29,61 @@ class JourneyTrackerWidget extends StatefulWidget {
 class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   int _currentLegIndex = 0;
   bool _journeyStarted = false;
+  bool _journeyCompleted = false;
   RecommendedExercise? _currentExercise;
   RecommendedExercise? _nextExercise;
+  bool _isAtFinalStation = false;
   Timer? _autoProgressTimer;
   int _remainingSecondsToNextStation = 0;
   Timer? _countdownTimer;
 
   /// 對外提供當前運動的 getter
   RecommendedExercise? get currentExercise => _currentExercise;
+
+  /// 從 routeResult 構建路徑資料
+  List<MrtStation> _buildPath() {
+    if (widget.routeResult.legs.isEmpty) {
+      return [];
+    }
+    final pathList = <MrtStation>[];
+    for (var leg in widget.routeResult.legs) {
+      if (pathList.isEmpty) {
+        pathList.add(leg.fromStation);
+      }
+      pathList.add(leg.toStation);
+    }
+    return pathList;
+  }
+
+
+  /// 獲取當前位置索引
+  int _getCurrentIndex() {
+    if (!_journeyStarted || widget.routeResult.legs.isEmpty) {
+      return 0;
+    }
+    // 根據 _currentLegIndex 計算當前位置
+    // path 的結構：path[0] 是起點（第一個 leg 的 fromStation），path[1] 是第一個 leg 的終點，以此類推
+    // 當 _currentLegIndex = 0 時，我們在第一個 leg 中，應該顯示 path[0]（起點站）
+    // 當 _currentLegIndex = 1 時，我們在第二個 leg 中，應該顯示 path[1]（第一個 leg 的終點站）
+    return _currentLegIndex;
+  }
+
+  /// 獲取當前路段的進度（0.0 到 1.0）
+  double _getSegmentProgress() {
+    if (!_journeyStarted || widget.routeResult.legs.isEmpty) {
+      return 0.0;
+    }
+    if (_currentLegIndex >= widget.routeResult.legs.length) {
+      return 1.0;
+    }
+    final currentLeg = widget.routeResult.legs[_currentLegIndex];
+    final totalSeconds = currentLeg.travelSeconds + currentLeg.stopSeconds;
+    if (totalSeconds == 0) {
+      return 1.0;
+    }
+    final elapsedSeconds = totalSeconds - _remainingSecondsToNextStation;
+    return (elapsedSeconds / totalSeconds).clamp(0.0, 1.0);
+  }
 
   @override
   void dispose() {
@@ -48,7 +98,9 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
     setState(() {
       _journeyStarted = true;
+      _journeyCompleted = false;
       _currentLegIndex = 0;
+      _isAtFinalStation = false;
     });
 
     _selectRandomExercises();
@@ -58,13 +110,27 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
   /// 下一站
   void _nextStation() {
-    if (_currentLegIndex < widget.routeResult.legs.length - 1) {
+    // path 有 legs.length + 1 个站（起点 + 每个 leg 的终点）
+    // 当 _currentLegIndex = legs.length - 1 时，我们在 last - 1 station，应该能前进到 last station
+    if (_currentLegIndex < widget.routeResult.legs.length) {
       setState(() {
         _currentLegIndex++;
       });
-      _selectRandomExercises();
-      _updateTimerCard();
-      _startAutoProgressTimer();
+      // 如果已经到达最后一个站，取消所有计时器并设置剩余时间为 0
+      if (_currentLegIndex >= widget.routeResult.legs.length) {
+        _autoProgressTimer?.cancel();
+        _countdownTimer?.cancel();
+        setState(() {
+          _remainingSecondsToNextStation = 0;
+          _isAtFinalStation = true;
+        });
+        widget.timerCardKey.currentState?.clear(showFinalMessage: true);
+        widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
+      } else {
+        _selectRandomExercises();
+        _updateTimerCard();
+        _startAutoProgressTimer();
+      }
     }
   }
 
@@ -73,6 +139,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     if (_currentLegIndex > 0) {
       setState(() {
         _currentLegIndex--;
+        _isAtFinalStation = false;
       });
       _selectRandomExercises();
       _updateTimerCard();
@@ -106,6 +173,12 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
   /// 更新 ExerciseTimerCard 和 ExerciseInfoCard
   void _updateTimerCard() {
+    if (_currentLegIndex >= widget.routeResult.legs.length) {
+      widget.timerCardKey.currentState?.clear(showFinalMessage: true);
+      widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
+      return;
+    }
+
     if (_currentExercise == null || _nextExercise == null) return;
 
     final currentLeg = widget.routeResult.legs[_currentLegIndex];
@@ -115,7 +188,6 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     widget.timerCardKey.currentState?.setDisplayCard(
       _currentExercise!.name,
       remainingSeconds,
-      _nextExercise!.name,
     );
 
     // 更新 ExerciseInfoCard
@@ -126,6 +198,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   void _startAutoProgressTimer() {
     _autoProgressTimer?.cancel();
     _countdownTimer?.cancel();
+
+    if (_journeyCompleted) {
+      return;
+    }
 
     final currentLeg = widget.routeResult.legs[_currentLegIndex];
     final totalSeconds = currentLeg.travelSeconds + currentLeg.stopSeconds;
@@ -146,10 +222,30 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
     // 啟動自動進站計時器
     _autoProgressTimer = Timer(Duration(seconds: totalSeconds), () {
+      if (!mounted) return;
       if (_currentLegIndex < widget.routeResult.legs.length - 1) {
         _nextStation();
+      } else {
+        _completeJourney();
       }
     });
+  }
+
+  void _completeJourney() {
+    if (_journeyCompleted) {
+      return;
+    }
+
+    _autoProgressTimer?.cancel();
+    _countdownTimer?.cancel();
+
+    setState(() {
+      _journeyCompleted = true;
+      _remainingSecondsToNextStation = 0;
+    });
+
+    widget.onJourneyCompleted
+        ?.call(Duration(seconds: widget.routeResult.totalSeconds));
   }
 
   @override
@@ -172,7 +268,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                 style: TPTextStyles.bodySemiBold,
                 color: TPColors.grayscale900,
               ),
-              if (_journeyStarted)
+              if (_journeyStarted && !_journeyCompleted)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -207,7 +303,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     );
   }
 
-  /// 建立橫向站點進度條
+  /// 建立路徑視覺化
   Widget _buildProgressBar() {
     if (widget.routeResult.legs.isEmpty) {
       return const TPText(
@@ -217,81 +313,25 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       );
     }
 
-    // 決定顯示範圍
-    final legs = widget.routeResult.legs;
-    int startIndex, endIndex;
-
-    if (_currentLegIndex == 0) {
-      // 開頭：顯示前 2-3 個 leg
-      startIndex = 0;
-      endIndex = min(2, legs.length - 1);
-    } else if (_currentLegIndex == legs.length - 1) {
-      // 結尾：顯示最後 2-3 個 leg
-      startIndex = max(0, legs.length - 3);
-      endIndex = legs.length - 1;
-    } else {
-      // 中間：顯示當前 leg 和前後各一個
-      startIndex = max(0, _currentLegIndex - 1);
-      endIndex = min(legs.length - 1, _currentLegIndex + 1);
+    final path = _buildPath();
+    if (path.isEmpty) {
+      return const TPText(
+        '無路線資訊',
+        style: TPTextStyles.caption,
+        color: TPColors.grayscale500,
+      );
     }
 
-    // 收集要顯示的站點
-    List<String> stationNames = [];
-    for (int i = startIndex; i <= endIndex; i++) {
-      if (i == startIndex) {
-        stationNames.add(legs[i].fromStation.name);
-      }
-      stationNames.add(legs[i].toStation.name);
-    }
+    final currentIndex = _getCurrentIndex();
+    final segmentProgress = _getSegmentProgress();
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (int i = 0; i < stationNames.length; i++) ...[
-            _buildStationDot(
-              stationNames[i],
-              isActive: _journeyStarted && i <= (_currentLegIndex - startIndex + 1),
-            ),
-            if (i < stationNames.length - 1)
-              _buildConnector(
-                isActive: _journeyStarted && i < (_currentLegIndex - startIndex + 1),
-              ),
-          ],
-        ],
+    return SizedBox(
+      height: 120,
+      child: _AnimatedPathWidget(
+        path: path,
+        currentIndex: currentIndex,
+        segmentProgress: segmentProgress,
       ),
-    );
-  }
-
-  /// 建立站點圓點
-  Widget _buildStationDot(String stationName, {required bool isActive}) {
-    return Column(
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isActive ? TPColors.primary500 : TPColors.grayscale300,
-          ),
-        ),
-        const SizedBox(height: 4),
-        TPText(
-          stationName,
-          style: TPTextStyles.caption,
-          color: isActive ? TPColors.primary500 : TPColors.grayscale600,
-        ),
-      ],
-    );
-  }
-
-  /// 建立連接線
-  Widget _buildConnector({required bool isActive}) {
-    return Container(
-      width: 40,
-      height: 2,
-      margin: const EdgeInsets.only(bottom: 28),
-      color: isActive ? TPColors.primary500 : TPColors.grayscale300,
     );
   }
 
@@ -323,6 +363,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       );
     }
 
+    if (_journeyCompleted) {
+      return _buildCompletedMessage();
+    }
+
     // 顯示「上一站」和「下一站」按鈕
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -342,22 +386,527 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
           ),
         ),
         ElevatedButton(
-          onPressed: _currentLegIndex < widget.routeResult.legs.length - 1
-              ? _nextStation
-              : null,
+          onPressed: _isAtFinalStation ? _completeJourney : _nextStation,
           style: ElevatedButton.styleFrom(
             backgroundColor: TPColors.primary500,
             foregroundColor: TPColors.white,
             disabledBackgroundColor: TPColors.grayscale100,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
-          child: const TPText(
-            '下一站',
+          child: TPText(
+            _isAtFinalStation ? '完成旅程' : '下一站',
             style: TPTextStyles.bodySemiBold,
             color: TPColors.white,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildCompletedMessage() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(
+            Icons.flag_rounded,
+            color: TPColors.primary500,
+            size: 28,
+          ),
+          SizedBox(height: 8),
+          TPText(
+            '旅程完成，準備查看結果！',
+            style: TPTextStyles.bodySemiBold,
+            color: TPColors.primary500,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnimatedPathWidget extends StatefulWidget {
+  final List<MrtStation> path;
+  final int currentIndex;
+  final double segmentProgress;
+
+  const _AnimatedPathWidget({
+    required this.path,
+    required this.currentIndex,
+    required this.segmentProgress,
+  });
+
+  @override
+  State<_AnimatedPathWidget> createState() => _AnimatedPathWidgetState();
+}
+
+class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
+  // Return full station name (no truncation)
+  String _truncateStationName(String name) {
+    return name; // Return full name without truncation
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final path = widget.path;
+    final currentIndex = widget.currentIndex;
+    final pathLength = path.length;
+
+    // Handle edge cases
+    if (pathLength == 1) {
+      return _buildSingleNode(path[0]);
+    } else if (pathLength == 2) {
+      return _buildTwoNodes(path, currentIndex);
+    } else if (pathLength == 3) {
+      return _buildThreeNodes(path, currentIndex);
+    } else {
+      return _buildFourNodes(path, currentIndex);
+    }
+  }
+
+  Widget _buildSingleNode(MrtStation station) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: TPColors.primary500,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TPText(
+            _truncateStationName(station.name),
+            style: TPTextStyles.caption,
+            color: TPColors.grayscale700,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTwoNodes(List<MrtStation> path, int currentIndex) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildNode(
+            station: path[0],
+            isActive: currentIndex == 0,
+            size: currentIndex == 0 ? 1.0 : 0.6,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Container(
+            height: 2,
+            color: TPColors.primary300,
+          ),
+        ),
+        Expanded(
+          child: _buildNode(
+            station: path[1],
+            isActive: currentIndex == 1,
+            size: currentIndex == 1 ? 1.0 : 0.6,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildThreeNodes(List<MrtStation> path, int currentIndex) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildNode(
+            station: path[0],
+            isActive: currentIndex == 0,
+            size: currentIndex == 0 ? 1.0 : 0.5,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Container(
+            height: 2,
+            color: TPColors.primary300,
+          ),
+        ),
+        Expanded(
+          child: _buildNode(
+            station: path[1],
+            isActive: currentIndex == 1,
+            size: currentIndex == 1 ? 1.0 : (currentIndex == 0 ? 0.8 : 0.5),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Container(
+            height: 2,
+            color: TPColors.primary300,
+          ),
+        ),
+        Expanded(
+          child: _buildNode(
+            station: path[2],
+            isActive: currentIndex == 2,
+            size: currentIndex == 2 ? 1.0 : 0.5,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFourNodes(List<MrtStation> path, int currentIndex) {
+    // Determine which stations to show
+    MrtStation? startStation;
+    MrtStation? currentStation;
+    MrtStation? nextStation;
+    MrtStation? destinationStation;
+
+    // Check if we're in the last 3 stations (last - 2, last - 1, last)
+    // Or if last - 1 or last station is current - keep the same stations in middle-left and middle-right positions
+    final isInLastThree = currentIndex >= path.length - 3;
+    final isLastMinusOne = currentIndex == path.length - 2;
+    final isLast = currentIndex >= path.length - 1;
+    
+    if (currentIndex == 0) {
+      // At start - left shows start station, middle-left shows next station (like middle-right)
+      startStation = path[0];
+      currentStation = path.length > 1 ? path[1] : path[0]; // Next station in middle-left
+      nextStation = path.length > 2 ? path[2] : null; // Station after next in middle-right
+      destinationStation = path.length > 2 ? path[path.length - 1] : (path.length > 1 ? path[1] : path[0]);
+    } else if (isInLastThree || isLastMinusOne || isLast) {
+      // When in last 3 stations, at last - 1, or at last, keep positions fixed:
+      // middle-left always shows last - 2, middle-right always shows last - 1
+      startStation = path[0];
+      if (path.length >= 3) {
+        currentStation = path[path.length - 3]; // Last - 2 station in middle-left (fixed position)
+        nextStation = path[path.length - 2]; // Last - 1 station in middle-right (fixed position)
+      } else if (path.length >= 2) {
+        currentStation = path[path.length - 2]; // Last - 1 station in middle-left if only 2 stations
+        nextStation = null;
+      } else {
+        currentStation = path[0];
+        nextStation = null;
+      }
+      destinationStation = path[path.length - 1];
+    } else if (currentIndex > path.length - 1) {
+      // After last stop - same as at last stop
+      startStation = path[0];
+      if (path.length >= 2) {
+        currentStation = path[path.length - 2]; // Last - 2 station in middle-left (non-current)
+      } else {
+        currentStation = path[0]; // Fallback if path is too short
+      }
+      nextStation = null; // Don't show in middle-right
+      destinationStation = path[path.length - 1]; // This will be shown in right node as current
+    } else {
+      // In the middle - left is inactive start, middle-left is current, middle-right is next
+      startStation = path[0];
+      currentStation = path[currentIndex];
+      nextStation = currentIndex + 1 < path.length ? path[currentIndex + 1] : null;
+      destinationStation = path[path.length - 1];
+    }
+
+    // Calculate node sizes
+    // When middle-left is current: it should have same size as left node
+    // All non-current nodes should have the same size (larger than before)
+    final isRightNodeCurrent = currentIndex >= path.length - 1;
+    final nonCurrentSize = 0.7; // Same size for all non-current nodes (increased from 0.4)
+    final currentSize = currentIndex == 0 ? 1.0 : 1.0; // Current node same size as left node (1.0)
+    // When right node is current, left node should be non-current
+    final startSize = (currentIndex == 0 && !isRightNodeCurrent) ? 1.0 : nonCurrentSize;
+    final nextSize = nonCurrentSize; // Same size for middle-right (non-current)
+    final destinationSize = isRightNodeCurrent ? 1.0 : nonCurrentSize; // Large when reached, same as non-current otherwise
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Row for nodes only - aligned horizontally
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Start station (left node) - active and large at start, inactive and small after
+            // When right node is current (currentIndex >= path.length - 1), this should be non-current
+            Expanded(
+              child: Center(
+                child: _buildNodeCircle(
+                  isActive: currentIndex == 0 && currentIndex < path.length - 1, // Only active at start, not when right is current
+                  size: startSize,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 2,
+                color: TPColors.primary300,
+              ),
+            ),
+            // Middle-left: shows next station at start, shows current station after moving, shows previous station at last stop
+            Expanded(
+              child: Center(
+                child: _buildMiddleLeftNodeCircle(
+                  currentStation: currentStation,
+                  currentIndex: currentIndex,
+                  pathLength: path.length,
+                  currentSize: currentSize,
+                  nonCurrentSize: nonCurrentSize,
+                  path: path,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 2,
+                color: TPColors.primary300,
+              ),
+            ),
+            // Next station (middle-right) - should not show last station (only right node shows it)
+            // Also should not show anything when at or after last stop
+            // IMPORTANT: Never show as active/current - always isActive: false
+            Expanded(
+              child: Center(
+                child: _buildMiddleRightNodeCircle(
+                  nextStation: nextStation,
+                  destinationStation: destinationStation,
+                  currentIndex: currentIndex,
+                  pathLength: path.length,
+                  nextSize: nextSize,
+                ),
+              ),
+            ),
+            // Show connecting line if middle-right node is visible
+            // It should be visible when nextStation exists and is different from destination
+            // Also show when at last station (currentIndex >= path.length - 1) if middle-right is showing
+            if (nextStation != null && 
+                nextStation.id != destinationStation.id &&
+                currentIndex <= path.length - 1)
+              Expanded(
+                flex: 2,
+                child: Container(
+                  height: 2,
+                  color: TPColors.primary300,
+                ),
+              ),
+            // Destination (right) - becomes current when at last stop
+            Expanded(
+              child: Center(
+                child: _buildNodeCircle(
+                  isActive: currentIndex >= path.length - 1, // Active when at last stop
+                  size: currentIndex >= path.length - 1 ? currentSize : destinationSize,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // Row for station names - aligned below their respective nodes
+        Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: startStation,
+                  isActive: currentIndex == 0 && currentIndex < path.length - 1,
+                ),
+              ),
+            ),
+            Expanded(flex: 2, child: const SizedBox.shrink()),
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: currentStation,
+                  isActive: (currentIndex > 0 && currentIndex < path.length - 1) || 
+                            (currentIndex == path.length - 3),
+                ),
+              ),
+            ),
+            Expanded(flex: 2, child: const SizedBox.shrink()),
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: nextStation,
+                  isActive: currentIndex == path.length - 2,
+                ),
+              ),
+            ),
+            if (nextStation != null && 
+                nextStation.id != destinationStation.id &&
+                currentIndex <= path.length - 1)
+              Expanded(flex: 2, child: const SizedBox.shrink()),
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: destinationStation,
+                  isActive: currentIndex >= path.length - 1,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNode({
+    required MrtStation station,
+    required bool isActive,
+    required double size,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Transform.scale(
+          scale: size,
+          child: Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: isActive ? TPColors.primary500 : TPColors.grayscale400,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isActive ? TPColors.primary700 : TPColors.grayscale300,
+                width: 2,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: TPText(
+            _truncateStationName(station.name),
+            style: TPTextStyles.caption,
+            color: isActive ? TPColors.grayscale900 : TPColors.grayscale600,
+            maxLines: 1,
+            overflow: TextOverflow.visible,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNodeCircle({
+    required bool isActive,
+    required double size,
+  }) {
+    return Transform.scale(
+      scale: size,
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: isActive ? TPColors.primary500 : TPColors.grayscale400,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isActive ? TPColors.primary700 : TPColors.grayscale300,
+            width: 2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMiddleLeftNodeCircle({
+    required MrtStation? currentStation,
+    required int currentIndex,
+    required int pathLength,
+    required double currentSize,
+    required double nonCurrentSize,
+    required List<MrtStation> path,
+  }) {
+    final stationToShow = currentStation ?? (pathLength > 0 && path.isNotEmpty ? path[0] : null);
+    if (stationToShow == null) {
+      return const SizedBox.shrink();
+    }
+
+    final isRightNodeCurrent = currentIndex >= pathLength - 1;
+    if (isRightNodeCurrent) {
+      return _buildNodeCircle(
+        isActive: false,
+        size: nonCurrentSize,
+      );
+    }
+
+    final isInLastThree = currentIndex >= pathLength - 3;
+    final isLastMinusOne = currentIndex == pathLength - 2;
+    final isLast = currentIndex >= pathLength - 1;
+    if (isInLastThree || isLastMinusOne || isLast) {
+      final isLastMinusTwo = currentIndex == pathLength - 3;
+      return _buildNodeCircle(
+        isActive: isLastMinusTwo,
+        size: isLastMinusTwo ? currentSize : nonCurrentSize,
+      );
+    }
+
+    if (currentIndex == 0) {
+      return _buildNodeCircle(
+        isActive: false,
+        size: nonCurrentSize,
+      );
+    } else {
+      return _buildNodeCircle(
+        isActive: true,
+        size: currentSize,
+      );
+    }
+  }
+
+  Widget _buildMiddleRightNodeCircle({
+    required MrtStation? nextStation,
+    required MrtStation? destinationStation,
+    required int currentIndex,
+    required int pathLength,
+    required double nextSize,
+  }) {
+    if (nextStation == null || 
+        destinationStation == null ||
+        nextStation.id == destinationStation.id ||
+        currentIndex > pathLength - 1) {
+      return const SizedBox.shrink();
+    }
+
+    final isInLastThree = currentIndex >= pathLength - 3;
+    final isLastMinusOne = currentIndex == pathLength - 2;
+    final isLast = currentIndex >= pathLength - 1;
+    if (isInLastThree || isLastMinusOne || isLast) {
+      final shouldBeActive = isLastMinusOne && !isLast;
+      return _buildNodeCircle(
+        isActive: shouldBeActive,
+        size: shouldBeActive ? 1.0 : nextSize,
+      );
+    }
+
+    return _buildNodeCircle(
+      isActive: false,
+      size: nextSize,
+    );
+  }
+
+  Widget _buildStationName({
+    required MrtStation? station,
+    required bool isActive,
+  }) {
+    if (station == null) {
+      return const SizedBox.shrink();
+    }
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: TPText(
+        _truncateStationName(station.name),
+        style: TPTextStyles.caption,
+        color: isActive ? TPColors.grayscale900 : TPColors.grayscale600,
+        maxLines: 1,
+        overflow: TextOverflow.visible,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

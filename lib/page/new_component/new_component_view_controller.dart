@@ -20,6 +20,34 @@ class NewComponentViewController extends GetxController {
   final Rx<MrtStation?> selectedEndStation = Rx<MrtStation?>(null);
   final Rx<BodyPart?> selectedBodyPart = Rx<BodyPart?>(null);
 
+  // 站點便利存取
+  List<MrtStation> get sortedStartStations {
+    final stations = List<MrtStation>.from(mrtStations);
+    stations.sort((a, b) => a.displayName.compareTo(b.displayName));
+    return stations;
+  }
+
+  Map<String, List<MrtStation>> get groupedEndStations {
+    final grouped = <String, List<MrtStation>>{};
+
+    for (final station in mrtStations) {
+      for (var i = 0; i < station.lines.length; i++) {
+        final line = station.lines[i];
+        final list = grouped.putIfAbsent(line, () => <MrtStation>[]);
+        final exists = list.any((item) => item.id == station.id);
+        if (!exists) {
+          list.add(station);
+        }
+      }
+    }
+
+    for (final entry in grouped.entries) {
+      entry.value.sort((a, b) => a.displayName.compareTo(b.displayName));
+    }
+
+    return grouped;
+  }
+
   // 載入狀態
   final RxBool isLoading = true.obs;
 

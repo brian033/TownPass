@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:town_pass/bean/body_part.dart';
 import 'package:town_pass/bean/exercise_history.dart';
@@ -17,6 +18,23 @@ class ExerciseRecommendationController extends GetxController {
   final RxBool isLoading = false.obs;
   
   ExerciseHistoryService? _historyService;
+
+  // 路徑資料（將在之後提供）
+  List<MrtStation> path = [];
+  List<double> estimatedMinutesList = []; // 每段路程的時間（分鐘，支援小數）
+  List<String> movements = []; // 每段路程的運動類型
+
+  // 當前狀態
+  final Rx<MrtStation?> currentLocation = Rx<MrtStation?>(null);
+  final RxInt remainingTimeSeconds = 0.obs; // 剩餘時間（秒）
+  final RxString currentMovement = ''.obs; // 當前運動類型
+
+  // 計時器相關
+  DateTime? startTime;
+  Timer? _updateTimer;
+  
+  // 記錄上一次的位置，用於判斷位置是否改變
+  MrtStation? _previousLocation;
 
   Rxn<ExerciseRecommendation> get exercise => _exercise;
 
@@ -39,8 +57,153 @@ class ExerciseRecommendationController extends GetxController {
       print('ExerciseHistoryService 未找到：$e');
     }
 
+    // 從 routeResult 初始化路徑資料
+    if (routeResult != null) {
+      _initializePathFromRouteResult();
+    }
+
     // TODO: 根據參數推薦適合的運動
     loadRecommendedExercises();
+  }
+
+  @override
+  void onClose() {
+    _updateTimer?.cancel();
+    super.onClose();
+  }
+
+  // 從 routeResult 初始化路徑資料
+  void _initializePathFromRouteResult() {
+    if (routeResult == null || routeResult!.legs.isEmpty) {
+      return;
+    }
+
+    final pathList = <MrtStation>[];
+    final timeList = <double>[];
+    final movementList = <String>[];
+
+    for (var leg in routeResult!.legs) {
+      if (pathList.isEmpty) {
+        pathList.add(leg.fromStation);
+      }
+      pathList.add(leg.toStation);
+      
+      // 將秒數轉換為分鐘
+      final minutes = (leg.travelSeconds + leg.stopSeconds) / 60.0;
+      timeList.add(minutes);
+      movementList.add('運動'); // 預設運動類型
+    }
+
+    setPathData(
+      path: pathList,
+      estimatedMinutesList: timeList,
+      movements: movementList,
+    );
+  }
+
+  // 設定路徑資料
+  void setPathData({
+    required List<MrtStation> path,
+    required List<double> estimatedMinutesList,
+    required List<String> movements,
+  }) {
+    this.path = path;
+    this.estimatedMinutesList = estimatedMinutesList;
+    this.movements = movements;
+    
+    // 初始化開始時間
+    startTime = DateTime.now();
+    
+    // 初始化當前狀態
+    getCurrentStatus();
+  }
+
+  // Function B: 獲取當前位置、剩餘時間、當前運動
+  void getCurrentStatus() {
+    if (path.isEmpty || estimatedMinutesList.isEmpty || movements.isEmpty) {
+      return;
+    }
+
+    if (startTime == null) {
+      startTime = DateTime.now();
+    }
+
+    // 計算已過時間（秒）
+    final elapsedSeconds = DateTime.now().difference(startTime!).inSeconds;
+
+    // 計算總時間（秒）
+    final totalSeconds = (estimatedMinutesList.fold(0.0, (sum, time) => sum + time) * 60).round();
+
+    // 找出當前所在的路段（使用秒數計算）
+    int accumulatedSeconds = 0;
+    int currentSegmentIndex = 0;
+    int segmentStartSeconds = 0;
+    bool foundSegment = false;
+
+    for (int i = 0; i < estimatedMinutesList.length; i++) {
+      final segmentSeconds = (estimatedMinutesList[i] * 60).round();
+      if (elapsedSeconds <= accumulatedSeconds + segmentSeconds) {
+        currentSegmentIndex = i;
+        segmentStartSeconds = accumulatedSeconds;
+        foundSegment = true;
+        break;
+      }
+      accumulatedSeconds += segmentSeconds;
+    }
+
+    // 如果已經超過所有路段，設定為最後一站
+    if (elapsedSeconds >= totalSeconds) {
+      currentSegmentIndex = path.length - 1;
+      _updateLocation(path.last);
+      currentMovement.value = movements.isNotEmpty ? movements.last : '';
+      remainingTimeSeconds.value = 0;
+    } else if (foundSegment) {
+      // 計算到下一站的剩餘時間（當前路段的剩餘時間）
+      final segmentSeconds = (estimatedMinutesList[currentSegmentIndex] * 60).round();
+      final elapsedInSegment = elapsedSeconds - segmentStartSeconds;
+      final remainingInSegment = (segmentSeconds - elapsedInSegment).clamp(0, segmentSeconds);
+      remainingTimeSeconds.value = remainingInSegment;
+
+      // 如果已經到達當前路段的終點站（剩餘時間為0），顯示終點站並準備下一段
+      if (remainingInSegment == 0 && currentSegmentIndex < path.length - 1) {
+        // 已經到達當前路段的終點，顯示終點站（即下一段的起點）
+        _updateLocation(path[currentSegmentIndex + 1]);
+        // 如果還有下一段，顯示下一段的運動和時間
+        if (currentSegmentIndex + 1 < movements.length) {
+          currentMovement.value = movements[currentSegmentIndex + 1];
+        }
+        if (currentSegmentIndex + 1 < estimatedMinutesList.length) {
+          final nextSegmentSeconds = (estimatedMinutesList[currentSegmentIndex + 1] * 60).round();
+          remainingTimeSeconds.value = nextSegmentSeconds;
+        }
+      } else {
+        // 還在當前路段中，顯示起點站
+        if (currentSegmentIndex < path.length) {
+          _updateLocation(path[currentSegmentIndex]);
+        }
+        // 設定當前運動類型（當前路段的運動）
+        if (currentSegmentIndex < movements.length) {
+          currentMovement.value = movements[currentSegmentIndex];
+        }
+      }
+    }
+  }
+
+  // TODO: 當位置改變時，此函數會被調用
+  // 請在此函數中實作位置改變時的處理邏輯
+  void onLocationChanged(MrtStation? location) {
+    // 此函數會在 currentLocation 改變時自動調用
+    // location 參數為當前的位置（MrtStation 物件）
+    // 可以在這裡實作需要的邏輯，例如：更新 UI、發送通知、記錄日誌等
+  }
+  
+  // 更新位置並觸發回調
+  void _updateLocation(MrtStation? newLocation) {
+    if (newLocation != _previousLocation) {
+      currentLocation.value = newLocation;
+      _previousLocation = newLocation;
+      onLocationChanged(newLocation);
+    }
   }
 
   // 載入推薦的運動

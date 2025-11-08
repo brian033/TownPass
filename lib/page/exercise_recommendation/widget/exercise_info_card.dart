@@ -12,17 +12,29 @@ class ExerciseInfoCard extends StatefulWidget {
 
 class ExerciseInfoCardState extends State<ExerciseInfoCard> {
   RecommendedExercise? _currentExercise;
+  bool _showFinalMessage = false;
 
   /// 設定當前運動並更新顯示
   void setExercise(RecommendedExercise exercise) {
     setState(() {
       _currentExercise = exercise;
+      _showFinalMessage = false;
+    });
+  }
+
+  void clear({bool showFinalMessage = false}) {
+    setState(() {
+      _currentExercise = null;
+      _showFinalMessage = showFinalMessage;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     if (_currentExercise == null) {
+      if (_showFinalMessage) {
+        return const SizedBox.shrink();
+      }
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(24),
