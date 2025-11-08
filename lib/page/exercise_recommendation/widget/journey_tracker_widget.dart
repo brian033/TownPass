@@ -628,7 +628,68 @@ class _AnimatedPathWidget extends StatefulWidget {
   State<_AnimatedPathWidget> createState() => _AnimatedPathWidgetState();
 }
 
-class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
+class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  int? _animatingIndex; // 当前正在播放动画的节点索引
+
+  @override
+  void initState() {
+    super.initState();
+    // 动画总时长为 0.5 秒，forward 和 reverse 各 0.25 秒
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    // 使用一个从1.0到0.7再到1.0的动画
+    // 通过 forward 和 reverse 实现缩小再放大的效果
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.7).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void didUpdateWidget(_AnimatedPathWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 当 currentIndex 改变时，触发动画
+    if (oldWidget.currentIndex != widget.currentIndex) {
+      _triggerAnimation(widget.currentIndex);
+    }
+  }
+
+  void _triggerAnimation(int currentIndex) {
+    // 取消之前的动画（如果有）
+    _animationController.stop();
+    _animationController.reset();
+    
+    setState(() {
+      _animatingIndex = currentIndex;
+    });
+    
+    // 先 forward（缩小到 0.7），然后 reverse（放大回 1.0）
+    _animationController.forward(from: 0.0).then((_) {
+      if (mounted && _animatingIndex == currentIndex) {
+        _animationController.reverse().then((_) {
+          if (mounted && _animatingIndex == currentIndex) {
+            setState(() {
+              _animatingIndex = null;
+            });
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   // Return full station name (no truncation)
   String _truncateStationName(String name) {
     return name; // Return full name without truncation
@@ -696,13 +757,10 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: TPColors.primary500,
-              shape: BoxShape.circle,
-            ),
+          _buildNodeCircle(
+            isActive: true,
+            size: 1.0,
+            nodeIndex: 0,
           ),
           const SizedBox(height: 8),
           TPText(
@@ -725,6 +783,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             station: path[0],
             isActive: currentIndex == 0,
             size: currentIndex == 0 ? 1.0 : 0.6,
+            nodeIndex: 0,
           ),
         ),
         Expanded(
@@ -739,6 +798,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             station: path[1],
             isActive: currentIndex == 1,
             size: currentIndex == 1 ? 1.0 : 0.6,
+            nodeIndex: 1,
           ),
         ),
       ],
@@ -753,6 +813,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             station: path[0],
             isActive: currentIndex == 0,
             size: currentIndex == 0 ? 1.0 : 0.5,
+            nodeIndex: 0,
           ),
         ),
         Expanded(
@@ -767,6 +828,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             station: path[1],
             isActive: currentIndex == 1,
             size: currentIndex == 1 ? 1.0 : (currentIndex == 0 ? 0.8 : 0.5),
+            nodeIndex: 1,
           ),
         ),
         Expanded(
@@ -781,6 +843,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             station: path[2],
             isActive: currentIndex == 2,
             size: currentIndex == 2 ? 1.0 : 0.5,
+            nodeIndex: 2,
           ),
         ),
       ],
@@ -864,6 +927,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
                 child: _buildNodeCircle(
                   isActive: currentIndex == 0 && currentIndex < path.length - 1, // Only active at start, not when right is current
                   size: startSize,
+                  nodeIndex: 0, // Start station is always at index 0
                 ),
               ),
             ),
@@ -907,6 +971,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
                   currentIndex: currentIndex,
                   pathLength: path.length,
                   nextSize: nextSize,
+                  path: path,
                 ),
               ),
             ),
@@ -931,6 +996,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
                 child: _buildNodeCircle(
                   isActive: currentIndex >= path.length - 1, // Active when at last stop
                   size: currentIndex >= path.length - 1 ? currentSize : destinationSize,
+                  nodeIndex: path.length - 1, // Destination is always at last index
                 ),
               ),
             ),
@@ -989,29 +1055,15 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
     required MrtStation station,
     required bool isActive,
     required double size,
+    int? nodeIndex,
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Transform.scale(
-          scale: size,
-          child: Container(
-            width: 24,
-            height: 24,
-            decoration: isActive
-                ? BoxDecoration(
-                    color: TPColors.primary500,
-                    shape: BoxShape.circle,
-                  )
-                : BoxDecoration(
-                    color: TPColors.grayscale400,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: TPColors.grayscale300,
-                      width: 2,
-                    ),
-                  ),
-          ),
+        _buildNodeCircle(
+          isActive: isActive,
+          size: size,
+          nodeIndex: nodeIndex,
         ),
         const SizedBox(height: 8),
         FittedBox(
@@ -1032,26 +1084,52 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
   Widget _buildNodeCircle({
     required bool isActive,
     required double size,
+    int? nodeIndex,
   }) {
+    Widget circleWidget = Container(
+      width: 24,
+      height: 24,
+      decoration: isActive
+          ? BoxDecoration(
+              color: TPColors.primary500,
+              shape: BoxShape.circle,
+            )
+          : BoxDecoration(
+              color: TPColors.grayscale400,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: TPColors.grayscale300,
+                width: 2,
+              ),
+            ),
+    );
+
+    // 如果是当前节点且正在播放动画，应用动画缩放
+    final shouldAnimate = isActive && 
+        nodeIndex != null && 
+        _animatingIndex != null && 
+        nodeIndex == _animatingIndex;
+    
+    if (shouldAnimate) {
+      return AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) {
+          // 计算动画缩放值：从1.0缩小到0.7再回到1.0
+          final animationScale = _scaleAnimation.value;
+          // 基础缩放乘以动画缩放
+          final totalScale = size * animationScale;
+          return Transform.scale(
+            scale: totalScale,
+            child: circleWidget,
+          );
+        },
+      );
+    }
+
+    // 不需要动画时，直接应用基础缩放
     return Transform.scale(
       scale: size,
-      child: Container(
-        width: 24,
-        height: 24,
-        decoration: isActive
-            ? BoxDecoration(
-                color: TPColors.primary500,
-                shape: BoxShape.circle,
-              )
-            : BoxDecoration(
-                color: TPColors.grayscale400,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: TPColors.grayscale300,
-                  width: 2,
-                ),
-              ),
-      ),
+      child: circleWidget,
     );
   }
 
@@ -1068,11 +1146,15 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       return const SizedBox.shrink();
     }
 
+    // 找到当前站在 path 中的索引
+    final nodeIndex = _getStationIndex(stationToShow, path);
+
     final isRightNodeCurrent = currentIndex >= pathLength - 1;
     if (isRightNodeCurrent) {
       return _buildNodeCircle(
         isActive: false,
         size: nonCurrentSize,
+        nodeIndex: nodeIndex >= 0 ? nodeIndex : null,
       );
     }
 
@@ -1084,6 +1166,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       return _buildNodeCircle(
         isActive: isLastMinusTwo,
         size: isLastMinusTwo ? currentSize : nonCurrentSize,
+        nodeIndex: nodeIndex >= 0 ? nodeIndex : null,
       );
     }
 
@@ -1091,11 +1174,13 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       return _buildNodeCircle(
         isActive: false,
         size: nonCurrentSize,
+        nodeIndex: nodeIndex >= 0 ? nodeIndex : null,
       );
     } else {
       return _buildNodeCircle(
         isActive: true,
         size: currentSize,
+        nodeIndex: nodeIndex >= 0 ? nodeIndex : null,
       );
     }
   }
@@ -1106,6 +1191,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
     required int currentIndex,
     required int pathLength,
     required double nextSize,
+    required List<MrtStation> path,
   }) {
     if (nextStation == null ||
         destinationStation == null ||
@@ -1113,6 +1199,9 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
         currentIndex > pathLength - 1) {
       return const SizedBox.shrink();
     }
+
+    // 找到下一站在 path 中的索引
+    final nodeIndex = _getStationIndex(nextStation, path);
 
     final isInLastThree = currentIndex >= pathLength - 3;
     final isLastMinusOne = currentIndex == pathLength - 2;
@@ -1122,12 +1211,14 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       return _buildNodeCircle(
         isActive: shouldBeActive,
         size: shouldBeActive ? 1.0 : nextSize,
+        nodeIndex: nodeIndex >= 0 ? nodeIndex : null,
       );
     }
 
     return _buildNodeCircle(
       isActive: false,
       size: nextSize,
+      nodeIndex: nodeIndex >= 0 ? nodeIndex : null,
     );
   }
 
