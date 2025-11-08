@@ -139,139 +139,94 @@ class NewComponentView extends GetView<NewComponentViewController> {
           color: TPColors.grayscale900,
         ),
         const SizedBox(height: 8),
-        Autocomplete<MrtStation>(
-          key: ValueKey(controller.selectedStartStation.value?.id ?? 'start-none'),
-          initialValue: controller.selectedStartStation.value != null
-              ? TextEditingValue(
-                  text: controller.selectedStartStation.value!.displayName,
-                )
-              : const TextEditingValue(),
-          optionsBuilder: (TextEditingValue textEditingValue) {
-            final stations = controller.sortedStartStations;
-            if (textEditingValue.text.isEmpty) {
-              return stations;
-            }
-            final searchText = textEditingValue.text.toLowerCase();
-            return stations.where(
-              (station) => station.displayName.toLowerCase().contains(searchText),
-            );
-          },
-          onSelected: (MrtStation selection) {
-            controller.selectedStartStation.value = selection;
-          },
-          displayStringForOption: (station) => station.displayName,
-          fieldViewBuilder: (
-            BuildContext context,
-            TextEditingController textEditingController,
-            FocusNode focusNode,
-            VoidCallback onFieldSubmitted,
-          ) {
-            if (!focusNode.hasFocus) {
-              final selected = controller.selectedStartStation.value;
-              if (selected == null && textEditingController.text.isNotEmpty) {
-                textEditingController.clear();
-              } else if (selected != null &&
-                  textEditingController.text != selected.displayName) {
-                textEditingController.text = selected.displayName;
-              }
-            }
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final dropdownWidth = constraints.maxWidth;
+            return Autocomplete<MrtStation>(
+              key: ValueKey(controller.selectedStartStation.value?.id ?? 'start-none'),
+              initialValue: controller.selectedStartStation.value != null
+                  ? TextEditingValue(
+                      text: controller.selectedStartStation.value!.displayName,
+                    )
+                  : const TextEditingValue(),
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                final stations = controller.sortedStartStations;
+                if (textEditingValue.text.isEmpty) {
+                  return stations;
+                }
+                final searchText = textEditingValue.text.toLowerCase();
+                return stations.where(
+                  (station) => station.displayName.toLowerCase().contains(searchText),
+                );
+              },
+              onSelected: (MrtStation selection) {
+                controller.selectedStartStation.value = selection;
+              },
+              displayStringForOption: (station) => station.displayName,
+              fieldViewBuilder: (
+                BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted,
+              ) {
+                if (!focusNode.hasFocus) {
+                  final selected = controller.selectedStartStation.value;
+                  if (selected == null && textEditingController.text.isNotEmpty) {
+                    textEditingController.clear();
+                  } else if (selected != null &&
+                      textEditingController.text != selected.displayName) {
+                    textEditingController.text = selected.displayName;
+                  }
+                }
 
-            return Container(
-              decoration: BoxDecoration(
-                color: TPColors.grayscale50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: TPColors.grayscale300,
-                  width: 1,
-                ),
-              ),
-              child: TextField(
-                controller: textEditingController,
-                focusNode: focusNode,
-                onTapOutside: (_) {
-                  focusNode.unfocus();
-                },
-                style: TPTextStyles.bodyRegular.copyWith(
-                  color: TPColors.grayscale900,
-                ),
-                decoration: InputDecoration(
-                  hintText: '請選擇起始站',
-                  hintStyle: TPTextStyles.bodyRegular.copyWith(
-                    color: TPColors.grayscale500,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  border: InputBorder.none,
-                  suffixIcon: const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: TPColors.grayscale700,
-                  ),
-                ),
-              ),
-            );
-          },
-          optionsViewBuilder: (
-            BuildContext context,
-            AutocompleteOnSelected<MrtStation> onSelected,
-            Iterable<MrtStation> options,
-          ) {
-            final optionList = options.toList();
-            return Align(
-              alignment: Alignment.topLeft,
-              child: Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 240),
+                return Container(
                   decoration: BoxDecoration(
-                    color: TPColors.white,
+                    color: TPColors.grayscale50,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: TPColors.grayscale300,
                       width: 1,
                     ),
                   ),
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    shrinkWrap: true,
-                    itemCount: optionList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final station = optionList[index];
-                      return InkWell(
-                        onTap: () {
-                          onSelected(station);
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              for (final colorHex in station.lineColors)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 6),
-                                  child: _buildColorDot(colorHex),
-                                ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: TPText(
-                                  station.displayName,
-                                  style: TPTextStyles.bodyRegular,
-                                  color: TPColors.grayscale900,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                  child: TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    onTapOutside: (_) {
+                      focusNode.unfocus();
                     },
+                    style: TPTextStyles.bodyRegular.copyWith(
+                      color: TPColors.grayscale900,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: '請選擇起始站',
+                      hintStyle: TPTextStyles.bodyRegular.copyWith(
+                        color: TPColors.grayscale500,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: TPColors.grayscale700,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
+              optionsViewBuilder: (
+                BuildContext context,
+                AutocompleteOnSelected<MrtStation> onSelected,
+                Iterable<MrtStation> options,
+              ) {
+                return _buildStartStationOptionsView(
+                  context,
+                  onSelected,
+                  options,
+                  dropdownWidth,
+                );
+              },
             );
           },
         ),
@@ -290,133 +245,105 @@ class NewComponentView extends GetView<NewComponentViewController> {
           color: TPColors.grayscale900,
         ),
         const SizedBox(height: 8),
-        Autocomplete<MrtStation>(
-          key: ValueKey(controller.selectedEndStation.value?.id ?? 'end-none'),
-          initialValue: controller.selectedEndStation.value != null
-              ? TextEditingValue(
-                  text: controller.selectedEndStation.value!.displayName,
-                )
-              : const TextEditingValue(),
-          optionsBuilder: (TextEditingValue textEditingValue) {
-            final grouped = controller.groupedEndStations;
-            final allStations = <MrtStation>[];
-            final seen = <String>{};
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final dropdownWidth = constraints.maxWidth;
+            return Autocomplete<MrtStation>(
+              key: ValueKey(controller.selectedEndStation.value?.id ?? 'end-none'),
+              initialValue: controller.selectedEndStation.value != null
+                  ? TextEditingValue(
+                      text: controller.selectedEndStation.value!.displayName,
+                    )
+                  : const TextEditingValue(),
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                final grouped = controller.groupedEndStations;
+                final allStations = <MrtStation>[];
+                final seen = <String>{};
 
-            for (final stations in grouped.values) {
-              for (final station in stations) {
-                if (seen.add(station.id)) {
-                  allStations.add(station);
+                for (final stations in grouped.values) {
+                  for (final station in stations) {
+                    if (seen.add(station.id)) {
+                      allStations.add(station);
+                    }
+                  }
                 }
-              }
-            }
 
-            if (textEditingValue.text.isEmpty) {
-              return allStations;
-            }
-            final searchText = textEditingValue.text.toLowerCase();
-            return allStations.where(
-              (station) => station.displayName.toLowerCase().contains(searchText),
-            );
-          },
-          onSelected: (MrtStation selection) {
-            controller.selectedEndStation.value = selection;
-          },
-          displayStringForOption: (station) => station.displayName,
-          fieldViewBuilder: (
-            BuildContext context,
-            TextEditingController textEditingController,
-            FocusNode focusNode,
-            VoidCallback onFieldSubmitted,
-          ) {
-            if (!focusNode.hasFocus) {
-              final selected = controller.selectedEndStation.value;
-              if (selected == null && textEditingController.text.isNotEmpty) {
-                textEditingController.clear();
-              } else if (selected != null &&
-                  textEditingController.text != selected.displayName) {
-                textEditingController.text = selected.displayName;
-              }
-            }
-
-            return Container(
-              decoration: BoxDecoration(
-                color: TPColors.grayscale50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: TPColors.grayscale300,
-                  width: 1,
-                ),
-              ),
-              child: TextField(
-                controller: textEditingController,
-                focusNode: focusNode,
-                onTapOutside: (_) {
-                  focusNode.unfocus();
-                },
-                style: TPTextStyles.bodyRegular.copyWith(
-                  color: TPColors.grayscale900,
-                ),
-                decoration: InputDecoration(
-                  hintText: '請選擇目的地站',
-                  hintStyle: TPTextStyles.bodyRegular.copyWith(
-                    color: TPColors.grayscale500,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  border: InputBorder.none,
-                  suffixIcon: const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: TPColors.grayscale700,
-                  ),
-                ),
-              ),
-            );
-          },
-          optionsViewBuilder: (
-            BuildContext context,
-            AutocompleteOnSelected<MrtStation> onSelected,
-            Iterable<MrtStation> options,
-          ) {
-            final filteredGrouped = <String, List<MrtStation>>{};
-            final seenByLine = <String, Set<String>>{};
-            final optionList = options.toList();
-
-            for (final station in optionList) {
-              for (var i = 0; i < station.lines.length; i++) {
-                final line = station.lines[i];
-                final list = filteredGrouped.putIfAbsent(line, () => []);
-                final seen = seenByLine.putIfAbsent(line, () => <String>{});
-                if (seen.add(station.id)) {
-                  list.add(station);
+                if (textEditingValue.text.isEmpty) {
+                  return allStations;
                 }
-              }
-            }
+                final searchText = textEditingValue.text.toLowerCase();
+                return allStations.where(
+                  (station) => station.displayName.toLowerCase().contains(searchText),
+                );
+              },
+              onSelected: (MrtStation selection) {
+                controller.selectedEndStation.value = selection;
+              },
+              displayStringForOption: (station) => station.displayName,
+              fieldViewBuilder: (
+                BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted,
+              ) {
+                if (!focusNode.hasFocus) {
+                  final selected = controller.selectedEndStation.value;
+                  if (selected == null && textEditingController.text.isNotEmpty) {
+                    textEditingController.clear();
+                  } else if (selected != null &&
+                      textEditingController.text != selected.displayName) {
+                    textEditingController.text = selected.displayName;
+                  }
+                }
 
-            return Align(
-              alignment: Alignment.topLeft,
-              child: Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 300),
+                return Container(
                   decoration: BoxDecoration(
-                    color: TPColors.white,
+                    color: TPColors.grayscale50,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: TPColors.grayscale300,
                       width: 1,
                     ),
                   ),
-                  child: ListView(
-                    padding: const EdgeInsets.all(8),
-                    shrinkWrap: true,
-                    children:
-                        _buildGroupedStationList(filteredGrouped, onSelected),
+                  child: TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    onTapOutside: (_) {
+                      focusNode.unfocus();
+                    },
+                    style: TPTextStyles.bodyRegular.copyWith(
+                      color: TPColors.grayscale900,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: '請選擇目的地站',
+                      hintStyle: TPTextStyles.bodyRegular.copyWith(
+                        color: TPColors.grayscale500,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: TPColors.grayscale700,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
+              optionsViewBuilder: (
+                BuildContext context,
+                AutocompleteOnSelected<MrtStation> onSelected,
+                Iterable<MrtStation> options,
+              ) {
+                return _buildEndStationOptionsView(
+                  context,
+                  onSelected,
+                  options,
+                  dropdownWidth,
+                );
+              },
             );
           },
         ),
@@ -519,6 +446,190 @@ class NewComponentView extends GetView<NewComponentViewController> {
     );
   }
 
+  // 建立起站選單的下拉選單視圖
+  Widget _buildStartStationOptionsView(
+    BuildContext context,
+    AutocompleteOnSelected<MrtStation> onSelected,
+    Iterable<MrtStation> options,
+    double dropdownWidth,
+  ) {
+    final optionList = options.toList();
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Material(
+        elevation: 4,
+        borderRadius: BorderRadius.circular(12),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: dropdownWidth,
+            maxHeight: 240,
+          ),
+          child: Container(
+            width: dropdownWidth,
+            decoration: BoxDecoration(
+              color: TPColors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: TPColors.grayscale300,
+                width: 1,
+              ),
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              shrinkWrap: true,
+              itemCount: optionList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final station = optionList[index];
+                return InkWell(
+                  onTap: () {
+                    onSelected(station);
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      children: [
+                        for (final colorHex in station.lineColors)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 6),
+                            child: _buildColorDot(colorHex),
+                          ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: TPText(
+                            station.displayName,
+                            style: TPTextStyles.bodyRegular,
+                            color: TPColors.grayscale900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 建立終站選單的下拉選單視圖
+  Widget _buildEndStationOptionsView(
+    BuildContext context,
+    AutocompleteOnSelected<MrtStation> onSelected,
+    Iterable<MrtStation> options,
+    double dropdownWidth,
+  ) {
+    final filteredGrouped = <String, List<MrtStation>>{};
+    final seenByLine = <String, Set<String>>{};
+    final optionList = options.toList();
+
+    for (final station in optionList) {
+      for (var i = 0; i < station.lines.length; i++) {
+        final line = station.lines[i];
+        final list = filteredGrouped.putIfAbsent(line, () => []);
+        final seen = seenByLine.putIfAbsent(line, () => <String>{});
+        if (seen.add(station.id)) {
+          list.add(station);
+        }
+      }
+    }
+
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Material(
+        elevation: 4,
+        borderRadius: BorderRadius.circular(12),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: dropdownWidth,
+            maxHeight: 300,
+          ),
+          child: Container(
+            width: dropdownWidth,
+            decoration: BoxDecoration(
+              color: TPColors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: TPColors.grayscale300,
+                width: 1,
+              ),
+            ),
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              shrinkWrap: true,
+              children: _buildGroupedStationList(filteredGrouped, onSelected),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 建立通用下拉選單的視圖
+  Widget _buildDropdownOptionsView<T extends Object>(
+    BuildContext context,
+    AutocompleteOnSelected<T> onSelected,
+    Iterable<T> options,
+    double dropdownWidth,
+    String Function(T) itemBuilder,
+  ) {
+    final optionList = options.toList();
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Material(
+        elevation: 4,
+        borderRadius: BorderRadius.circular(12),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: dropdownWidth,
+            maxHeight: 240,
+          ),
+          child: Container(
+            width: dropdownWidth,
+            decoration: BoxDecoration(
+              color: TPColors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: TPColors.grayscale300,
+                width: 1,
+              ),
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              shrinkWrap: true,
+              itemCount: optionList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final option = optionList[index];
+                return InkWell(
+                  onTap: () {
+                    onSelected(option);
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    child: TPText(
+                      itemBuilder(option),
+                      style: TPTextStyles.bodyRegular,
+                      color: TPColors.grayscale900,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // 將 hex 字串轉換為 Color
   Color _hexToColor(String hexString) {
     final buffer = StringBuffer();
@@ -562,123 +673,91 @@ class NewComponentView extends GetView<NewComponentViewController> {
           color: TPColors.grayscale900,
         ),
         const SizedBox(height: 8),
-        Autocomplete<T>(
-          key: ValueKey('${label}_${value != null ? itemBuilder(value) : 'none'}'),
-          initialValue:
-              value != null ? TextEditingValue(text: itemBuilder(value)) : const TextEditingValue(),
-          optionsBuilder: (TextEditingValue textEditingValue) {
-            if (textEditingValue.text.isEmpty) {
-              return items;
-            }
-            final searchText = textEditingValue.text.toLowerCase();
-            return items.where((item) {
-              final itemText = itemBuilder(item).toLowerCase();
-              return itemText.contains(searchText);
-            });
-          },
-          onSelected: (selection) {
-            onChanged(selection);
-          },
-          displayStringForOption: itemBuilder,
-          fieldViewBuilder: (
-            BuildContext context,
-            TextEditingController textEditingController,
-            FocusNode focusNode,
-            VoidCallback onFieldSubmitted,
-          ) {
-            if (!focusNode.hasFocus) {
-              if (value == null && textEditingController.text.isNotEmpty) {
-                textEditingController.clear();
-              } else if (value != null &&
-                  textEditingController.text != itemBuilder(value)) {
-                textEditingController.text = itemBuilder(value);
-              }
-            }
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final dropdownWidth = constraints.maxWidth;
+            return Autocomplete<T>(
+              key: ValueKey('${label}_${value != null ? itemBuilder(value) : 'none'}'),
+              initialValue:
+                  value != null ? TextEditingValue(text: itemBuilder(value)) : const TextEditingValue(),
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isEmpty) {
+                  return items;
+                }
+                final searchText = textEditingValue.text.toLowerCase();
+                return items.where((item) {
+                  final itemText = itemBuilder(item).toLowerCase();
+                  return itemText.contains(searchText);
+                });
+              },
+              onSelected: (selection) {
+                onChanged(selection);
+              },
+              displayStringForOption: itemBuilder,
+              fieldViewBuilder: (
+                BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted,
+              ) {
+                if (!focusNode.hasFocus) {
+                  if (value == null && textEditingController.text.isNotEmpty) {
+                    textEditingController.clear();
+                  } else if (value != null &&
+                      textEditingController.text != itemBuilder(value)) {
+                    textEditingController.text = itemBuilder(value);
+                  }
+                }
 
-            return Container(
-          decoration: BoxDecoration(
-            color: TPColors.grayscale50,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: TPColors.grayscale300,
-              width: 1,
-            ),
-          ),
-              child: TextField(
-                controller: textEditingController,
-                focusNode: focusNode,
-                onTapOutside: (_) {
-                  focusNode.unfocus();
-                },
-                style: TPTextStyles.bodyRegular.copyWith(
-                  color: TPColors.grayscale900,
-                ),
-                decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle: TPTextStyles.bodyRegular.copyWith(
-              color: TPColors.grayscale500,
-            ),
-                  contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              border: InputBorder.none,
-                  suffixIcon: const Icon(
-              Icons.keyboard_arrow_down,
-              color: TPColors.grayscale700,
-            ),
-                ),
-              ),
-            );
-          },
-          optionsViewBuilder: (
-            BuildContext context,
-            AutocompleteOnSelected<T> onSelected,
-            Iterable<T> options,
-          ) {
-            final optionList = options.toList();
-            return Align(
-              alignment: Alignment.topLeft,
-              child: Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 240),
+                return Container(
                   decoration: BoxDecoration(
-                    color: TPColors.white,
+                    color: TPColors.grayscale50,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: TPColors.grayscale300,
                       width: 1,
                     ),
                   ),
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    shrinkWrap: true,
-                    itemCount: optionList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final option = optionList[index];
-                      return InkWell(
-                        onTap: () {
-                          onSelected(option);
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                child: TPText(
-                            itemBuilder(option),
-                  style: TPTextStyles.bodyRegular,
-                  color: TPColors.grayscale900,
-                          ),
-                ),
-              );
+                  child: TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    onTapOutside: (_) {
+                      focusNode.unfocus();
                     },
+                    style: TPTextStyles.bodyRegular.copyWith(
+                      color: TPColors.grayscale900,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      hintStyle: TPTextStyles.bodyRegular.copyWith(
+                        color: TPColors.grayscale500,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: TPColors.grayscale700,
+                      ),
+                    ),
                   ),
-                ),
-          ),
+                );
+              },
+              optionsViewBuilder: (
+                BuildContext context,
+                AutocompleteOnSelected<T> onSelected,
+                Iterable<T> options,
+              ) {
+                return _buildDropdownOptionsView(
+                  context,
+                  onSelected,
+                  options,
+                  dropdownWidth,
+                  itemBuilder,
+                );
+              },
             );
           },
         ),
