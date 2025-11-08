@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:collection/collection.dart';
 import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/bean/body_part.dart';
 import 'package:town_pass/bean/exercise.dart';
+import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_view.dart';
-import 'dart:math';
 
 class NewComponentViewController extends GetxController {
   // 資料列表
@@ -21,29 +22,22 @@ class NewComponentViewController extends GetxController {
   // 載入狀態
   final RxBool isLoading = true.obs;
 
+  // 路線資料
+  final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
+  final Map<String, MrtStation> _stationById = <String, MrtStation>{};
+  final Map<String, MrtStation> _stationByName = <String, MrtStation>{};
+  MrtRouteResult? _cachedRoute;
+  String? _cachedStartId;
+  String? _cachedEndId;
+
   // 預估時間（分鐘）
   int get estimatedMinutes {
-    if (selectedStartStation.value == null ||
-        selectedEndStation.value == null) {
+    final route = _getOrComputeRoute();
+    if (route == null) {
       return 0;
     }
 
-    // 計算兩站之間的距離（簡化版本）
-    final start = selectedStartStation.value!.location;
-    final end = selectedEndStation.value!.location;
-
-    // 使用 Haversine 公式計算距離
-    final distance = _calculateDistance(
-      start.lat,
-      start.lng,
-      end.lat,
-      end.lng,
-    );
-
-    // 假設捷運平均速度 40 km/h，加上停靠站時間
-    // 每公里約 1.5 分鐘（包含停靠時間）
-    final minutes = (distance * 1.5).round();
-
+    final minutes = (route.totalSeconds / 60).ceil();
     return minutes < 1 ? 1 : minutes;
   }
 
@@ -79,6 +73,8 @@ class NewComponentViewController extends GetxController {
         loadExercises(),
       ]);
 
+      await loadMrtConnections();
+
       isLoading.value = false;
     } catch (e) {
       print('Error loading data: $e');
@@ -95,6 +91,7 @@ class NewComponentViewController extends GetxController {
       final Map<String, dynamic> jsonData = json.decode(jsonString);
       final stationList = MrtStationList.fromJson(jsonData);
       mrtStations.value = stationList.stations;
+      _buildStationLookup();
     } catch (e) {
       print('Error loading MRT stations: $e');
     }
@@ -128,35 +125,22 @@ class NewComponentViewController extends GetxController {
     }
   }
 
-  // 計算兩個 GPS 座標之間的距離（公里）
-  double _calculateDistance(
-      double lat1, double lon1, double lat2, double lon2) {
-    const double earthRadius = 6371; // 地球半徑（公里）
-
-    final dLat = _toRadians(lat2 - lat1);
-    final dLon = _toRadians(lon2 - lon1);
-
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRadians(lat1)) *
-            cos(_toRadians(lat2)) *
-            sin(dLon / 2) *
-            sin(dLon / 2);
-
-    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return earthRadius * c;
-  }
-
-  double _toRadians(double degree) {
-    return degree * pi / 180;
-  }
-
   // 開始規劃運動
   void startPlanning() {
     if (!canStart) {
       Get.snackbar(
         '提醒',
         '請選擇起站、終站和要運動的部位',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    final route = _getOrComputeRoute();
+    if (route == null) {
+      Get.snackbar(
+        '提醒',
+        '無法為此路線找到捷運規劃，請重新選擇',
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -170,6 +154,7 @@ class NewComponentViewController extends GetxController {
         'endStation': selectedEndStation.value,
         'bodyPart': selectedBodyPart.value,
         'estimatedMinutes': estimatedMinutes,
+        'routeResult': route,
       },
     );
   }
@@ -179,5 +164,251 @@ class NewComponentViewController extends GetxController {
     selectedStartStation.value = null;
     selectedEndStation.value = null;
     selectedBodyPart.value = null;
+    _cachedRoute = null;
+    _cachedStartId = null;
+    _cachedEndId = null;
   }
+
+  Future<void> loadMrtConnections() async {
+    try {
+      final String jsonString =
+          await rootBundle.loadString('assets/mock_data/mrt_travel_times.json');
+      final List<dynamic> jsonData = json.decode(jsonString);
+      final segments = jsonData
+          .map((segment) =>
+              MrtTravelSegment.fromJson(segment as Map<String, dynamic>))
+          .where((segment) =>
+              segment.stationAName.isNotEmpty &&
+              segment.stationBName.isNotEmpty &&
+              segment.totalSeconds > 0)
+          .toList();
+
+      _graph.clear();
+
+      for (final segment in segments) {
+        final fromStation = _findStationByName(segment.stationAName);
+        final toStation = _findStationByName(segment.stationBName);
+
+        if (fromStation == null || toStation == null) {
+          continue;
+        }
+
+        _addEdge(
+          fromStation.id,
+          toStation.id,
+          segment,
+        );
+        _addEdge(
+          toStation.id,
+          fromStation.id,
+          segment,
+        );
+      }
+    } catch (e) {
+      print('Error loading MRT connections: $e');
+    }
+  }
+
+  void _buildStationLookup() {
+    _stationById
+      ..clear()
+      ..addEntries(mrtStations.map((station) => MapEntry(station.id, station)));
+
+    _stationByName.clear();
+    for (final station in mrtStations) {
+      final normalized = _normalizeStationName(station.name);
+      _stationByName[normalized] = station;
+      _stationByName[_normalizeStationName('${station.name}站')] = station;
+      _stationByName[_normalizeStationName('捷運${station.name}')] = station;
+      _stationByName[_normalizeStationName('捷運${station.name}站')] = station;
+    }
+  }
+
+  String _normalizeStationName(String name) {
+    var normalized = name.trim();
+    if (normalized.startsWith('台北捷運')) {
+      normalized = normalized.replaceFirst('台北捷運', '');
+    }
+    if (normalized.startsWith('捷運')) {
+      normalized = normalized.substring(2);
+    }
+    if (normalized.endsWith('站')) {
+      normalized = normalized.substring(0, normalized.length - 1);
+    }
+    normalized = normalized
+        .replaceAll('（', '(')
+        .replaceAll('）', ')')
+        .replaceAll('　', '')
+        .trim();
+    return normalized;
+  }
+
+  MrtStation? _findStationByName(String name) {
+    if (name.isEmpty) {
+      return null;
+    }
+    final normalized = _normalizeStationName(name);
+    return _stationByName[normalized];
+  }
+
+  void _addEdge(
+    String fromStationId,
+    String toStationId,
+    MrtTravelSegment segment,
+  ) {
+    final edges = _graph.putIfAbsent(fromStationId, () => <_GraphEdge>[]);
+    edges.add(
+      _GraphEdge(
+        toStationId: toStationId,
+        line: segment.line,
+        travelSeconds: segment.travelSeconds,
+        stopSeconds: segment.stopSeconds,
+      ),
+    );
+  }
+
+  MrtRouteResult? _getOrComputeRoute() {
+    final start = selectedStartStation.value;
+    final end = selectedEndStation.value;
+    if (start == null || end == null || start.id == end.id) {
+      return null;
+    }
+
+    if (_cachedRoute != null &&
+        _cachedStartId == start.id &&
+        _cachedEndId == end.id) {
+      return _cachedRoute;
+    }
+
+    final route = _computeRoute(start.id, end.id);
+    if (route != null) {
+      _cachedRoute = route;
+      _cachedStartId = start.id;
+      _cachedEndId = end.id;
+    }
+    return route;
+  }
+
+  MrtRouteResult? _computeRoute(String startId, String endId) {
+    if (!_graph.containsKey(startId) || !_graph.containsKey(endId)) {
+      return null;
+    }
+
+    final distances = <String, int>{startId: 0};
+    final previous = <String, _PreviousNode>{};
+    final visited = <String>{};
+    final queue = PriorityQueue<_QueueNode>(
+      (a, b) => a.cost.compareTo(b.cost),
+    )..add(_QueueNode(startId, 0));
+
+    while (queue.isNotEmpty) {
+      final current = queue.removeFirst();
+      if (!visited.add(current.stationId)) {
+        continue;
+      }
+      if (current.stationId == endId) {
+        break;
+      }
+      final neighbors = _graph[current.stationId];
+      if (neighbors == null) {
+        continue;
+      }
+      for (final edge in neighbors) {
+        final nextCost = current.cost + edge.totalSeconds;
+        final existing = distances[edge.toStationId];
+        if (existing == null || nextCost < existing) {
+          distances[edge.toStationId] = nextCost;
+          previous[edge.toStationId] = _PreviousNode(
+            fromStationId: current.stationId,
+            toStationId: edge.toStationId,
+            edge: edge,
+          );
+          queue.add(_QueueNode(edge.toStationId, nextCost));
+        }
+      }
+    }
+
+    if (!distances.containsKey(endId)) {
+      return null;
+    }
+
+    final legs = <MrtRouteLeg>[];
+    var currentId = endId;
+    final startStation = _stationById[startId];
+    final endStation = _stationById[endId];
+    if (startStation == null || endStation == null) {
+      return null;
+    }
+
+    final path = <_PreviousNode>[];
+    while (currentId != startId) {
+      final prev = previous[currentId];
+      if (prev == null) {
+        return null;
+      }
+      path.add(prev);
+      currentId = prev.fromStationId;
+    }
+
+    var cumulativeSeconds = 0;
+    for (final node in path.reversed) {
+      final fromStation = _stationById[node.fromStationId];
+      final toStation = _stationById[node.toStationId];
+      if (fromStation == null || toStation == null) {
+        continue;
+      }
+      cumulativeSeconds += node.edge.totalSeconds;
+      legs.add(
+        MrtRouteLeg(
+          fromStation: fromStation,
+          toStation: toStation,
+          lineName: node.edge.line,
+          travelSeconds: node.edge.travelSeconds,
+          stopSeconds: node.edge.stopSeconds,
+          cumulativeSeconds: cumulativeSeconds,
+        ),
+      );
+    }
+
+    return MrtRouteResult(
+      startStation: startStation,
+      endStation: endStation,
+      legs: legs,
+    );
+  }
+}
+
+class _GraphEdge {
+  _GraphEdge({
+    required this.toStationId,
+    required this.line,
+    required this.travelSeconds,
+    required this.stopSeconds,
+  });
+
+  final String toStationId;
+  final String line;
+  final int travelSeconds;
+  final int stopSeconds;
+
+  int get totalSeconds => travelSeconds + stopSeconds;
+}
+
+class _QueueNode {
+  _QueueNode(this.stationId, this.cost);
+
+  final String stationId;
+  final int cost;
+}
+
+class _PreviousNode {
+  _PreviousNode({
+    required this.fromStationId,
+    required this.toStationId,
+    required this.edge,
+  });
+
+  final String fromStationId;
+  final String toStationId;
+  final _GraphEdge edge;
 }
