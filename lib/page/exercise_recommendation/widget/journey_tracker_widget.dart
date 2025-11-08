@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/bean/exercise_history.dart';
@@ -8,6 +9,7 @@ import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_info_card.dart';
+import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
 
 class JourneyTrackerWidget extends StatefulWidget {
   const JourneyTrackerWidget({
@@ -148,6 +150,15 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       setState(() {
         _currentLegIndex++;
       });
+
+      final path = _buildPath();
+      if (path.isNotEmpty) {
+        final stationIndex =
+            _currentLegIndex >= path.length ? path.length - 1 : _currentLegIndex;
+        final reachedStation = path[stationIndex];
+        Get.find<ExerciseRecommendationController>()
+            .onLocationChanged(reachedStation);
+      }
       
       // 如果已经到达最后一个站，完成旅程
       if (_currentLegIndex >= widget.routeResult.legs.length) {

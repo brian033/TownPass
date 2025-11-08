@@ -5,6 +5,7 @@ import 'package:town_pass/bean/exercise_history.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/service/exercise_history_service.dart';
+import 'package:town_pass/service/notification_service.dart';
 
 class ExerciseRecommendationController extends GetxController {
   // 接收的參數
@@ -35,6 +36,8 @@ class ExerciseRecommendationController extends GetxController {
   
   // 記錄上一次的位置，用於判斷位置是否改變
   MrtStation? _previousLocation;
+  final Set<String> _notifiedStationIds = <String>{};
+  bool _hasHandledInitialStation = false;
 
   Rxn<ExerciseRecommendation> get exercise => _exercise;
 
@@ -215,9 +218,48 @@ class ExerciseRecommendationController extends GetxController {
   // TODO: 當位置改變時，此函數會被調用
   // 請在此函數中實作位置改變時的處理邏輯
   void onLocationChanged(MrtStation? location) {
-    // 此函數會在 currentLocation 改變時自動調用
-    // location 參數為當前的位置（MrtStation 物件）
-    // 可以在這裡實作需要的邏輯，例如：更新 UI、發送通知、記錄日誌等
+    if (location == null) {
+      return;
+    }
+
+    final stationIndex = path.indexWhere((station) => station.id == location.id);
+    if (stationIndex == -1) {
+      return;
+    }
+
+    if (!_hasHandledInitialStation &&
+        path.isNotEmpty &&
+        stationIndex == 0 &&
+        location.id == path.first.id) {
+      _hasHandledInitialStation = true;
+      _notifiedStationIds.add(location.id);
+      return;
+    }
+
+    if (_notifiedStationIds.contains(location.id)) {
+      return;
+    }
+
+    _notifiedStationIds.add(location.id);
+
+    String title = '捷運動換站提醒';
+    String content = '${location.name} 到站';
+
+    if (stationIndex >= path.length - 1) {
+      content = '已抵達終點站 ${location.name}，旅程完成！';
+    } else if (stationIndex < movements.length) {
+      final nextMovement = movements[stationIndex];
+      if (nextMovement.isNotEmpty) {
+        content = '請在 ${location.name} 進行「$nextMovement」';
+      } else {
+        content = '${location.name} 到站，準備進行下一段運動';
+      }
+    }
+
+    NotificationService.showNotification(
+      title: title,
+      content: content,
+    );
   }
   
   // 更新位置並觸發回調
