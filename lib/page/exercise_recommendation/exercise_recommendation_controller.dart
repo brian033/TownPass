@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:town_pass/bean/body_part.dart';
+import 'package:town_pass/bean/exercise_history.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/bean/mrt_station.dart';
+import 'package:town_pass/service/exercise_history_service.dart';
 
 class ExerciseRecommendationController extends GetxController {
   // 接收的參數
@@ -13,6 +15,8 @@ class ExerciseRecommendationController extends GetxController {
 
   final Rxn<ExerciseRecommendation> _exercise = Rxn<ExerciseRecommendation>();
   final RxBool isLoading = false.obs;
+  
+  ExerciseHistoryService? _historyService;
 
   Rxn<ExerciseRecommendation> get exercise => _exercise;
 
@@ -27,6 +31,13 @@ class ExerciseRecommendationController extends GetxController {
     bodyPart = args['bodyPart'] as BodyPart;
     estimatedMinutes = args['estimatedMinutes'] as int;
     routeResult = args['routeResult'] as MrtRouteResult?;
+    
+    // 取得服務
+    try {
+      _historyService = Get.find<ExerciseHistoryService>();
+    } catch (e) {
+      print('ExerciseHistoryService 未找到：$e');
+    }
 
     // TODO: 根據參數推薦適合的運動
     loadRecommendedExercises();
@@ -57,6 +68,58 @@ class ExerciseRecommendationController extends GetxController {
         description: '透過肩頸拉伸減緩長時間乘車的僵硬感。',
       ),
     );
+  }
+  
+  /// 儲存運動紀錄
+  /// 參數：
+  /// - exercises: 完成的運動列表（ExerciseRecord）
+  /// - totalCalories: 總消耗卡路里
+  /// - totalDuration: 總運動時間（秒）
+  Future<void> saveExerciseRecord({
+    required List<ExerciseRecord> exercises,
+    required int totalCalories,
+    required int totalDuration,
+  }) async {
+    if (_historyService == null) {
+      print('ExerciseHistoryService 不可用，無法儲存紀錄');
+      Get.snackbar(
+        '提示',
+        '無法儲存運動紀錄',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    try {
+      final history = ExerciseHistory(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        startStation: startStation.name,
+        endStation: endStation.name,
+        startStationEn: startStation.nameEn,
+        endStationEn: endStation.nameEn,
+        exercises: exercises,
+        totalCalories: totalCalories,
+        totalDuration: totalDuration,
+        timestamp: DateTime.now(),
+        bodyPartName: bodyPart.name,
+      );
+
+      final success = await _historyService!.saveExerciseHistory(history);
+      
+      if (success) {
+        print('運動紀錄已儲存');
+        Get.snackbar(
+          '運動完成！',
+          '已記錄本次運動，消耗 $totalCalories 卡路里',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        print('儲存運動紀錄失敗');
+      }
+    } catch (e) {
+      print('儲存運動紀錄時發生錯誤：$e');
+    }
   }
 }
 

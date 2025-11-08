@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:town_pass/gen/assets.gen.dart';
+import 'package:town_pass/page/exercise_history/exercise_history_view.dart';
 import 'package:town_pass/page/new_component/new_component_view_controller.dart';
-import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
 
@@ -15,9 +15,24 @@ class NewComponentView extends GetView<NewComponentViewController> {
 
     return Scaffold(
       backgroundColor: TPColors.white,
-      appBar: const TPAppBar(
-        title: '捷運動',
+      appBar: AppBar(
+        title: const Text('捷運動'),
+        backgroundColor: TPColors.primary500,
+        foregroundColor: TPColors.white,
+        elevation: 0,
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu_rounded, size: 28),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+              tooltip: '選單',
+            ),
+          ),
+        ],
       ),
+      endDrawer: _buildDrawer(),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
@@ -195,6 +210,126 @@ class NewComponentView extends GetView<NewComponentViewController> {
           ),
         ),
       ],
+    );
+  }
+  
+  Widget _buildDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          // 漂亮的漸層標題區
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [TPColors.primary500, TPColors.primary700],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: TPColors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(
+                        Icons.fitness_center_rounded,
+                        color: TPColors.white,
+                        size: 32,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TPText(
+                      '捷運動',
+                      style: TPTextStyles.h2SemiBold,
+                      color: TPColors.white,
+                    ),
+                    const SizedBox(height: 4),
+                    TPText(
+                      '讓運動成為生活的一部分',
+                      style: TPTextStyles.caption,
+                      color: TPColors.white.withOpacity(0.9),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // 選單項目
+          const SizedBox(height: 8),
+          ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: TPColors.primary50,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.history_rounded,
+                color: TPColors.primary500,
+                size: 22,
+              ),
+            ),
+            title: const TPText(
+              '運動歷史',
+              style: TPTextStyles.bodySemiBold,
+            ),
+            subtitle: const TPText(
+              '查看過去的運動紀錄',
+              style: TPTextStyles.caption,
+              color: TPColors.grayscale500,
+            ),
+            onTap: () {
+              Get.back(); // 關閉 drawer
+              Get.to(() => const ExerciseHistoryView());
+            },
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: TPColors.grayscale100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.info_outline_rounded,
+                color: TPColors.grayscale600,
+                size: 22,
+              ),
+            ),
+            title: const TPText(
+              '關於',
+              style: TPTextStyles.bodySemiBold,
+            ),
+            subtitle: const TPText(
+              '版本資訊與說明',
+              style: TPTextStyles.caption,
+              color: TPColors.grayscale500,
+            ),
+            onTap: () {
+              Get.back();
+              Get.snackbar(
+                '關於捷運動',
+                '版本 1.0.0\n結合捷運通勤與運動的健康生活應用',
+                snackPosition: SnackPosition.BOTTOM,
+                duration: const Duration(seconds: 3),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

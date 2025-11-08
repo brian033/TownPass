@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "exercises": [
+    {
+      "id": "sq_low_001",
+      "name": "深蹲",
+      "bodyParts": ["lower_body", "full_body"],
+      "crowdLevel": "heavy",
+      "defaultDurationSeconds": 60,
+      "caloriesPerSecond": 0.13,
+      "difficulty": "medium",
+      "tags": ["legs", "glutes"]
+    },
+    {
+      "id": "tt_raise_001",
+      "name": "墊腳尖",
+      "bodyParts": ["lower_body"],
+      "crowdLevel": "non-heavy",
+      "defaultDurationSeconds": 45,
+      "caloriesPerSecond": 0.07,
+      "difficulty": "easy",
+      "tags": ["calves", "balance"]
+    },
+    {
+      "id": "neck_stretch_001",
+      "name": "頸部伸展",
+      "bodyParts": ["neck_shoulder", "upper_body"],
+      "crowdLevel": "non-heavy",
+      "defaultDurationSeconds": 60,
+      "caloriesPerSecond": 0.03,
+      "difficulty": "easy",
+      "tags": ["neck", "shoulders"]
+    },
+    {
+      "id": "shoulder_circles_001",
+      "name": "肩部繞圈",
+      "bodyParts": ["upper_body"],
+      "crowdLevel": "non-heavy",
+      "defaultDurationSeconds": 60,
+      "caloriesPerSecond": 0.05,
+      "difficulty": "easy",
+      "tags": ["shoulders"]
+    },
+    {
+      "id": "seated_twist_001",
+      "name": "坐姿扭轉",
+      "bodyParts": ["core"],
+      "crowdLevel": "non-heavy",
+      "defaultDurationSeconds": 90,
+      "caloriesPerSecond": 0.06,
+      "difficulty": "medium",
+      "tags": ["spine", "obliques"]
+    },
+    {
+      "id": "deep_breath_001",
+      "name": "深呼吸",
+      "bodyParts": ["full_body"],
+      "crowdLevel": "non-heavy",
+      "defaultDurationSeconds": 120,
+      "caloriesPerSecond": 0.02,
+      "difficulty": "easy",
+      "tags": ["relax", "mindfulness"]
+    }
+  ]
+}
+
