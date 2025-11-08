@@ -1,0 +1,381 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": "2025-11-08T14:30:00+08:00",
+  "trains": [
+    {
+      "trainNumber": "R101",
+      "trainSetId": "R-001",
+      "direction": "下行",
+      "currentStation": "台北車站",
+      "currentStationCode": "R10",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        }
+      ],
+      "nextStation": "中山",
+      "arrivalTime": "2025-11-08T14:33:00+08:00",
+      "updateTime": "2025-11-08T14:30:15+08:00"
+    },
+    {
+      "trainNumber": "G301",
+      "trainSetId": "G-001",
+      "direction": "上行",
+      "currentStation": "公館",
+      "currentStationCode": "G09",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        }
+      ],
+      "nextStation": "台電大樓",
+      "arrivalTime": "2025-11-08T14:31:30+08:00",
+      "updateTime": "2025-11-08T14:30:00+08:00"
+    },
+    {
+      "trainNumber": "B201",
+      "trainSetId": "B-001",
+      "direction": "下行",
+      "currentStation": "江子翠",
+      "currentStationCode": "BL09",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        }
+      ],
+      "nextStation": "龍山寺",
+      "arrivalTime": "2025-11-08T14:31:45+08:00",
+      "updateTime": "2025-11-08T14:30:20+08:00"
+    },
+    {
+      "trainNumber": "B201",
+      "trainSetId": "B-001",
+      "direction": "下行",
+      "currentStation": "新埔",
+      "currentStationCode": "BL08",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        }
+      ],
+      "nextStation": "江子翠",
+      "arrivalTime": "2025-11-08T14:31:45+08:00",
+      "updateTime": "2025-11-08T14:30:20+08:00"
+    },
+    {
+      "trainNumber": "B201",
+      "trainSetId": "B-001",
+      "direction": "下行",
+      "currentStation": "龍山寺",
+      "currentStationCode": "BL10",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 4,
+          "crowdingLevelText": "非常擁擠"
+        }
+      ],
+      "nextStation": "西門",
+      "arrivalTime": "2025-11-08T14:31:45+08:00",
+      "updateTime": "2025-11-08T14:30:20+08:00"
+    },
+    {
+      "trainNumber": "B201",
+      "trainSetId": "B-001",
+      "direction": "上行",
+      "currentStation": "龍山寺",
+      "currentStationCode": "BL10",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "非常寬鬆"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        }
+      ],
+      "nextStation": "江子翠",
+      "arrivalTime": "2025-11-08T14:31:45+08:00",
+      "updateTime": "2025-11-08T14:30:20+08:00"
+    },
+    {
+      "trainNumber": "G302",
+      "trainSetId": "G-002",
+      "direction": "下行",
+      "currentStation": "中山",
+      "currentStationCode": "R08",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 3,
+          "crowdingLevelText": "擁擠"
+        }
+      ],
+      "nextStation": "台北車站",
+      "arrivalTime": "2025-11-08T14:33:15+08:00",
+      "updateTime": "2025-11-08T14:30:25+08:00"
+    },
+    {
+      "trainNumber": "R102",
+      "trainSetId": "R-002",
+      "direction": "上行",
+      "currentStation": "台大醫院",
+      "currentStationCode": "R09",
+      "carriages": [
+        {
+          "carriageNumber": 1,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 2,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 3,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 4,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        },
+        {
+          "carriageNumber": 5,
+          "crowdingLevel": 1,
+          "crowdingLevelText": "寬鬆"
+        },
+        {
+          "carriageNumber": 6,
+          "crowdingLevel": 2,
+          "crowdingLevelText": "舒適"
+        }
+      ],
+      "nextStation": "台北車站",
+      "arrivalTime": "2025-11-08T14:32:30+08:00",
+      "updateTime": "2025-11-08T14:30:10+08:00"
+    }
+  ],
+  "crowdingLevels": {
+    "1": {
+      "level": 1,
+      "name": "寬鬆",
+      "description": "座位充足，空間寬敞",
+      "color": "#4CAF50",
+      "occupancyRate": "0-40%",
+      "icon": "sentiment_very_satisfied"
+    },
+    "2": {
+      "level": 2,
+      "name": "舒適",
+      "description": "部分座位，站立空間充足",
+      "color": "#8BC34A",
+      "occupancyRate": "41-70%",
+      "icon": "sentiment_satisfied"
+    },
+    "3": {
+      "level": 3,
+      "name": "擁擠",
+      "description": "無座位，站立空間有限",
+      "color": "#FF9800",
+      "occupancyRate": "71-90%",
+      "icon": "sentiment_neutral"
+    },
+    "4": {
+      "level": 4,
+      "name": "非常擁擠",
+      "description": "人潮擁擠，建議等下一班",
+      "color": "#F44336",
+      "occupancyRate": "91-120%",
+      "icon": "sentiment_dissatisfied"
+    }
+  },
+  "metadata": {
+    "dataSource": "台北捷運即時資訊系統",
+    "updateFrequency": "每30秒更新",
+    "totalTrains": 5
+  }
+}
