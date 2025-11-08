@@ -7,7 +7,7 @@ import 'package:town_pass/service/points_service.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
-
+// End of Selection
 import 'exercise_places_repository.dart';
 
 class ExerciseResultData {
@@ -328,6 +328,21 @@ class _VenueCard extends StatelessWidget {
                       ),
                     ),
                   ),
+loadingBuilder: (context, child, progress) {
+  if (progress == null) {
+    return child;
+  }
+  return Container(
+    color: TPColors.grayscale100,
+    child: const Center(
+      child: CircularProgressIndicator(
+        valueColor:
+            AlwaysStoppedAnimation<Color>(TPColors.primary500),
+        strokeWidth: 2,
+      ),
+    ),
+  );
+},
                 ),
               ),
             ),
@@ -382,4 +397,5 @@ class _VenueCard extends StatelessWidget {
     );
   }
 }
+
 

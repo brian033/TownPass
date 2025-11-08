@@ -5,6 +5,7 @@ import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_c
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_info_card.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/journey_tracker_widget.dart';
+import 'package:town_pass/page/exercise_result/exercise_result_view.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
@@ -28,6 +29,7 @@ class _ExerciseRecommendationViewState
       GlobalKey<JourneyTrackerWidgetState>();
 
   bool _isRouteExpanded = false; // 捷運路線摺疊狀態
+  bool _hasNavigatedToResult = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class _ExerciseRecommendationViewState
                 routeResult: controller.routeResult!,
                 timerCardKey: _timerCardKey,
                 exerciseInfoCardKey: _exerciseInfoCardKey,
+                onJourneyCompleted: _handleJourneyCompleted,
               ),
             const SizedBox(height: 24),
             _buildCollapsibleRouteSection(),
@@ -74,6 +77,30 @@ class _ExerciseRecommendationViewState
         ),
       ),
     );
+  }
+
+  void _handleJourneyCompleted(Duration totalDuration) {
+    if (_hasNavigatedToResult) {
+      return;
+    }
+
+    final route = controller.routeResult;
+    if (route == null) {
+      return;
+    }
+
+    _hasNavigatedToResult = true;
+    final pointsEarned = route.legs.length;
+
+    final resultData = ExerciseResultData(
+      startStation: controller.startStation.name,
+      endStation: controller.endStation.name,
+      totalDuration: totalDuration,
+      venues: const [],
+      points: pointsEarned,
+    );
+
+    Get.off(() => ExerciseResultView(initialData: resultData));
   }
 
   Widget _buildInfoCard() {
