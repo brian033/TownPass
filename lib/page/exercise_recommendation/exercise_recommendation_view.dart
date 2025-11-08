@@ -518,7 +518,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         // Row for station names - aligned below their respective nodes
         Row(
           children: [
