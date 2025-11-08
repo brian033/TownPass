@@ -81,17 +81,8 @@ class NewComponentView extends GetView<NewComponentViewController> {
                 _buildEndStationField(),
                 const SizedBox(height: 16),
 
-                // 要運動的部位下拉選單
-                _buildDropdownField(
-                  label: '要運動的部位',
-                  hint: '請選擇身體部位',
-                  value: controller.selectedBodyPart.value,
-                  items: controller.bodyParts,
-                  onChanged: (value) {
-                    controller.selectedBodyPart.value = value;
-                  },
-                  itemBuilder: (bodyPart) => bodyPart.displayName,
-                ),
+                // 要運動的部位多選
+                _buildBodyPartsMultiSelect(),
                 const SizedBox(height: 24),
 
                 // 預估時間顯示
@@ -535,6 +526,24 @@ class NewComponentView extends GetView<NewComponentViewController> {
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+  
+  // 根據身體部位 ID 返回對應的圖標
+  IconData _getBodyPartIcon(String bodyPartId) {
+    switch (bodyPartId) {
+      case 'upper_body':
+        return Icons.accessibility_new;
+      case 'lower_body':
+        return Icons.directions_walk;
+      case 'core':
+        return Icons.fitness_center;
+      case 'full_body':
+        return Icons.sports_gymnastics;
+      case 'neck_shoulder':
+        return Icons.self_improvement;
+      default:
+        return Icons.fitness_center;
+    }
+  }
 
   Widget _buildDropdownField<T extends Object>({
     required String label,
@@ -676,7 +685,131 @@ class NewComponentView extends GetView<NewComponentViewController> {
       ],
     );
   }
-  
+
+  // 建立身體部位多選界面
+  Widget _buildBodyPartsMultiSelect() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TPText(
+          '要運動的部位',
+          style: TPTextStyles.bodySemiBold,
+          color: TPColors.grayscale900,
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          if (controller.bodyParts.isEmpty) {
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: TPColors.grayscale50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: TPColors.grayscale300,
+                  width: 1,
+                ),
+              ),
+              child: Center(
+                child: TPText(
+                  '載入中...',
+                  style: TPTextStyles.bodyRegular,
+                  color: TPColors.grayscale500,
+                ),
+              ),
+            );
+          }
+          
+          return Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: controller.bodyParts.map((bodyPart) {
+              final isSelected = controller.isBodyPartSelected(bodyPart);
+              return GestureDetector(
+                onTap: () => controller.toggleBodyPart(bodyPart),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? TPColors.primary500
+                        : TPColors.grayscale50,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isSelected
+                          ? TPColors.primary500
+                          : TPColors.grayscale300,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // 身體部位圖標（未選中時有彩色背景圓形）
+                      if (!isSelected)
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: _hexToColor(bodyPart.color).withOpacity(0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _getBodyPartIcon(bodyPart.id),
+                            size: 16,
+                            color: _hexToColor(bodyPart.color),
+                          ),
+                        )
+                      else
+                        Icon(
+                          _getBodyPartIcon(bodyPart.id),
+                          size: 18,
+                          color: TPColors.white,
+                        ),
+                      const SizedBox(width: 8),
+                      TPText(
+                        bodyPart.displayName,
+                        style: TPTextStyles.bodyRegular.copyWith(
+                          color: isSelected
+                              ? TPColors.white
+                              : TPColors.grayscale900,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      // 選中狀態圖標
+                      if (isSelected)
+                        const Icon(
+                          Icons.check_circle,
+                          size: 16,
+                          color: TPColors.white,
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          );
+        }),
+        Obx(() => Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: TPText(
+            controller.selectedBodyParts.isEmpty
+                ? '請至少選擇一個部位'
+                : '已選擇 ${controller.selectedBodyParts.length} 個部位',
+            style: TPTextStyles.caption,
+            color: controller.selectedBodyParts.isEmpty
+                ? TPColors.grayscale500
+                : TPColors.primary500,
+          ),
+        )),
+      ],
+    );
+  }
+
   Widget _buildDrawer() {
     return Drawer(
       child: ListView(
