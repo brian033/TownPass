@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
+import 'exercise_places_repository.dart';
 
 class ExerciseResultData {
   const ExerciseResultData({
@@ -58,6 +59,10 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setExerciseResult(initialData);
       });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadVenuesForStation(_data.endStation);
+      });
     }
   }
 
@@ -65,26 +70,14 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
         startStation: '台北車站',
         endStation: '市政府站',
         totalDuration: const Duration(minutes: 42),
-        venues: const [
-          ExerciseVenue(
-            name: '信義運動中心',
-            imageUrl:
-                'https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=800&q=80',
-            locationUrl: 'https://maps.google.com/?q=信義運動中心',
-          ),
-          ExerciseVenue(
-            name: '台北世貿健身房',
-            imageUrl:
-                'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80',
-            locationUrl: 'https://maps.google.com/?q=台北世貿健身房',
-          ),
-        ],
+        venues: const [],
       );
 
   void setExerciseResult(ExerciseResultData data) {
     setState(() {
       _data = data;
     });
+    _loadVenuesForStation(data.endStation);
   }
 
   @override
@@ -116,10 +109,14 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
             Expanded(
               child: _data.venues.isEmpty
                   ? const Center(
-                      child: TPText(
-                        '目前沒有推薦的場館',
-                        style: TPTextStyles.bodyRegular,
-                        color: TPColors.grayscale500,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: TPText(
+                          '此地點附近沒有推薦的運動場館',
+                          style: TPTextStyles.bodyRegular,
+                          color: TPColors.grayscale500,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     )
                   : ListView.separated(
@@ -199,6 +196,32 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
         const SnackBar(content: Text('無法開啟連結')),
       );
     }
+  }
+
+  Future<void> _loadVenuesForStation(String stationName) async {
+    final places =
+        await ExercisePlacesRepository.findByStation(stationName);
+    if (!mounted || _data.endStation != stationName) {
+      return;
+    }
+    final reference = _data;
+    final venues = places
+        .map(
+          (place) => ExerciseVenue(
+            name: place.name,
+            imageUrl: place.imageUrl,
+            locationUrl: place.locationUrl,
+          ),
+        )
+        .toList(growable: false);
+    setState(() {
+      _data = ExerciseResultData(
+        startStation: reference.startStation,
+        endStation: reference.endStation,
+        totalDuration: reference.totalDuration,
+        venues: venues,
+      );
+    });
   }
 }
 

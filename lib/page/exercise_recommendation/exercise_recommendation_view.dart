@@ -88,22 +88,9 @@ class ExerciseRecommendationView extends StatelessWidget {
                 onPressed: () {
                   final sampleData = ExerciseResultData(
                     startStation: '捷運北門站',
-                    endStation: '捷運象山站',
+                    endStation: '公館',
                     totalDuration: const Duration(minutes: 38),
-                    venues: const [
-                      ExerciseVenue(
-                        name: '象山運動中心',
-                        imageUrl:
-                            'https://images.unsplash.com/photo-1610136849937-ec3f36d25e2c?auto=format&fit=crop&w=800&q=80',
-                        locationUrl: 'https://maps.google.com/?q=象山運動中心',
-                      ),
-                      ExerciseVenue(
-                        name: '信義社區健身會館',
-                        imageUrl:
-                            'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=800&q=80',
-                        locationUrl: 'https://maps.google.com/?q=信義社區健身會館',
-                      ),
-                    ],
+                    venues: const [],
                   );
 
                   Get.to(() => ExerciseResultView(initialData: sampleData));
