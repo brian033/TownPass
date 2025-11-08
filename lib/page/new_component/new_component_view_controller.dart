@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:collection/collection.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/bean/body_part.dart';
 import 'package:town_pass/bean/exercise.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_view.dart';
+import 'package:town_pass/service/geo_locator_service.dart';
 
 class NewComponentViewController extends GetxController {
   // 資料列表
@@ -22,6 +25,10 @@ class NewComponentViewController extends GetxController {
 
   // 載入狀態
   final RxBool isLoading = true.obs;
+
+  // GPS 位置
+  Position? _userPosition;
+  final GeoLocatorService _geoLocatorService = Get.find<GeoLocatorService>();
 
   // 路線資料
   final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
@@ -54,6 +61,78 @@ class NewComponentViewController extends GetxController {
         selectedStartStation.value!.id != selectedEndStation.value!.id;
   }
 
+  // 取得按距離排序的起點站列表
+  List<MrtStation> get sortedStartStations {
+    if (_userPosition == null) {
+      return mrtStations.toList();
+    }
+
+    final stationsWithDistance = mrtStations.map((station) {
+      final distance = _calculateDistance(
+        _userPosition!.latitude,
+        _userPosition!.longitude,
+        station.location.lat,
+        station.location.lng,
+      );
+      return _StationWithDistance(station, distance);
+    }).toList();
+
+    // 按距離排序
+    stationsWithDistance.sort((a, b) => a.distance.compareTo(b.distance));
+
+    return stationsWithDistance.map((e) => e.station).toList();
+  }
+
+  // 取得按線路分組的終點站列表（排除起點）
+  Map<String, List<MrtStation>> get groupedEndStations {
+    final Map<String, List<MrtStation>> grouped = {};
+
+    for (final station in mrtStations) {
+      // 排除已選的起點站
+      if (selectedStartStation.value != null &&
+          station.id == selectedStartStation.value!.id) {
+        continue;
+      }
+
+      // 對於多線站點，在每條線都加入一次
+      for (int i = 0; i < station.lines.length; i++) {
+        final line = station.lines[i];
+        if (!grouped.containsKey(line)) {
+          grouped[line] = [];
+        }
+        grouped[line]!.add(station);
+      }
+    }
+
+    return grouped;
+  }
+
+  // 計算兩點間的距離（Haversine formula）單位：公里
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    // 如果座標為 0，返回一個很大的距離
+    if (lat2 == 0.0 && lon2 == 0.0) {
+      return double.infinity;
+    }
+
+    const double earthRadius = 6371; // 地球半徑（公里）
+
+    final dLat = _degreesToRadians(lat2 - lat1);
+    final dLon = _degreesToRadians(lon2 - lon1);
+
+    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_degreesToRadians(lat1)) *
+        math.cos(_degreesToRadians(lat2)) *
+        math.sin(dLon / 2) * math.sin(dLon / 2);
+
+    final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+
+    return earthRadius * c;
+  }
+
+  double _degreesToRadians(double degrees) {
+    return degrees * math.pi / 180;
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -70,6 +149,7 @@ class NewComponentViewController extends GetxController {
         loadBodyParts(),
         loadExercises(),
         loadExercisesForRecommendation(),
+        _loadUserPosition(),
       ]);
 
       await loadMrtConnections();
@@ -78,6 +158,17 @@ class NewComponentViewController extends GetxController {
     } catch (e) {
       print('Error loading data: $e');
       isLoading.value = false;
+    }
+  }
+
+  // 載入使用者位置
+  Future<void> _loadUserPosition() async {
+    try {
+      _userPosition = await _geoLocatorService.position();
+      print('User position loaded: ${_userPosition?.latitude}, ${_userPosition?.longitude}');
+    } catch (e) {
+      print('Could not get user position: $e');
+      // 不影響其他功能，繼續執行
     }
   }
 
@@ -444,4 +535,11 @@ class _PreviousNode {
   final String fromStationId;
   final String toStationId;
   final _GraphEdge edge;
+}
+
+class _StationWithDistance {
+  _StationWithDistance(this.station, this.distance);
+
+  final MrtStation station;
+  final double distance;
 }

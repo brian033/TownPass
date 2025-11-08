@@ -1,6 +1,6 @@
 [
   {
-    "name": "Standing Lateral Stretch",
+    "name": "站姿側向伸展",
     "calPerSec": 0.8,
     "doInCrowded": false,
     "parts": ["upper_body", "core"],
@@ -8,7 +8,7 @@
     "description": "雙腳與肩同寬站立，雙臂水平伸展後慢慢向一側折腰，延展肋間與背闊肌，適合長時間站立後舒緩緊繃。"
   },
   {
-    "name": "Standing Pelvic Tilt",
+    "name": "站姿骨盆傾斜",
     "calPerSec": 0.7,
     "doInCrowded": true,
     "parts": ["core", "lower_body"],
@@ -16,7 +16,7 @@
     "description": "保持站姿並收緊核心，向前後輕微傾動骨盆，喚醒腰椎與臀部穩定肌群，幫助矯正通勤久站的僵硬。"
   },
   {
-    "name": "Side Wrist Pull Stretch",
+    "name": "側向手腕拉伸",
     "calPerSec": 0.5,
     "doInCrowded": true,
     "parts": ["upper_body"],
@@ -24,7 +24,7 @@
     "description": "一手拉住另一手手腕讓手臂保持與地面平行，緩慢牽引以延展前臂與腕屈肌，舒緩長時間使用手機的緊繃。"
   },
   {
-    "name": "Rear Deltoid Stretch",
+    "name": "後三角肌伸展",
     "calPerSec": 0.6,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
@@ -32,7 +32,7 @@
     "description": "將手臂橫過胸前並以另一手固定，放鬆後三角肌與肩胛周邊肌肉，短時間即可減少肩頸壓力。"
   },
   {
-    "name": "Upper Back Stretch",
+    "name": "上背伸展",
     "calPerSec": 0.8,
     "doInCrowded": false,
     "parts": ["neck_shoulder", "upper_body"],
@@ -40,7 +40,7 @@
     "description": "雙臂交握由胸前推向前上方並抬高過頭，延長上背與肩胛間筋膜，適合在站立等待時恢復姿勢。"
   },
   {
-    "name": "Dynamic Chest Stretch",
+    "name": "動態胸部伸展",
     "calPerSec": 1.1,
     "doInCrowded": false,
     "parts": ["upper_body", "neck_shoulder"],
@@ -48,7 +48,7 @@
     "description": "雙臂向側展開後交叉於胸前，反覆開合以動態拉伸胸大肌與前三角，促進血液循環但需要稍多揮動空間。"
   },
   {
-    "name": "Chest And Front Of Shoulder Stretch",
+    "name": "胸部與前肩伸展",
     "calPerSec": 0.7,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
@@ -56,7 +56,7 @@
     "description": "雙臂在胸前交叉並扣住，向前推出同時夾緊肩胛骨，集中放鬆胸口與前三角肌，動作幅度小適合車廂內。"
   },
   {
-    "name": "Back Pec Stretch",
+    "name": "背部胸肌伸展",
     "calPerSec": 0.9,
     "doInCrowded": false,
     "parts": ["upper_body", "neck_shoulder"],
@@ -64,7 +64,7 @@
     "description": "手臂交叉後手指相扣並翻掌向外，再緩慢抬高至胸口以上，拉開胸背交界，較需要垂直空間。"
   },
   {
-    "name": "Chest And Front Of Shoulder Stretch (Micro)",
+    "name": "胸部與前肩伸展（微幅）",
     "calPerSec": 0.6,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
