@@ -48,8 +48,8 @@ class _ExerciseRecommendationViewState
             ),
             const SizedBox(height: 16),
             _buildInfoCard(),
-            const SizedBox(height: 24),
-            _buildDebugExercisesCard(),
+            // const SizedBox(height: 24),
+            // _buildDebugExercisesCard(),
             const SizedBox(height: 24),
             if (controller.routeResult != null)
               JourneyTrackerWidget(

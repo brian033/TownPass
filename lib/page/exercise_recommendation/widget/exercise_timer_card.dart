@@ -18,7 +18,8 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
   bool _isTimerFinished = false;
 
   /// 設置卡片顯示內容並開始倒數計時
-  void setDisplayCard(String currentExercise, int remainingSeconds, String nextExercise) {
+  void setDisplayCard(
+      String currentExercise, int remainingSeconds, String nextExercise) {
     // 取消之前的計時器
     _timer?.cancel();
 
@@ -144,43 +145,43 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
           Padding(
             padding: const EdgeInsets.only(left: 28),
             child: TPText(
-              _isTimerFinished
-                ? '休息一下吧～'
-                : _formatTime(_remainingSeconds!),
+              _isTimerFinished ? '休息一下吧～' : _formatTime(_remainingSeconds!),
               style: TPTextStyles.h3SemiBold,
-              color: _isTimerFinished ? TPColors.secondary500 : TPColors.primary500,
+              color: _isTimerFinished
+                  ? TPColors.secondary500
+                  : TPColors.primary500,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
           // 下一個運動
-          Row(
-            children: [
-              const Icon(
-                Icons.next_plan,
-                color: TPColors.primary500,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              TPText(
-                '接下來',
-                style: TPTextStyles.bodyRegular,
-                color: TPColors.grayscale700,
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.only(left: 28),
-            child: TPText(
-              _nextExercise!,
-              style: TPTextStyles.bodySemiBold,
-              color: TPColors.grayscale900,
-            ),
-          ),
+          //   Row(
+          //     children: [
+          //       const Icon(
+          //         Icons.next_plan,
+          //         color: TPColors.primary500,
+          //         size: 20,
+          //       ),
+          //       const SizedBox(width: 8),
+          //       TPText(
+          //         '接下來',
+          //         style: TPTextStyles.bodyRegular,
+          //         color: TPColors.grayscale700,
+          //       ),
+          //     ],
+          //   ),
+          //   const SizedBox(height: 8),
+          //   Padding(
+          //     padding: const EdgeInsets.only(left: 28),
+          //     child: TPText(
+          //       _nextExercise!,
+          //       style: TPTextStyles.bodySemiBold,
+          //       color: TPColors.grayscale900,
+          //     ),
+          //   ),
+          //
         ],
       ),
     );
   }
 }
-
