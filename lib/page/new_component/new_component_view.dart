@@ -18,9 +18,10 @@ class NewComponentView extends GetView<NewComponentViewController> {
       backgroundColor: TPColors.white,
       appBar: AppBar(
         title: const Text('捷運動'),
-        backgroundColor: TPColors.primary500,
-        foregroundColor: TPColors.white,
+        backgroundColor: TPColors.white,
+        foregroundColor: TPColors.grayscale900,
         elevation: 0,
+        iconTheme: const IconThemeData(color: TPColors.grayscale900),
         actions: [
           Builder(
             builder: (context) => IconButton(
