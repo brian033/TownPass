@@ -35,50 +35,15 @@ class ExerciseRecommendationView extends StatelessWidget {
               style: TPTextStyles.h3SemiBold,
               color: TPColors.grayscale900,
             ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ElevatedButton.icon(
-                onPressed: controller.loadSampleExercises,
-                icon: const Icon(Icons.playlist_add, size: 18),
-                label: const Text('載入範例運動'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TPColors.primary500,
-                  foregroundColor: TPColors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  textStyle: TPTextStyles.bodySemiBold,
+            const SizedBox(height: 16),
+            const Expanded(
+              child: Center(
+                child: TPText(
+                  '運動推薦功能開發中...',
+                  style: TPTextStyles.bodyRegular,
+                  color: TPColors.grayscale500,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(TPColors.primary500),
-                    ),
-                  );
-                }
-
-                final exercise = controller.exercise.value;
-
-                if (exercise == null) {
-                  return const Center(
-                    child: TPText(
-                      '目前尚未有推薦的運動，請先載入範例資料。',
-                      style: TPTextStyles.bodyRegular,
-                      color: TPColors.grayscale500,
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
-
-                return SingleChildScrollView(
-                  padding: EdgeInsets.zero,
-                  child: _buildExerciseCard(exercise),
-                );
-              }),
             ),
           ],
         ),
@@ -146,81 +111,6 @@ class ExerciseRecommendationView extends StatelessWidget {
                 color: TPColors.grayscale700,
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildExerciseCard(ExerciseRecommendation exercise) {
-    return Container(
-      decoration: BoxDecoration(
-        color: TPColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: TPColors.grayscale200),
-        boxShadow: [
-          BoxShadow(
-            color: TPColors.grayscale200.withOpacity(0.4),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Image.network(
-              exercise.imageUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child;
-                }
-                return Container(
-                  color: TPColors.grayscale100,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(TPColors.primary500),
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: TPColors.grayscale100,
-                  child: const Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      color: TPColors.grayscale400,
-                      size: 32,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TPText(
-                  exercise.name,
-                  style: TPTextStyles.bodySemiBold,
-                  color: TPColors.grayscale900,
-                ),
-                const SizedBox(height: 8),
-                TPText(
-                  exercise.description,
-                  style: TPTextStyles.bodyRegular,
-                  color: TPColors.grayscale600,
-                ),
-              ],
-            ),
           ),
         ],
       ),
