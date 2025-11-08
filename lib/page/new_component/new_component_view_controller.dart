@@ -81,6 +81,9 @@ class NewComponentViewController extends GetxController {
   final Map<String, MrtStation> _stationById = <String, MrtStation>{};
   final Map<String, MrtStation> _stationByName = <String, MrtStation>{};
 
+  // 換線懲罰時間（秒），預設為 4 分鐘
+  static const int _transferPenaltySeconds = 240;
+
   // 預估時間（分鐘）
   int get estimatedMinutes {
     final route = _getOrComputeRoute();
@@ -401,46 +404,89 @@ class NewComponentViewController extends GetxController {
       return null;
     }
 
-    final distances = <String, int>{startId: 0};
+    // 使用複合鍵 (stationId, line) 來追蹤狀態，因為同一站可能通過不同線路到達
+    // 鍵格式：'stationId|line' 或 'stationId|'（起始站，無線路）
+    final distances = <String, int>{};
     final previous = <String, _PreviousNode>{};
     final visited = <String>{};
     final queue = PriorityQueue<_QueueNode>(
       (a, b) => a.cost.compareTo(b.cost),
-    )..add(_QueueNode(startId, 0));
+    );
+
+    // 起始站：使用空字串作為線路標識（起始站沒有到達線路）
+    final startKey = '$startId|';
+    distances[startKey] = 0;
+    queue.add(_QueueNode(startId, 0, arrivingLine: null));
+
+    String? bestEndKey;
 
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
-      if (!visited.add(current.stationId)) {
+      final currentKey = current.arrivingLine != null
+          ? '${current.stationId}|${current.arrivingLine}'
+          : '$current.stationId|';
+
+      if (!visited.add(currentKey)) {
         continue;
       }
+
       if (current.stationId == endId) {
-        break;
+        // 找到終點站，記錄最佳路徑的鍵
+        if (bestEndKey == null || current.cost < (distances[bestEndKey] ?? double.maxFinite.toInt())) {
+          bestEndKey = currentKey;
+        }
+        // 繼續處理隊列，因為可能還有更短的路徑（通過其他線路到達）
       }
+
       final neighbors = _graph[current.stationId];
       if (neighbors == null) {
         continue;
       }
+
       for (final edge in neighbors) {
-        final nextCost = current.cost + edge.totalSeconds;
-        final existing = distances[edge.toStationId];
-        if (existing == null || nextCost < existing) {
-          distances[edge.toStationId] = nextCost;
-          previous[edge.toStationId] = _PreviousNode(
+        // 檢查是否需要換線
+        final needsTransfer = current.arrivingLine != null && 
+                              current.arrivingLine != edge.line;
+        final transferCost = needsTransfer ? _transferPenaltySeconds : 0;
+        final nextCost = current.cost + edge.totalSeconds + transferCost;
+
+        // 構建目標站的複合鍵
+        final targetKey = '${edge.toStationId}|${edge.line}';
+        final existingDistance = distances[targetKey];
+
+        if (existingDistance == null || nextCost < existingDistance) {
+          distances[targetKey] = nextCost;
+          previous[targetKey] = _PreviousNode(
             fromStationId: current.stationId,
             toStationId: edge.toStationId,
             edge: edge,
+            fromLine: current.arrivingLine,
           );
-          queue.add(_QueueNode(edge.toStationId, nextCost));
+          queue.add(_QueueNode(edge.toStationId, nextCost, arrivingLine: edge.line));
         }
       }
     }
 
-    if (!distances.containsKey(endId)) {
+    // 找到到達終點站的最佳路徑（可能通過不同線路到達）
+    if (bestEndKey == null) {
+      // 如果沒有找到 bestEndKey，嘗試從所有可能的終點鍵中找最短的
+      for (final key in distances.keys) {
+        if (key.startsWith('$endId|')) {
+          if (bestEndKey == null || 
+              (distances[key] ?? double.maxFinite.toInt()) < 
+              (distances[bestEndKey] ?? double.maxFinite.toInt())) {
+            bestEndKey = key;
+          }
+        }
+      }
+    }
+
+    if (bestEndKey == null || !distances.containsKey(bestEndKey)) {
       return null;
     }
 
     final legs = <MrtRouteLeg>[];
-    var currentId = endId;
+    var currentKey = bestEndKey;
     final startStation = _stationById[startId];
     final endStation = _stationById[endId];
     if (startStation == null || endStation == null) {
@@ -448,23 +494,53 @@ class NewComponentViewController extends GetxController {
     }
 
     final path = <_PreviousNode>[];
-    while (currentId != startId) {
-      final prev = previous[currentId];
+
+    // 從終點回溯到起點
+    while (true) {
+      final prev = previous[currentKey];
       if (prev == null) {
-        return null;
+        break;
       }
+
       path.add(prev);
-      currentId = prev.fromStationId;
+
+      // 如果到達起始站（fromLine 為 null 表示起始狀態），跳出循環
+      if (prev.fromLine == null && prev.fromStationId == startId) {
+        break;
+      }
+
+      // 構建上一個節點的鍵
+      if (prev.fromLine != null) {
+        currentKey = '${prev.fromStationId}|${prev.fromLine}';
+      } else {
+        currentKey = '${prev.fromStationId}|';
+      }
+
+      // 安全檢查：如果找不到上一個節點，跳出
+      if (!previous.containsKey(currentKey)) {
+        break;
+      }
     }
 
+    // 反向路徑並計算累計時間
     var cumulativeSeconds = 0;
+    String? previousLine;
+
     for (final node in path.reversed) {
       final fromStation = _stationById[node.fromStationId];
       final toStation = _stationById[node.toStationId];
       if (fromStation == null || toStation == null) {
         continue;
       }
+
+      // 如果從不同線路轉換，加上換線時間
+      if (previousLine != null && previousLine != node.edge.line) {
+        cumulativeSeconds += _transferPenaltySeconds;
+      }
+
       cumulativeSeconds += node.edge.totalSeconds;
+      previousLine = node.edge.line;
+
       legs.add(
         MrtRouteLeg(
           fromStation: fromStation,
@@ -528,10 +604,11 @@ class _GraphEdge {
 }
 
 class _QueueNode {
-  _QueueNode(this.stationId, this.cost);
+  _QueueNode(this.stationId, this.cost, {this.arrivingLine});
 
   final String stationId;
   final int cost;
+  final String? arrivingLine; // 到達此站時使用的線路（null 表示起始站）
 }
 
 class _PreviousNode {
@@ -539,11 +616,13 @@ class _PreviousNode {
     required this.fromStationId,
     required this.toStationId,
     required this.edge,
+    this.fromLine,
   });
 
   final String fromStationId;
   final String toStationId;
   final _GraphEdge edge;
+  final String? fromLine; // 從哪條線路到達 fromStationId
 }
 
 class _StationWithDistance {
