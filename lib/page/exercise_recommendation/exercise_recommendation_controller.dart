@@ -179,7 +179,7 @@ class ExerciseRecommendationController extends GetxController {
 
   // 初始化模擬資料用於測試
   void initializeMockData() {
-    // 創建模擬的 MRT 站點路徑：中山 → 忠孝復興 → 市政府
+    // 創建模擬的 MRT 站點路徑：8個站點
     final mockPath = [
       _createMockStation(
         id: 'R09',
@@ -217,15 +217,80 @@ class ExerciseRecommendationController extends GetxController {
         district: '信義區',
         city: '台北市',
       ),
+      _createMockStation(
+        id: 'R11',
+        stationCode: 'R11',
+        name: '台北101/世貿',
+        nameEn: 'Taipei 101/World Trade Center',
+        lines: ['red'],
+        lineColors: ['#E3002C'],
+        lat: 25.0330,
+        lng: 121.5654,
+        district: '信義區',
+        city: '台北市',
+      ),
+      _createMockStation(
+        id: 'R12',
+        stationCode: 'R12',
+        name: '象山',
+        nameEn: 'Xiangshan',
+        lines: ['red'],
+        lineColors: ['#E3002C'],
+        lat: 25.0330,
+        lng: 121.5698,
+        district: '信義區',
+        city: '台北市',
+      ),
+      _createMockStation(
+        id: 'O07',
+        stationCode: 'O07',
+        name: '忠孝新生',
+        nameEn: 'Zhongxiao Xinsheng',
+        lines: ['orange', 'blue'],
+        lineColors: ['#F8B61C', '#0070BD'],
+        lat: 25.0423,
+        lng: 121.5329,
+        district: '大安區',
+        city: '台北市',
+      ),
+      _createMockStation(
+        id: 'O05',
+        stationCode: 'O05',
+        name: '南京復興',
+        nameEn: 'Nanjing Fuxing',
+        lines: ['orange', 'green'],
+        lineColors: ['#F8B61C', '#008659'],
+        lat: 25.0520,
+        lng: 121.5440,
+        district: '中山區',
+        city: '台北市',
+      ),
+      _createMockStation(
+        id: 'O12',
+        stationCode: 'O12',
+        name: '東門',
+        nameEn: 'Dongmen',
+        lines: ['orange', 'green'],
+        lineColors: ['#F8B61C', '#008659'],
+        lat: 25.0338,
+        lng: 121.5284,
+        district: '大安區',
+        city: '台北市',
+      ),
     ];
 
-    // 每段路程的預估時間（分鐘）- 3個站點有2段路程
-    final mockEstimatedMinutes = [0.3, 0.5];
+    // 每段路程的預估時間（分鐘）- 8個站點有7段路程，每段時間在 0.05 到 0.15 之間
+    final mockEstimatedMinutes = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05];
 
-    // 每段路程的運動類型（對應2段路程）
+    // 每段路程的運動類型（對應7段路程）
     final mockMovements = [
       '深蹲',
       '手臂伸展',
+      '頸部轉動',
+      '腿部拉伸',
+      '腰部扭轉',
+      '肩部放鬆',
+      '全身伸展',
     ];
 
     // 設定路徑資料
