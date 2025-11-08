@@ -202,10 +202,6 @@ class _PointsRankingPageState extends State<PointsRankingPage> {
     if (data.extraEntry != null) {
       rankText = '#${data.extraEntry!.rank}';
     } else {
-<<<<<<< HEAD
-      final currentInTop = data.topEntries
-          .firstWhereOrNull((entry) => entry.username == _username);
-=======
       RankedEntry? currentInTop;
       for (final entry in data.topEntries) {
         if (entry.username == _username) {
@@ -213,7 +209,6 @@ class _PointsRankingPageState extends State<PointsRankingPage> {
           break;
         }
       }
->>>>>>> release/1.0
       if (currentInTop != null) {
         rankText = '#${currentInTop.rank}';
       }
