@@ -194,44 +194,6 @@ class _ExerciseRecommendationViewState extends State<ExerciseRecommendationView>
             ),
             const SizedBox(height: 24),
             _buildPathVisualization(),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Icon(
-                  Icons.timer,
-                  color: TPColors.primary500,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TPText(
-                    '剩餘時間：${controller.remainingTimeFormatted}',
-                    style: TPTextStyles.bodyRegular,
-                    color: TPColors.grayscale700,
-                  ),
-                ),
-              ],
-            ),
-            if (controller.currentMovement.value.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.directions_run,
-                    color: TPColors.primary500,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TPText(
-                      '當前運動：${controller.currentMovement.value}',
-                      style: TPTextStyles.bodyRegular,
-                      color: TPColors.grayscale700,
-                    ),
-                  ),
-                ],
-              ),
-            ],
           ],
         ),
       );
@@ -472,15 +434,21 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
     final nextSize = nonCurrentSize; // Same size for middle-right (non-current)
     final destinationSize = isRightNodeCurrent ? 1.0 : nonCurrentSize; // Large when reached, same as non-current otherwise
 
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
+        // Row for nodes only - aligned horizontally
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             // Start station (left node) - active and large at start, inactive and small after
             // When right node is current (currentIndex >= path.length - 1), this should be non-current
             Expanded(
-              child: _buildNode(
-                station: startStation,
-                isActive: currentIndex == 0 && currentIndex < path.length - 1, // Only active at start, not when right is current
-                size: startSize,
+              child: Center(
+                child: _buildNodeCircle(
+                  isActive: currentIndex == 0 && currentIndex < path.length - 1, // Only active at start, not when right is current
+                  size: startSize,
+                ),
               ),
             ),
             Expanded(
@@ -492,13 +460,15 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             ),
             // Middle-left: shows next station at start, shows current station after moving, shows previous station at last stop
             Expanded(
-              child: _buildMiddleLeftNode(
-                currentStation: currentStation,
-                currentIndex: currentIndex,
-                pathLength: path.length,
-                currentSize: currentSize,
-                nonCurrentSize: nonCurrentSize,
-                path: path,
+              child: Center(
+                child: _buildMiddleLeftNodeCircle(
+                  currentStation: currentStation,
+                  currentIndex: currentIndex,
+                  pathLength: path.length,
+                  currentSize: currentSize,
+                  nonCurrentSize: nonCurrentSize,
+                  path: path,
+                ),
               ),
             ),
             Expanded(
@@ -512,12 +482,14 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             // Also should not show anything when at or after last stop
             // IMPORTANT: Never show as active/current - always isActive: false
             Expanded(
-              child: _buildMiddleRightNode(
-                nextStation: nextStation,
-                destinationStation: destinationStation,
-                currentIndex: currentIndex,
-                pathLength: path.length,
-                nextSize: nextSize,
+              child: Center(
+                child: _buildMiddleRightNodeCircle(
+                  nextStation: nextStation,
+                  destinationStation: destinationStation,
+                  currentIndex: currentIndex,
+                  pathLength: path.length,
+                  nextSize: nextSize,
+                ),
               ),
             ),
             // Show connecting line if middle-right node is visible
@@ -536,110 +508,67 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             // Destination (right) - becomes current when at last stop
             Expanded(
               child: destinationStation != null
-                  ? _buildNode(
-                      station: destinationStation,
-                      isActive: currentIndex >= path.length - 1, // Active when at last stop
-                      size: currentIndex >= path.length - 1 ? currentSize : destinationSize,
+                  ? Center(
+                      child: _buildNodeCircle(
+                        isActive: currentIndex >= path.length - 1, // Active when at last stop
+                        size: currentIndex >= path.length - 1 ? currentSize : destinationSize,
+                      ),
                     )
                   : const SizedBox.shrink(),
             ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // Row for station names - aligned below their respective nodes
+        Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: startStation,
+                  isActive: currentIndex == 0 && currentIndex < path.length - 1,
+                ),
+              ),
+            ),
+            Expanded(flex: 2, child: const SizedBox.shrink()),
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: currentStation,
+                  isActive: (currentIndex > 0 && currentIndex < path.length - 1) || 
+                            (currentIndex == path.length - 3),
+                ),
+              ),
+            ),
+            Expanded(flex: 2, child: const SizedBox.shrink()),
+            Expanded(
+              child: Center(
+                child: _buildStationName(
+                  station: nextStation,
+                  isActive: currentIndex == path.length - 2,
+                ),
+              ),
+            ),
+            if (nextStation != null && 
+                nextStation.id != destinationStation?.id &&
+                currentIndex <= path.length - 1)
+              Expanded(flex: 2, child: const SizedBox.shrink()),
+            Expanded(
+              child: destinationStation != null
+                  ? Center(
+                      child: _buildStationName(
+                        station: destinationStation,
+                        isActive: currentIndex >= path.length - 1,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  Widget _buildMiddleLeftNode({
-    required MrtStation? currentStation,
-    required int currentIndex,
-    required int pathLength,
-    required double currentSize,
-    required double nonCurrentSize,
-    required List<dynamic> path,
-  }) {
-    final stationToShow = currentStation ?? (pathLength > 0 && path.isNotEmpty ? path[0] : null);
-    if (stationToShow == null) {
-      return const SizedBox.shrink();
-    }
-
-    // Check if right node is current - if so, ALL other nodes should be non-current
-    final isRightNodeCurrent = currentIndex >= pathLength - 1;
-
-    // If right node is current, this should always be non-current
-    if (isRightNodeCurrent) {
-      return _buildNode(
-        station: stationToShow,
-        isActive: false, // Always non-current when right node is current
-        size: nonCurrentSize,
-      );
-    }
-
-    // Check if we're in the last 3 stations, at last - 1, or at last - if so, determine active state
-    final isInLastThree = currentIndex >= pathLength - 3;
-    final isLastMinusOne = currentIndex == pathLength - 2;
-    final isLast = currentIndex >= pathLength - 1;
-    if (isInLastThree || isLastMinusOne || isLast) {
-      // When in last 3 stations, at last - 1, or at last, middle-left shows last - 2 (path[pathLength - 3])
-      // It's active only when currentIndex == pathLength - 3
-      final isLastMinusTwo = currentIndex == pathLength - 3;
-      return _buildNode(
-        station: stationToShow,
-        isActive: isLastMinusTwo,
-        size: isLastMinusTwo ? currentSize : nonCurrentSize,
-      );
-    }
-
-    if (currentIndex == 0) {
-      return _buildNode(
-        station: stationToShow,
-        isActive: false,
-        size: nonCurrentSize,
-      );
-    } else {
-      return _buildNode(
-        station: stationToShow,
-        isActive: true,
-        size: currentSize,
-      );
-    }
-  }
-
-  Widget _buildMiddleRightNode({
-    required MrtStation? nextStation,
-    required MrtStation? destinationStation,
-    required int currentIndex,
-    required int pathLength,
-    required double nextSize,
-  }) {
-    // Don't show if conditions not met
-    // But allow showing when at last - 1 or last station to maintain layout
-    if (nextStation == null || 
-        nextStation.id == destinationStation?.id ||
-        currentIndex > pathLength - 1) {
-      return const SizedBox.shrink();
-    }
-
-    // Check if we're in the last 3 stations, at last - 1, or at last - if so, keep positions fixed
-    final isInLastThree = currentIndex >= pathLength - 3;
-    final isLastMinusOne = currentIndex == pathLength - 2;
-    final isLast = currentIndex >= pathLength - 1;
-    if (isInLastThree || isLastMinusOne || isLast) {
-      // When in last 3 stations, at last - 1, or at last, middle-right shows last - 1 (path[pathLength - 2])
-      // It's active when currentIndex == pathLength - 2 (last - 1 station is current)
-      // When at last station, it should be non-active to prevent overlap
-      final shouldBeActive = isLastMinusOne && !isLast;
-      return _buildNode(
-        station: nextStation,
-        isActive: shouldBeActive, // Active only when last - 1 station is current (not at last)
-        size: shouldBeActive ? 1.0 : nextSize, // Full size when active, normal size otherwise
-      );
-    }
-
-    // Normal rendering
-    return _buildNode(
-      station: nextStation,
-      isActive: false,
-      size: nextSize,
-    );
-  }
 
   Widget _buildNode({
     required dynamic station,
@@ -677,6 +606,122 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildNodeCircle({
+    required bool isActive,
+    required double size,
+  }) {
+    return Transform.scale(
+      scale: size,
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: isActive ? TPColors.primary500 : TPColors.grayscale400,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isActive ? TPColors.primary700 : TPColors.grayscale300,
+            width: 2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMiddleLeftNodeCircle({
+    required MrtStation? currentStation,
+    required int currentIndex,
+    required int pathLength,
+    required double currentSize,
+    required double nonCurrentSize,
+    required List<dynamic> path,
+  }) {
+    final stationToShow = currentStation ?? (pathLength > 0 && path.isNotEmpty ? path[0] : null);
+    if (stationToShow == null) {
+      return const SizedBox.shrink();
+    }
+
+    final isRightNodeCurrent = currentIndex >= pathLength - 1;
+    if (isRightNodeCurrent) {
+      return _buildNodeCircle(
+        isActive: false,
+        size: nonCurrentSize,
+      );
+    }
+
+    final isInLastThree = currentIndex >= pathLength - 3;
+    final isLastMinusOne = currentIndex == pathLength - 2;
+    final isLast = currentIndex >= pathLength - 1;
+    if (isInLastThree || isLastMinusOne || isLast) {
+      final isLastMinusTwo = currentIndex == pathLength - 3;
+      return _buildNodeCircle(
+        isActive: isLastMinusTwo,
+        size: isLastMinusTwo ? currentSize : nonCurrentSize,
+      );
+    }
+
+    if (currentIndex == 0) {
+      return _buildNodeCircle(
+        isActive: false,
+        size: nonCurrentSize,
+      );
+    } else {
+      return _buildNodeCircle(
+        isActive: true,
+        size: currentSize,
+      );
+    }
+  }
+
+  Widget _buildMiddleRightNodeCircle({
+    required MrtStation? nextStation,
+    required MrtStation? destinationStation,
+    required int currentIndex,
+    required int pathLength,
+    required double nextSize,
+  }) {
+    if (nextStation == null || 
+        nextStation.id == destinationStation?.id ||
+        currentIndex > pathLength - 1) {
+      return const SizedBox.shrink();
+    }
+
+    final isInLastThree = currentIndex >= pathLength - 3;
+    final isLastMinusOne = currentIndex == pathLength - 2;
+    final isLast = currentIndex >= pathLength - 1;
+    if (isInLastThree || isLastMinusOne || isLast) {
+      final shouldBeActive = isLastMinusOne && !isLast;
+      return _buildNodeCircle(
+        isActive: shouldBeActive,
+        size: shouldBeActive ? 1.0 : nextSize,
+      );
+    }
+
+    return _buildNodeCircle(
+      isActive: false,
+      size: nextSize,
+    );
+  }
+
+  Widget _buildStationName({
+    required dynamic station,
+    required bool isActive,
+  }) {
+    if (station == null) {
+      return const SizedBox.shrink();
+    }
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: TPText(
+        _truncateStationName(station.name),
+        style: TPTextStyles.caption,
+        color: isActive ? TPColors.grayscale900 : TPColors.grayscale600,
+        maxLines: 1,
+        overflow: TextOverflow.visible,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
