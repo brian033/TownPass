@@ -179,6 +179,7 @@ class _ExerciseRecommendationViewState
           ),
           const SizedBox(height: 12),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Icon(
                 Icons.fitness_center,
@@ -186,10 +187,13 @@ class _ExerciseRecommendationViewState
                 size: 20,
               ),
               const SizedBox(width: 8),
-              TPText(
-                '運動部位：${controller.bodyPartsDisplayName}',
-                style: TPTextStyles.bodyRegular,
-                color: TPColors.grayscale700,
+              Expanded(
+                child: TPText(
+                  '運動部位：${controller.bodyPartsDisplayName}',
+                  style: TPTextStyles.bodyRegular,
+                  color: TPColors.grayscale700,
+                  softWrap: true,
+                ),
               ),
             ],
           ),
