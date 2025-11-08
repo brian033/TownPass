@@ -41,6 +41,17 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   /// 記錄完成的運動列表
   final List<ExerciseRecord> _completedExercises = [];
 
+  /// 追蹤動作狀態：當前動作開始的 leg index
+  int? _currentExerciseStartLegIndex;
+  /// 追蹤動作狀態：上一次記錄的動作名稱
+  String? _previousExerciseName;
+  /// 追蹤最後一個記錄的 leg index（用於防止重複記錄）
+  int _lastRecordedLegIndex = -1;
+  /// 追蹤當前動作開始的實際時間
+  DateTime? _currentExerciseStartTime;
+  /// 追蹤最後記錄的實際時間（用於部分記錄）
+  DateTime? _lastRecordedTime;
+
   /// 對外提供當前運動的 getter
   RecommendedExercise? get currentExercise => _currentExercise;
 
@@ -108,6 +119,12 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     });
 
     _selectRandomExercises();
+    // 初始化動作追蹤狀態
+    _currentExerciseStartLegIndex = 0;
+    _previousExerciseName = _currentExercise?.name;
+    _lastRecordedLegIndex = -1; // 重置最後記錄的 leg index
+    _currentExerciseStartTime = DateTime.now(); // 記錄當前動作開始的實際時間
+    _lastRecordedTime = null; // 重置最後記錄的時間
     _updateTimerCard();
     _startAutoProgressTimer();
   }
@@ -117,10 +134,22 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     // path 有 legs.length + 1 个站（起点 + 每个 leg 的终点）
     // 当 _currentLegIndex = legs.length - 1 时，我们在 last - 1 station，应该能前进到 last station
     if (_currentLegIndex < widget.routeResult.legs.length) {
+      // 在切換到下一站之前，保存當前動作資訊
+      final oldExerciseName = _previousExerciseName;
+      final oldExerciseStartLegIndex = _currentExerciseStartLegIndex;
+      final oldExerciseStartTime = _currentExerciseStartTime;
+      final isLastLeg = _currentLegIndex == widget.routeResult.legs.length - 1;
+      
+      // 如果這是最後一個 leg，在切換前記錄當前動作
+      if (isLastLeg && _currentExercise != null && _currentExerciseStartLegIndex != null) {
+        _recordCurrentExerciseAtLeg(_currentLegIndex);
+      }
+      
       setState(() {
         _currentLegIndex++;
       });
-      // 如果已经到达最后一个站，取消所有计时器并设置剩余时间为 0
+      
+      // 如果已经到达最后一个站，完成旅程
       if (_currentLegIndex >= widget.routeResult.legs.length) {
         _autoProgressTimer?.cancel();
         _countdownTimer?.cancel();
@@ -131,7 +160,27 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         widget.timerCardKey.currentState?.clear(showFinalMessage: true);
         widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
       } else {
+        // 選擇新的動作（可能會改變）
         _selectRandomExercises();
+        final newExerciseName = _currentExercise?.name;
+        
+        // 如果動作改變了，記錄前一個動作（使用保存的資訊和時間）
+        if (oldExerciseName != null && 
+            newExerciseName != null && 
+            oldExerciseName != newExerciseName &&
+            oldExerciseStartLegIndex != null &&
+            oldExerciseStartTime != null &&
+            !isLastLeg) { // 如果不是最後一個 leg，才記錄前一個動作（最後一個已經記錄過了）
+          _recordPreviousExercise(oldExerciseName, oldExerciseStartLegIndex, oldExerciseStartTime);
+        }
+        
+        // 如果動作改變了，更新開始的 leg index 和時間
+        if (newExerciseName != oldExerciseName) {
+          _currentExerciseStartLegIndex = _currentLegIndex;
+          _previousExerciseName = newExerciseName;
+          _currentExerciseStartTime = DateTime.now(); // 記錄新動作開始的實際時間
+        }
+        
         _updateTimerCard();
         _startAutoProgressTimer();
       }
@@ -145,7 +194,19 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         _currentLegIndex--;
         _isAtFinalStation = false;
       });
+      
+      // 選擇新的動作（可能會改變）
       _selectRandomExercises();
+      final newExerciseName = _currentExercise?.name;
+      
+      // 如果動作改變了，更新開始的 leg index 和時間（但不記錄，因為是回退）
+      if (newExerciseName != _previousExerciseName) {
+        _currentExerciseStartLegIndex = _currentLegIndex;
+        _previousExerciseName = newExerciseName;
+        _currentExerciseStartTime = DateTime.now(); // 重置開始時間，因為動作改變了
+      }
+      
+      // 上一站時不記錄運動，只更新顯示
       _updateTimerCard();
       _startAutoProgressTimer();
     }
@@ -197,23 +258,124 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     // 更新 ExerciseInfoCard
     widget.exerciseInfoCardKey.currentState?.setExercise(_currentExercise!);
 
-    // 記錄這次運動
-    _recordExercise(currentLeg, _currentExercise!, remainingSeconds);
+    // 不再在這裡記錄運動，改為在動作改變或結束時記錄
   }
 
-  /// 記錄完成的運動
-  void _recordExercise(MrtRouteLeg leg, RecommendedExercise exercise, int duration) {
-    final calories = (exercise.calPerSec * duration).round();
-    final stationSegment = '${leg.fromStation.name} → ${leg.toStation.name}';
-
-    final record = ExerciseRecord(
-      exerciseName: exercise.name,
-      duration: duration,
-      calories: calories,
-      stationSegment: stationSegment,
+  /// 記錄前一個完成的運動（當動作改變時調用）
+  /// [exerciseName] 要記錄的動作名稱
+  /// [startLegIndex] 動作開始的 leg index
+  /// [startTime] 動作開始的實際時間
+  void _recordPreviousExercise(String exerciseName, int startLegIndex, DateTime startTime) {
+    if (_currentLegIndex <= startLegIndex) return;
+    
+    // 計算結束 leg index
+    final endLegIndex = _currentLegIndex - 1; // 當前 leg 之前
+    
+    // 找到對應的運動對象
+    final exercise = widget.routeResult.exercises.firstWhere(
+      (e) => e.name == exerciseName,
+      orElse: () => widget.routeResult.exercises.first,
     );
+    
+    // 計算實際經過的時間（秒）
+    final now = DateTime.now();
+    DateTime actualStartTime;
+    
+    // 檢查是否已經記錄過這個範圍
+    if (startLegIndex <= _lastRecordedLegIndex && _lastRecordedTime != null) {
+      // 如果結束 leg index 也比最後記錄的還要小或相等，完全重複，不記錄
+      if (endLegIndex <= _lastRecordedLegIndex) {
+        return;
+      }
+      // 如果結束 leg index 比最後記錄的還要大，只記錄新的部分（從最後記錄的時間開始）
+      actualStartTime = _lastRecordedTime!;
+    } else {
+      // 使用原始開始時間
+      actualStartTime = startTime;
+    }
+    
+    // 計算實際經過的秒數
+    final elapsed = now.difference(actualStartTime);
+    final totalDuration = elapsed.inSeconds;
+    
+    // 記錄運動，即使持續時間為 0（但不記錄負數時間，這表示邏輯錯誤）
+    if (totalDuration >= 0 && startLegIndex < widget.routeResult.legs.length) {
+      final startLeg = widget.routeResult.legs[startLegIndex];
+      final endLeg = widget.routeResult.legs[endLegIndex];
+      final stationSegment = '${startLeg.fromStation.name} → ${endLeg.toStation.name}';
+      
+      final calories = (exercise.calPerSec * totalDuration).round();
+      
+      final record = ExerciseRecord(
+        exerciseName: exercise.name,
+        duration: totalDuration,
+        calories: calories,
+        stationSegment: stationSegment,
+      );
+      
+      _completedExercises.add(record);
+      // 更新最後記錄的 leg index 和時間
+      _lastRecordedLegIndex = endLegIndex;
+      _lastRecordedTime = now;
+    }
+  }
 
-    _completedExercises.add(record);
+  /// 在指定 leg 記錄當前動作（用於結束旅程時）
+  /// [endLegIndex] 結束的 leg index（包含）
+  void _recordCurrentExerciseAtLeg(int endLegIndex) {
+    if (_currentExercise == null || _currentExerciseStartLegIndex == null || _currentExerciseStartTime == null) return;
+    
+    final startLegIndex = _currentExerciseStartLegIndex!;
+    final actualEndLegIndex = endLegIndex < widget.routeResult.legs.length 
+        ? endLegIndex 
+        : widget.routeResult.legs.length - 1;
+    
+    // 計算實際經過的時間（秒）
+    final now = DateTime.now();
+    DateTime actualStartTime;
+    
+    // 檢查是否已經記錄過這個範圍
+    if (startLegIndex <= _lastRecordedLegIndex && _lastRecordedTime != null) {
+      // 如果結束 leg index 也比最後記錄的還要小或相等，完全重複，不記錄
+      if (actualEndLegIndex <= _lastRecordedLegIndex) {
+        return;
+      }
+      // 如果結束 leg index 比最後記錄的還要大，只記錄新的部分（從最後記錄的時間開始）
+      actualStartTime = _lastRecordedTime!;
+    } else {
+      // 使用原始開始時間
+      actualStartTime = _currentExerciseStartTime!;
+    }
+    
+    if (endLegIndex < startLegIndex) {
+      // 如果沒有進度，不記錄
+      return;
+    }
+    
+    // 計算實際經過的秒數
+    final elapsed = now.difference(actualStartTime);
+    final totalDuration = elapsed.inSeconds;
+    
+    // 記錄運動，即使持續時間為 0（但不記錄負數時間，這表示邏輯錯誤）
+    if (totalDuration >= 0 && startLegIndex < widget.routeResult.legs.length) {
+      final startLeg = widget.routeResult.legs[startLegIndex];
+      final endLeg = widget.routeResult.legs[actualEndLegIndex];
+      final stationSegment = '${startLeg.fromStation.name} → ${endLeg.toStation.name}';
+      
+      final calories = (_currentExercise!.calPerSec * totalDuration).round();
+      
+      final record = ExerciseRecord(
+        exerciseName: _currentExercise!.name,
+        duration: totalDuration,
+        calories: calories,
+        stationSegment: stationSegment,
+      );
+      
+      _completedExercises.add(record);
+      // 更新最後記錄的 leg index 和時間
+      _lastRecordedLegIndex = actualEndLegIndex;
+      _lastRecordedTime = now;
+    }
   }
 
   /// 啟動自動進站計時器和倒數計時器
@@ -245,17 +407,24 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     // 啟動自動進站計時器
     _autoProgressTimer = Timer(Duration(seconds: totalSeconds), () {
       if (!mounted) return;
-      if (_currentLegIndex < widget.routeResult.legs.length - 1) {
-        _nextStation();
-      } else {
-        _completeJourney();
-      }
+      // 統一使用 _nextStation() 處理，它會自動判斷是否到達最後一站
+      _nextStation();
     });
   }
 
   void _completeJourney() {
     if (_journeyCompleted) {
       return;
+    }
+
+    // 如果還沒有到達最後一站，記錄當前動作
+    // 如果已經到達最後一站（_isAtFinalStation == true），動作已經在 _nextStation() 中記錄過了
+    if (!_isAtFinalStation && 
+        _currentExercise != null && 
+        _currentExerciseStartLegIndex != null &&
+        _currentLegIndex < widget.routeResult.legs.length) {
+      // 記錄當前動作（到當前 leg）
+      _recordCurrentExerciseAtLeg(_currentLegIndex);
     }
 
     _autoProgressTimer?.cancel();
