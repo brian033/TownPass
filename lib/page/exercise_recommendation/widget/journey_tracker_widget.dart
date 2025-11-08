@@ -487,7 +487,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
           ),
           const SizedBox(height: 16),
           _buildProgressBar(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           _buildControlButtons(),
         ],
       ),
@@ -516,13 +516,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     final currentIndex = _getCurrentIndex();
     final segmentProgress = _getSegmentProgress();
 
-    return SizedBox(
-      height: 120,
-      child: _AnimatedPathWidget(
-        path: path,
-        currentIndex: currentIndex,
-        segmentProgress: segmentProgress,
-      ),
+    return _AnimatedPathWidget(
+      path: path,
+      currentIndex: currentIndex,
+      segmentProgress: segmentProgress,
     );
   }
 
