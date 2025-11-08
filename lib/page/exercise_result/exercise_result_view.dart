@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:town_pass/service/account_service.dart';
 import 'package:town_pass/service/points_service.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
@@ -93,11 +94,7 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
 
   @override
   Widget build(BuildContext context) {
-    final totalMinutes = _data.totalDuration.inMinutes;
-    final totalSeconds = _data.totalDuration.inSeconds.remainder(60);
-    final durationText = totalSeconds == 0
-        ? '$totalMinutes 分鐘'
-        : '$totalMinutes 分 $totalSeconds 秒';
+    final durationText = _formatDuration(_data.totalDuration);
 
     return Scaffold(
       backgroundColor: TPColors.white,
@@ -111,10 +108,30 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
           children: [
             _buildSummaryCard(durationText),
             const SizedBox(height: 24),
-            TPText(
-              '終點站推薦運動場館',
-              style: TPTextStyles.h3SemiBold,
-              color: TPColors.grayscale900,
+            Row(
+              children: [
+                TPText(
+                  '終點站推薦運動場館',
+                  style: TPTextStyles.h3SemiBold,
+                  color: TPColors.grayscale900,
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: _shareResult,
+                  style: TextButton.styleFrom(
+                    foregroundColor: TPColors.primary500,
+                  ),
+                  icon: const Icon(
+                    Icons.ios_share,
+                    size: 18,
+                  ),
+                  label: const TPText(
+                    '分享',
+                    style: TPTextStyles.bodySemiBold,
+                    color: TPColors.primary500,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             Expanded(
@@ -276,6 +293,26 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  String _formatDuration(Duration duration) {
+    final totalMinutes = duration.inMinutes;
+    final totalSeconds = duration.inSeconds.remainder(60);
+    return totalSeconds == 0
+        ? '$totalMinutes 分鐘'
+        : '$totalMinutes 分 $totalSeconds 秒';
+  }
+
+  Future<void> _shareResult() async {
+    final buffer = StringBuffer()
+      ..writeln('我的運動成果分享')
+      ..writeln('${_data.startStation} ➜ ${_data.endStation}')
+      ..writeln('總運動時間：${_formatDuration(_data.totalDuration)}')
+      ..writeln('本趟積分：${_data.points} 點');
+    await Share.share(
+      buffer.toString(),
+      subject: 'Town Pass 運動結果',
+    );
   }
 }
 
