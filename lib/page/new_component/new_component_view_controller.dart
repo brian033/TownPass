@@ -21,7 +21,7 @@ class NewComponentViewController extends GetxController {
   // 使用者選擇
   final Rx<MrtStation?> selectedStartStation = Rx<MrtStation?>(null);
   final Rx<MrtStation?> selectedEndStation = Rx<MrtStation?>(null);
-  final Rx<BodyPart?> selectedBodyPart = Rx<BodyPart?>(null);
+  final RxList<BodyPart> selectedBodyParts = <BodyPart>[].obs;
 
   // 載入狀態
   final RxBool isLoading = true.obs;
@@ -103,7 +103,7 @@ class NewComponentViewController extends GetxController {
   bool get canStart {
     return selectedStartStation.value != null &&
         selectedEndStation.value != null &&
-        selectedBodyPart.value != null &&
+        selectedBodyParts.isNotEmpty &&
         selectedStartStation.value!.id != selectedEndStation.value!.id;
   }
 
@@ -256,7 +256,7 @@ class NewComponentViewController extends GetxController {
       arguments: {
         'startStation': selectedStartStation.value,
         'endStation': selectedEndStation.value,
-        'bodyPart': selectedBodyPart.value,
+        'bodyParts': selectedBodyParts.toList(),
         'estimatedMinutes': estimatedMinutes,
         'routeResult': route,
       },
@@ -267,7 +267,22 @@ class NewComponentViewController extends GetxController {
   void resetSelection() {
     selectedStartStation.value = null;
     selectedEndStation.value = null;
-    selectedBodyPart.value = null;
+    selectedBodyParts.clear();
+  }
+  
+  // 切換身體部位的選擇狀態
+  void toggleBodyPart(BodyPart bodyPart) {
+    final index = selectedBodyParts.indexWhere((part) => part.id == bodyPart.id);
+    if (index >= 0) {
+      selectedBodyParts.removeAt(index);
+    } else {
+      selectedBodyParts.add(bodyPart);
+    }
+  }
+  
+  // 檢查身體部位是否已選擇
+  bool isBodyPartSelected(BodyPart bodyPart) {
+    return selectedBodyParts.any((part) => part.id == bodyPart.id);
   }
 
   Future<void> loadMrtConnections() async {
@@ -375,8 +390,8 @@ class NewComponentViewController extends GetxController {
       return null;
     }
 
-    // 注意：不使用快取，因為需要根據當前選擇的 bodyPart 重新篩選運動
-    // 如果未來需要優化效能，應該將 bodyPart 也加入快取 key
+    // 注意：不使用快取，因為需要根據當前選擇的 bodyParts 重新篩選運動
+    // 如果未來需要優化效能，應該將 bodyParts 也加入快取 key
     final route = _computeRoute(start.id, end.id);
     return route;
   }
@@ -475,23 +490,19 @@ class NewComponentViewController extends GetxController {
 
   /// 根據選擇的身體部位篩選運動
   List<RecommendedExercise> _filterExercisesByBodyPart() {
-    final selectedPart = selectedBodyPart.value;
-    if (selectedPart == null) {
-      print('DEBUG: selectedPart is null');
+    if (selectedBodyParts.isEmpty) {
+      print('DEBUG: selectedBodyParts is empty');
       return [];
     }
 
-    print('DEBUG: selectedPart.id = ${selectedPart.id}');
+    // 取得所有選擇的部位 ID
+    final selectedPartIds = selectedBodyParts.map((part) => part.id).toSet();
+    print('DEBUG: selectedPartIds = $selectedPartIds');
     print('DEBUG: _exercisesForRecommendation.length = ${_exercisesForRecommendation.length}');
 
-    for (var i = 0; i < _exercisesForRecommendation.length; i++) {
-      final ex = _exercisesForRecommendation[i];
-      print('DEBUG: Exercise $i: name=${ex.name}, parts=${ex.parts}');
-    }
-
-    // 篩選 parts 陣列中包含選擇部位的運動
+    // 篩選 parts 陣列中包含任何選擇部位的運動
     final filtered = _exercisesForRecommendation
-        .where((exercise) => exercise.parts.contains(selectedPart.id))
+        .where((exercise) => exercise.parts.any((part) => selectedPartIds.contains(part)))
         .toList();
 
     print('DEBUG: Filtered exercises count = ${filtered.length}');

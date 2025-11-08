@@ -174,7 +174,7 @@ class _ExerciseRecommendationViewState
               ),
               const SizedBox(width: 8),
               TPText(
-                '運動部位：${controller.bodyPart.name}',
+                '運動部位：${controller.bodyPartsDisplayName}',
                 style: TPTextStyles.bodyRegular,
                 color: TPColors.grayscale700,
               ),
