@@ -283,15 +283,9 @@ class ExerciseRecommendationController extends GetxController {
       );
 
       final success = await _historyService!.saveExerciseHistory(history);
-      
+
       if (success) {
         print('運動紀錄已儲存');
-        Get.snackbar(
-          '運動完成！',
-          '已記錄本次運動，消耗 $totalCalories 卡路里',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 2),
-        );
       } else {
         print('儲存運動紀錄失敗');
       }

@@ -14,7 +14,6 @@ import 'package:town_pass/service/points_service.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
-// End of Selection
 import 'exercise_places_repository.dart';
 
 class ExerciseResultData {
@@ -330,7 +329,7 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
       await Share.shareXFiles(
         [xFile],
         subject: 'Town Pass 運動結果',
-        text: shareText,
+        // text: shareText,
       );
       return true;
     } catch (error, stackTrace) {
