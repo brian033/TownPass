@@ -718,27 +718,24 @@ class NewComponentView extends GetView<NewComponentViewController> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // 身體部位圖標（未選中時有彩色背景圓形）
-                      if (!isSelected)
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: _hexToColor(bodyPart.color).withOpacity(0.15),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            _getBodyPartIcon(bodyPart.id),
-                            size: 16,
-                            color: _hexToColor(bodyPart.color),
-                          ),
-                        )
-                      else
-                        Icon(
-                          _getBodyPartIcon(bodyPart.id),
-                          size: 18,
-                          color: TPColors.white,
+                      // 身體部位圖標（統一使用 24x24 容器，保持尺寸一致）
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? TPColors.white.withOpacity(0.2)
+                              : _hexToColor(bodyPart.color).withOpacity(0.15),
+                          shape: BoxShape.circle,
                         ),
+                        child: Icon(
+                          _getBodyPartIcon(bodyPart.id),
+                          size: 16,
+                          color: isSelected
+                              ? TPColors.white
+                              : _hexToColor(bodyPart.color),
+                        ),
+                      ),
                       const SizedBox(width: 8),
                       TPText(
                         bodyPart.displayName,
@@ -746,19 +743,21 @@ class NewComponentView extends GetView<NewComponentViewController> {
                           color: isSelected
                               ? TPColors.white
                               : TPColors.grayscale900,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.normal,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
+                      // 間距和勾選圖標（預留固定空間保持寬度一致）
                       const SizedBox(width: 6),
-                      // 選中狀態圖標
-                      if (isSelected)
-                        const Icon(
-                          Icons.check_circle,
-                          size: 16,
-                          color: TPColors.white,
-                        ),
+                      SizedBox(
+                        width: 16, // 固定圖標寬度
+                        child: isSelected
+                            ? const Icon(
+                                Icons.check_circle,
+                                size: 16,
+                                color: TPColors.white,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
                     ],
                   ),
                 ),
