@@ -158,12 +158,6 @@ class NewComponentView extends GetView<NewComponentViewController> {
             FocusNode focusNode,
             VoidCallback onFieldSubmitted,
           ) {
-            if (controller.selectedStartStation.value != null &&
-                textEditingController.text.isEmpty) {
-              textEditingController.text =
-                  controller.selectedStartStation.value!.displayName;
-            }
-
             return Container(
               decoration: BoxDecoration(
                 color: TPColors.grayscale50,
@@ -318,12 +312,6 @@ class NewComponentView extends GetView<NewComponentViewController> {
             FocusNode focusNode,
             VoidCallback onFieldSubmitted,
           ) {
-            if (controller.selectedEndStation.value != null &&
-                textEditingController.text.isEmpty) {
-              textEditingController.text =
-                  controller.selectedEndStation.value!.displayName;
-            }
-
             return Container(
               decoration: BoxDecoration(
                 color: TPColors.grayscale50,
@@ -365,7 +353,23 @@ class NewComponentView extends GetView<NewComponentViewController> {
             AutocompleteOnSelected<MrtStation> onSelected,
             Iterable<MrtStation> options,
           ) {
-            final grouped = controller.groupedEndStations;
+            // 基於過濾後的 options 重新分組
+            final Map<String, List<MrtStation>> filteredGrouped = {};
+            final seen = <String, Set<String>>{};
+
+            for (final station in options) {
+              for (int i = 0; i < station.lines.length; i++) {
+                final line = station.lines[i];
+                if (!filteredGrouped.containsKey(line)) {
+                  filteredGrouped[line] = [];
+                  seen[line] = <String>{};
+                }
+                if (!seen[line]!.contains(station.id)) {
+                  filteredGrouped[line]!.add(station);
+                  seen[line]!.add(station.id);
+                }
+              }
+            }
 
             return Align(
               alignment: Alignment.topLeft,
@@ -385,7 +389,8 @@ class NewComponentView extends GetView<NewComponentViewController> {
                   child: ListView(
                     padding: const EdgeInsets.all(8),
                     shrinkWrap: true,
-                    children: _buildGroupedStationList(grouped, onSelected),
+                    children:
+                        _buildGroupedStationList(filteredGrouped, onSelected),
                   ),
                 ),
               ),
