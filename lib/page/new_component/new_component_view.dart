@@ -4,6 +4,7 @@ import 'package:town_pass/bean/mrt_station.dart';
 import 'package:town_pass/gen/assets.gen.dart';
 import 'package:town_pass/page/exercise_history/exercise_history_view.dart';
 import 'package:town_pass/page/new_component/new_component_view_controller.dart';
+import 'package:town_pass/page/points_ranking/points_ranking_page.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
 
@@ -757,6 +758,34 @@ class NewComponentView extends GetView<NewComponentViewController> {
             onTap: () {
               Get.back(); // 關閉 drawer
               Get.to(() => const ExerciseHistoryView());
+            },
+          ),
+          ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: TPColors.secondary50,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.leaderboard_rounded,
+                color: TPColors.secondary500,
+                size: 22,
+              ),
+            ),
+            title: const TPText(
+              '排行榜',
+              style: TPTextStyles.bodySemiBold,
+            ),
+            subtitle: const TPText(
+              '看看大家的累積分數',
+              style: TPTextStyles.caption,
+              color: TPColors.grayscale500,
+            ),
+            onTap: () {
+              Get.back();
+              Get.to(() => const PointsRankingPage());
             },
           ),
           const Divider(height: 1, indent: 16, endIndent: 16),
