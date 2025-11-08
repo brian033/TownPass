@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:town_pass/page/exercise_result/exercise_result_view.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
@@ -79,6 +80,42 @@ class ExerciseRecommendationView extends StatelessWidget {
                   child: _buildExerciseCard(exercise),
                 );
               }),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  final sampleData = ExerciseResultData(
+                    startStation: '捷運北門站',
+                    endStation: '捷運象山站',
+                    totalDuration: const Duration(minutes: 38),
+                    venues: const [
+                      ExerciseVenue(
+                        name: '象山運動中心',
+                        imageUrl:
+                            'https://images.unsplash.com/photo-1610136849937-ec3f36d25e2c?auto=format&fit=crop&w=800&q=80',
+                        locationUrl: 'https://maps.google.com/?q=象山運動中心',
+                      ),
+                      ExerciseVenue(
+                        name: '信義社區健身會館',
+                        imageUrl:
+                            'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=800&q=80',
+                        locationUrl: 'https://maps.google.com/?q=信義社區健身會館',
+                      ),
+                    ],
+                  );
+
+                  Get.to(() => ExerciseResultView(initialData: sampleData));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: TPColors.primary500,
+                  foregroundColor: TPColors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: TPTextStyles.bodySemiBold,
+                ),
+                child: const Text('查看運動結果'),
+              ),
             ),
           ],
         ),
