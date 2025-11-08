@@ -1,0 +1,216 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": "2025-11-08",
+  "stations": [
+    {
+      "id": "R10",
+      "stationCode": "R10",
+      "name": "台北車站",
+      "nameEn": "Taipei Main Station",
+      "lines": ["red", "blue"],
+      "lineColors": ["#E3002C", "#0070BD"],
+      "location": {
+        "lat": 25.0478,
+        "lng": 121.5170
+      },
+      "district": "中正區",
+      "city": "台北市"
+    },
+    {
+      "id": "R11",
+      "stationCode": "R11",
+      "name": "台北101/世貿",
+      "nameEn": "Taipei 101/World Trade Center",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0330,
+        "lng": 121.5654
+      },
+      "district": "信義區",
+      "city": "台北市"
+    },
+    {
+      "id": "R12",
+      "stationCode": "R12",
+      "name": "象山",
+      "nameEn": "Xiangshan",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0330,
+        "lng": 121.5698
+      },
+      "district": "信義區",
+      "city": "台北市"
+    },
+    {
+      "id": "R08",
+      "stationCode": "R08",
+      "name": "中山",
+      "nameEn": "Zhongshan",
+      "lines": ["red", "green"],
+      "lineColors": ["#E3002C", "#008659"],
+      "location": {
+        "lat": 25.0527,
+        "lng": 121.5202
+      },
+      "district": "中山區",
+      "city": "台北市"
+    },
+    {
+      "id": "BL15",
+      "stationCode": "BL15",
+      "name": "市政府",
+      "nameEn": "Taipei City Hall",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0408,
+        "lng": 121.5657
+      },
+      "district": "信義區",
+      "city": "台北市"
+    },
+    {
+      "id": "BL12",
+      "stationCode": "BL12",
+      "name": "忠孝復興",
+      "nameEn": "Zhongxiao Fuxing",
+      "lines": ["blue", "green"],
+      "lineColors": ["#0070BD", "#008659"],
+      "location": {
+        "lat": 25.0418,
+        "lng": 121.5440
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "BL11",
+      "stationCode": "BL11",
+      "name": "國父紀念館",
+      "nameEn": "Sun Yat-sen Memorial Hall",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0412,
+        "lng": 121.5570
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "G01",
+      "stationCode": "G01",
+      "name": "新店",
+      "nameEn": "Xindian",
+      "lines": ["green"],
+      "lineColors": ["#008659"],
+      "location": {
+        "lat": 24.9575,
+        "lng": 121.5370
+      },
+      "district": "新店區",
+      "city": "新北市"
+    },
+    {
+      "id": "G08",
+      "stationCode": "G08",
+      "name": "台電大樓",
+      "nameEn": "Taipower Building",
+      "lines": ["green"],
+      "lineColors": ["#008659"],
+      "location": {
+        "lat": 25.0206,
+        "lng": 121.5276
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "G09",
+      "stationCode": "G09",
+      "name": "公館",
+      "nameEn": "Gongguan",
+      "lines": ["green"],
+      "lineColors": ["#008659"],
+      "location": {
+        "lat": 25.0146,
+        "lng": 121.5346
+      },
+      "district": "中正區",
+      "city": "台北市"
+    },
+    {
+      "id": "O07",
+      "stationCode": "O07",
+      "name": "忠孝新生",
+      "nameEn": "Zhongxiao Xinsheng",
+      "lines": ["orange", "blue"],
+      "lineColors": ["#F8B61C", "#0070BD"],
+      "location": {
+        "lat": 25.0423,
+        "lng": 121.5329
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "O05",
+      "stationCode": "O05",
+      "name": "南京復興",
+      "nameEn": "Nanjing Fuxing",
+      "lines": ["orange", "green"],
+      "lineColors": ["#F8B61C", "#008659"],
+      "location": {
+        "lat": 25.0520,
+        "lng": 121.5440
+      },
+      "district": "中山區",
+      "city": "台北市"
+    },
+    {
+      "id": "O12",
+      "stationCode": "O12",
+      "name": "東門",
+      "nameEn": "Dongmen",
+      "lines": ["orange", "green"],
+      "lineColors": ["#F8B61C", "#008659"],
+      "location": {
+        "lat": 25.0338,
+        "lng": 121.5284
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "O01",
+      "stationCode": "O01",
+      "name": "南港",
+      "nameEn": "Nangang",
+      "lines": ["orange", "blue"],
+      "lineColors": ["#F8B61C", "#0070BD"],
+      "location": {
+        "lat": 25.0520,
+        "lng": 121.6066
+      },
+      "district": "南港區",
+      "city": "台北市"
+    },
+    {
+      "id": "BR10",
+      "stationCode": "BR10",
+      "name": "板橋",
+      "nameEn": "Banqiao",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0138,
+        "lng": 121.4627
+      },
+      "district": "板橋區",
+      "city": "新北市"
+    }
+  ]
+}

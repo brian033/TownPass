@@ -1,0 +1,164 @@
+{
+  "version": "1.0.0",
+  "exercises": [
+    {
+      "id": "ex001",
+      "name": "坐姿肩膀繞圈",
+      "nameEn": "Seated Shoulder Circles",
+      "bodyPartId": "upper_body",
+      "difficulty": "easy",
+      "duration": 60,
+      "calories": 5,
+      "description": "放鬆肩膀，促進血液循環",
+      "instructions": [
+        "坐直，雙手放在大腿上",
+        "慢慢向前繞肩膀 10 次",
+        "再向後繞肩膀 10 次"
+      ],
+      "tips": "保持呼吸順暢，動作放慢",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "如有肩膀受傷請諮詢醫生"
+    },
+    {
+      "id": "ex002",
+      "name": "頸部伸展",
+      "nameEn": "Neck Stretches",
+      "bodyPartId": "neck_shoulder",
+      "difficulty": "easy",
+      "duration": 90,
+      "calories": 3,
+      "description": "緩解頸部緊繃與壓力",
+      "instructions": [
+        "坐直，眼睛平視前方",
+        "慢慢將頭向右側傾斜，維持 15 秒",
+        "回到中間，再向左側傾斜，維持 15 秒",
+        "重複 3 次"
+      ],
+      "tips": "動作要輕柔，不要用力拉扯",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "如有頸部疼痛請停止"
+    },
+    {
+      "id": "ex003",
+      "name": "坐姿脊椎扭轉",
+      "nameEn": "Seated Spinal Twist",
+      "bodyPartId": "core",
+      "difficulty": "medium",
+      "duration": 120,
+      "calories": 8,
+      "description": "增加脊椎靈活度，放鬆背部",
+      "instructions": [
+        "坐直，雙腳平放地面",
+        "右手放在椅背上，左手放在右膝",
+        "慢慢向右扭轉上半身，維持 20 秒",
+        "換邊重複"
+      ],
+      "tips": "扭轉時保持臀部穩定不動",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "孕婦或有脊椎問題者請諮詢醫生"
+    },
+    {
+      "id": "ex004",
+      "name": "坐姿腿部伸展",
+      "nameEn": "Seated Leg Extensions",
+      "bodyPartId": "lower_body",
+      "difficulty": "easy",
+      "duration": 90,
+      "calories": 10,
+      "description": "活化腿部肌肉，促進血液循環",
+      "instructions": [
+        "坐直，雙手扶著椅子邊緣",
+        "抬起右腿，伸直膝蓋，腳尖向上",
+        "維持 5 秒後放下",
+        "左右腿各重複 10 次"
+      ],
+      "tips": "保持核心穩定，不要晃動",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "膝蓋有傷者請小心"
+    },
+    {
+      "id": "ex005",
+      "name": "坐姿手臂伸展",
+      "nameEn": "Seated Arm Stretches",
+      "bodyPartId": "upper_body",
+      "difficulty": "easy",
+      "duration": 60,
+      "calories": 4,
+      "description": "放鬆手臂與肩膀肌肉",
+      "instructions": [
+        "右手向上伸直，再彎曲手肘向後",
+        "左手輕壓右手肘，維持 15 秒",
+        "換邊重複"
+      ],
+      "tips": "呼吸保持平穩",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "不要過度拉伸"
+    },
+    {
+      "id": "ex006",
+      "name": "深呼吸放鬆",
+      "nameEn": "Deep Breathing Relaxation",
+      "bodyPartId": "full_body",
+      "difficulty": "easy",
+      "duration": 180,
+      "calories": 5,
+      "description": "全身放鬆，減輕壓力",
+      "instructions": [
+        "坐直，閉上眼睛",
+        "用鼻子深吸氣 4 秒",
+        "憋氣 4 秒",
+        "用嘴巴慢慢吐氣 6 秒",
+        "重複 5-10 次"
+      ],
+      "tips": "專注在呼吸上，放鬆全身",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "感到頭暈請停止"
+    },
+    {
+      "id": "ex007",
+      "name": "腳踝繞圈",
+      "nameEn": "Ankle Circles",
+      "bodyPartId": "lower_body",
+      "difficulty": "easy",
+      "duration": 60,
+      "calories": 3,
+      "description": "促進腳踝靈活度與血液循環",
+      "instructions": [
+        "坐著抬起右腳離地",
+        "用腳尖畫圈，順時針 10 次",
+        "再逆時針 10 次",
+        "換左腳重複"
+      ],
+      "tips": "動作輕柔，保持平衡",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "腳踝受傷者請諮詢醫生"
+    },
+    {
+      "id": "ex008",
+      "name": "坐姿側腰伸展",
+      "nameEn": "Seated Side Stretch",
+      "bodyPartId": "core",
+      "difficulty": "easy",
+      "duration": 90,
+      "calories": 6,
+      "description": "伸展側腰與肋間肌",
+      "instructions": [
+        "坐直，左手叉腰",
+        "右手向上舉高，向左側彎",
+        "維持 15 秒，感受右側腰部拉伸",
+        "換邊重複"
+      ],
+      "tips": "不要前傾或後仰",
+      "imageUrl": "",
+      "videoUrl": "",
+      "safetyNotes": "有側腰疼痛請停止"
+    }
+  ]
+}
