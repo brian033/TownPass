@@ -58,13 +58,21 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
   /// 下一站
   void _nextStation() {
-    if (_currentLegIndex < widget.routeResult.legs.length - 1) {
+    if (_currentLegIndex < widget.routeResult.legs.length) {
       setState(() {
         _currentLegIndex++;
       });
-      _selectRandomExercises();
-      _updateTimerCard();
-      _startAutoProgressTimer();
+
+      // 如果已經抵達終點，不需要更新運動和計時器
+      if (_currentLegIndex < widget.routeResult.legs.length) {
+        _selectRandomExercises();
+        _updateTimerCard();
+        _startAutoProgressTimer();
+      } else {
+        // 抵達終點，停止計時器
+        _autoProgressTimer?.cancel();
+        _countdownTimer?.cancel();
+      }
     }
   }
 
@@ -172,7 +180,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                 style: TPTextStyles.bodySemiBold,
                 color: TPColors.grayscale900,
               ),
-              if (_journeyStarted)
+              if (_journeyStarted && _currentLegIndex < widget.routeResult.legs.length)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -190,6 +198,30 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                       const SizedBox(width: 4),
                       TPText(
                         _formatTime(_remainingSecondsToNextStation),
+                        style: TPTextStyles.caption,
+                        color: TPColors.primary500,
+                      ),
+                    ],
+                  ),
+                ),
+              if (_journeyStarted && _currentLegIndex == widget.routeResult.legs.length)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: TPColors.primary50,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: TPColors.primary200),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle_outline,
+                        size: 16,
+                        color: TPColors.primary500,
+                      ),
+                      SizedBox(width: 4),
+                      TPText(
+                        '已抵達',
                         style: TPTextStyles.caption,
                         color: TPColors.primary500,
                       ),
@@ -217,80 +249,139 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       );
     }
 
-    // 決定顯示範圍
     final legs = widget.routeResult.legs;
-    int startIndex, endIndex;
 
-    if (_currentLegIndex == 0) {
-      // 開頭：顯示前 2-3 個 leg
-      startIndex = 0;
-      endIndex = min(2, legs.length - 1);
-    } else if (_currentLegIndex == legs.length - 1) {
-      // 結尾：顯示最後 2-3 個 leg
-      startIndex = max(0, legs.length - 3);
-      endIndex = legs.length - 1;
-    } else {
-      // 中間：顯示當前 leg 和前後各一個
-      startIndex = max(0, _currentLegIndex - 1);
-      endIndex = min(legs.length - 1, _currentLegIndex + 1);
-    }
-
-    // 收集要顯示的站點
-    List<String> stationNames = [];
-    for (int i = startIndex; i <= endIndex; i++) {
-      if (i == startIndex) {
-        stationNames.add(legs[i].fromStation.name);
+    // 收集所有站點名稱和索引
+    final List<String> allStationNames = [];
+    for (int i = 0; i < legs.length; i++) {
+      if (i == 0) {
+        allStationNames.add(legs[i].fromStation.name);
       }
-      stationNames.add(legs[i].toStation.name);
+      allStationNames.add(legs[i].toStation.name);
     }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
+    final totalStations = allStationNames.length;
+
+    // 如果站點數 <= 4，全部顯示
+    if (totalStations <= 4) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          for (int i = 0; i < stationNames.length; i++) ...[
+          for (int i = 0; i < totalStations; i++) ...[
             _buildStationDot(
-              stationNames[i],
-              isActive: _journeyStarted && i <= (_currentLegIndex - startIndex + 1),
+              allStationNames[i],
+              isActive: _journeyStarted && i <= _currentLegIndex,
+              isCurrent: _journeyStarted && i == _currentLegIndex,
             ),
-            if (i < stationNames.length - 1)
-              _buildConnector(
-                isActive: _journeyStarted && i < (_currentLegIndex - startIndex + 1),
+            if (i < totalStations - 1)
+              Expanded(
+                child: _buildConnector(
+                  isActive: _journeyStarted && i < _currentLegIndex,
+                ),
               ),
           ],
         ],
-      ),
+      );
+    }
+
+    // 站點數 > 4：固定顯示起點、終點，中間顯示2個站點
+    final List<int> visibleIndices = [];
+    final List<String> visibleNames = [];
+
+    // 永遠顯示起點
+    visibleIndices.add(0);
+    visibleNames.add(allStationNames[0]);
+
+    // 中間2個站點：顯示當前站點和下一個站點（但排除起點和終點）
+    final int currentStationIndex = _currentLegIndex;
+    final int nextStationIndex = _currentLegIndex + 1;
+
+    if (currentStationIndex == 0) {
+      // 如果當前在起點，中間顯示站點 1, 2
+      visibleIndices.addAll([1, 2]);
+      visibleNames.addAll([allStationNames[1], allStationNames[2]]);
+    } else if (currentStationIndex >= totalStations - 1) {
+      // 已抵達終點或接近終點，固定顯示倒數第二、第三個站點
+      final middleIndex1 = totalStations - 3;
+      final middleIndex2 = totalStations - 2;
+      visibleIndices.addAll([middleIndex1, middleIndex2]);
+      visibleNames.addAll([allStationNames[middleIndex1], allStationNames[middleIndex2]]);
+    } else if (nextStationIndex < totalStations - 1) {
+      // 當前站點和下一個站點都不是終點，顯示它們
+      visibleIndices.addAll([currentStationIndex, nextStationIndex]);
+      visibleNames.addAll([allStationNames[currentStationIndex], allStationNames[nextStationIndex]]);
+    } else {
+      // 接近終點時，固定顯示倒數第二、第三個站點
+      final middleIndex1 = totalStations - 3;
+      final middleIndex2 = totalStations - 2;
+      visibleIndices.addAll([middleIndex1, middleIndex2]);
+      visibleNames.addAll([allStationNames[middleIndex1], allStationNames[middleIndex2]]);
+    }
+
+    // 永遠顯示終點
+    visibleIndices.add(totalStations - 1);
+    visibleNames.add(allStationNames[totalStations - 1]);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (int i = 0; i < visibleNames.length; i++) ...[
+          _buildStationDot(
+            visibleNames[i],
+            isActive: _journeyStarted && visibleIndices[i] <= _currentLegIndex,
+            isCurrent: _journeyStarted && visibleIndices[i] == _currentLegIndex,
+          ),
+          if (i < visibleNames.length - 1)
+            Expanded(
+              child: _buildConnector(
+                isActive: _journeyStarted &&
+                  visibleIndices[i] < _currentLegIndex,
+              ),
+            ),
+        ],
+      ],
     );
   }
 
   /// 建立站點圓點
-  Widget _buildStationDot(String stationName, {required bool isActive}) {
-    return Column(
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isActive ? TPColors.primary500 : TPColors.grayscale300,
+  Widget _buildStationDot(
+    String stationName, {
+    required bool isActive,
+    required bool isCurrent,
+  }) {
+    return SizedBox(
+      width: 70, // 固定寬度避免抖動
+      child: Column(
+        children: [
+          Container(
+            width: isCurrent ? 16 : 12,
+            height: isCurrent ? 16 : 12,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isCurrent ? TPColors.primary500 : TPColors.grayscale300,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        TPText(
-          stationName,
-          style: TPTextStyles.caption,
-          color: isActive ? TPColors.primary500 : TPColors.grayscale600,
-        ),
-      ],
+          const SizedBox(height: 4),
+          TPText(
+            stationName,
+            style: isCurrent
+              ? TPTextStyles.caption
+              : TPTextStyles.caption.copyWith(fontSize: 10),
+            color: isCurrent ? TPColors.primary500 : TPColors.grayscale400,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 
   /// 建立連接線
   Widget _buildConnector({required bool isActive}) {
     return Container(
-      width: 40,
       height: 2,
-      margin: const EdgeInsets.only(bottom: 28),
+      margin: const EdgeInsets.only(bottom: 28, left: 4, right: 4),
       color: isActive ? TPColors.primary500 : TPColors.grayscale300,
     );
   }
@@ -342,7 +433,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
           ),
         ),
         ElevatedButton(
-          onPressed: _currentLegIndex < widget.routeResult.legs.length - 1
+          onPressed: _currentLegIndex < widget.routeResult.legs.length
               ? _nextStation
               : null,
           style: ElevatedButton.styleFrom(
