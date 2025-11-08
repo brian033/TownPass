@@ -32,6 +32,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   bool _journeyCompleted = false;
   RecommendedExercise? _currentExercise;
   RecommendedExercise? _nextExercise;
+  bool _isAtFinalStation = false;
   Timer? _autoProgressTimer;
   int _remainingSecondsToNextStation = 0;
   Timer? _countdownTimer;
@@ -99,6 +100,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       _journeyStarted = true;
       _journeyCompleted = false;
       _currentLegIndex = 0;
+      _isAtFinalStation = false;
     });
 
     _selectRandomExercises();
@@ -120,7 +122,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         _countdownTimer?.cancel();
         setState(() {
           _remainingSecondsToNextStation = 0;
+          _isAtFinalStation = true;
         });
+        widget.timerCardKey.currentState?.clear(showFinalMessage: true);
+        widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
       } else {
         _selectRandomExercises();
         _updateTimerCard();
@@ -134,6 +139,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     if (_currentLegIndex > 0) {
       setState(() {
         _currentLegIndex--;
+        _isAtFinalStation = false;
       });
       _selectRandomExercises();
       _updateTimerCard();
@@ -167,6 +173,12 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
   /// 更新 ExerciseTimerCard 和 ExerciseInfoCard
   void _updateTimerCard() {
+    if (_currentLegIndex >= widget.routeResult.legs.length) {
+      widget.timerCardKey.currentState?.clear(showFinalMessage: true);
+      widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
+      return;
+    }
+
     if (_currentExercise == null || _nextExercise == null) return;
 
     final currentLeg = widget.routeResult.legs[_currentLegIndex];
@@ -176,7 +188,6 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     widget.timerCardKey.currentState?.setDisplayCard(
       _currentExercise!.name,
       remainingSeconds,
-      _nextExercise!.name,
     );
 
     // 更新 ExerciseInfoCard
@@ -353,24 +364,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     }
 
     if (_journeyCompleted) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(
-              Icons.flag_rounded,
-              color: TPColors.primary500,
-              size: 28,
-            ),
-            SizedBox(height: 8),
-            TPText(
-              '旅程完成，準備查看結果！',
-              style: TPTextStyles.bodySemiBold,
-              color: TPColors.primary500,
-            ),
-          ],
-        ),
-      );
+      return _buildCompletedMessage();
     }
 
     // 顯示「上一站」和「下一站」按鈕
@@ -392,9 +386,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
           ),
         ),
         ElevatedButton(
-          onPressed: _getCurrentIndex() < widget.routeResult.legs.length
-              ? _nextStation
-              : _completeJourney,
+          onPressed: _isAtFinalStation ? _completeJourney : _nextStation,
           style: ElevatedButton.styleFrom(
             backgroundColor: TPColors.primary500,
             foregroundColor: TPColors.white,
@@ -402,12 +394,33 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
           child: TPText(
-            _currentLegIndex < widget.routeResult.legs.length - 1 ? '下一站' : '完成旅程',
+            _isAtFinalStation ? '完成旅程' : '下一站',
             style: TPTextStyles.bodySemiBold,
             color: TPColors.white,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildCompletedMessage() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(
+            Icons.flag_rounded,
+            color: TPColors.primary500,
+            size: 28,
+          ),
+          SizedBox(height: 8),
+          TPText(
+            '旅程完成，準備查看結果！',
+            style: TPTextStyles.bodySemiBold,
+            color: TPColors.primary500,
+          ),
+        ],
+      ),
     );
   }
 }

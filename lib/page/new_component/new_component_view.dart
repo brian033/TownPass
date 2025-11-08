@@ -587,14 +587,14 @@ class NewComponentView extends GetView<NewComponentViewController> {
             }
 
             return Container(
-              decoration: BoxDecoration(
-                color: TPColors.grayscale50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: TPColors.grayscale300,
-                  width: 1,
-                ),
-              ),
+          decoration: BoxDecoration(
+            color: TPColors.grayscale50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: TPColors.grayscale300,
+              width: 1,
+            ),
+          ),
               child: TextField(
                 controller: textEditingController,
                 focusNode: focusNode,
@@ -607,17 +607,17 @@ class NewComponentView extends GetView<NewComponentViewController> {
                 decoration: InputDecoration(
                   hintText: hint,
                   hintStyle: TPTextStyles.bodyRegular.copyWith(
-                    color: TPColors.grayscale500,
-                  ),
+              color: TPColors.grayscale500,
+            ),
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  border: InputBorder.none,
+                horizontal: 16,
+                vertical: 12,
+              ),
+              border: InputBorder.none,
                   suffixIcon: const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: TPColors.grayscale700,
-                  ),
+              Icons.keyboard_arrow_down,
+              color: TPColors.grayscale700,
+            ),
                 ),
               ),
             );
@@ -659,17 +659,17 @@ class NewComponentView extends GetView<NewComponentViewController> {
                             horizontal: 12,
                             vertical: 12,
                           ),
-                          child: TPText(
+                child: TPText(
                             itemBuilder(option),
-                            style: TPTextStyles.bodyRegular,
-                            color: TPColors.grayscale900,
+                  style: TPTextStyles.bodyRegular,
+                  color: TPColors.grayscale900,
                           ),
-                        ),
-                      );
+                ),
+              );
                     },
                   ),
                 ),
-              ),
+          ),
             );
           },
         ),
