@@ -251,4 +251,3 @@ class ExerciseRecommendationView extends StatelessWidget {
     );
   }
 }
-
