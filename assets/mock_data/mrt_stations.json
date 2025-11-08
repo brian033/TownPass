@@ -1085,8 +1085,8 @@
       "stationCode": "O12",
       "name": "東門",
       "nameEn": "Dongmen",
-      "lines": ["green", "orange", "red"],
-      "lineColors": ["#007749", "#F5A81C", "#E3002C"],
+      "lines": ["orange", "red"],
+      "lineColors": ["#F5A81C", "#E3002C"],
       "location": {
         "lat": 25.0338,
         "lng": 121.5284
