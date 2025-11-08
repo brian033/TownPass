@@ -1,8 +1,14 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:town_pass/bean/exercise_history.dart';
 import 'package:town_pass/service/account_service.dart';
 import 'package:town_pass/service/points_service.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
@@ -18,6 +24,8 @@ class ExerciseResultData {
     required this.totalDuration,
     required this.venues,
     required this.points,
+    this.calories = 0,
+    this.exerciseHistory = const [],
   });
 
   final String startStation;
@@ -25,6 +33,8 @@ class ExerciseResultData {
   final Duration totalDuration;
   final List<ExerciseVenue> venues;
   final int points;
+  final int calories;
+  final List<ExerciseRecord> exerciseHistory;
 }
 
 class ExerciseVenue {
@@ -59,6 +69,8 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
   late ExerciseResultData _data;
   final PointsService _pointsService = PointsService();
   bool _hasSubmittedPoints = false;
+  final GlobalKey _shareBoundaryKey = GlobalKey();
+  bool _isCapturing = false;
 
   @override
   void initState() {
@@ -82,6 +94,8 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
         totalDuration: const Duration(minutes: 42),
         venues: const [],
         points: 0,
+        calories: 0,
+        exerciseHistory: const [],
       );
 
   void setExerciseResult(ExerciseResultData data) {
@@ -101,22 +115,81 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
       appBar: const TPAppBar(
         title: '運動結果',
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSummaryCard(durationText),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                TPText(
-                  '終點站推薦運動場館',
-                  style: TPTextStyles.h3SemiBold,
-                  color: TPColors.grayscale900,
-                ),
-                const Spacer(),
-                TextButton.icon(
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            sliver: SliverToBoxAdapter(
+              child: _buildSharePreview(durationText),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            sliver: SliverToBoxAdapter(
+              child: TPText(
+                '終點站推薦運動場館',
+                style: TPTextStyles.h3SemiBold,
+                color: TPColors.grayscale900,
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+            sliver: _data.venues.isEmpty
+                ? const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: TPText(
+                          '此地點附近沒有推薦的運動場館',
+                          style: TPTextStyles.bodyRegular,
+                          color: TPColors.grayscale500,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final venue = _data.venues[index];
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == _data.venues.length - 1 ? 0 : 16,
+                          ),
+                          child: _VenueCard(
+                            venue: venue,
+                            onTap: () => _launchVenue(venue.locationUrl),
+                          ),
+                        );
+                      },
+                      childCount: _data.venues.length,
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSharePreview(String durationText) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RepaintBoundary(
+          key: _shareBoundaryKey,
+          child: _ShareResultCard(
+            data: _data,
+            durationText: durationText,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerRight,
+          child: _isCapturing
+              ? const SizedBox.shrink()
+              : TextButton.icon(
                   onPressed: _shareResult,
                   style: TextButton.styleFrom(
                     foregroundColor: TPColors.primary500,
@@ -131,104 +204,8 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
                     color: TPColors.primary500,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: _data.venues.isEmpty
-                  ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        child: TPText(
-                          '此地點附近沒有推薦的運動場館',
-                          style: TPTextStyles.bodyRegular,
-                          color: TPColors.grayscale500,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                  : ListView.separated(
-                      itemCount: _data.venues.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 16),
-                      itemBuilder: (context, index) {
-                        final venue = _data.venues[index];
-                        return _VenueCard(
-                          venue: venue,
-                          onTap: () => _launchVenue(venue.locationUrl),
-                        );
-                      },
-                    ),
-            ),
-          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryCard(String durationText) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: TPColors.primary50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: TPColors.primary200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.directions_subway_filled_rounded,
-                color: TPColors.primary500,
-                size: 22,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TPText(
-                  '${_data.startStation} ➜ ${_data.endStation}',
-                  style: TPTextStyles.h3SemiBold,
-                  color: TPColors.grayscale900,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const Icon(
-                Icons.timer_outlined,
-                color: TPColors.primary500,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              TPText(
-                '總運動時間：$durationText',
-                style: TPTextStyles.bodyRegular,
-                color: TPColors.grayscale700,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const Icon(
-                Icons.star_rounded,
-                color: TPColors.primary500,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              TPText(
-                '本趟積分：${_data.points} 點',
-                style: TPTextStyles.bodyRegular,
-                color: TPColors.grayscale700,
-              ),
-            ],
-          ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -265,6 +242,8 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
         totalDuration: reference.totalDuration,
         venues: venues,
         points: reference.points,
+        calories: reference.calories,
+        exerciseHistory: reference.exerciseHistory,
       );
     });
   }
@@ -304,14 +283,374 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
   }
 
   Future<void> _shareResult() async {
+    if (kIsWeb) {
+      await _shareResultAsText();
+      return;
+    }
+
+    final shared = await _shareResultAsImage();
+    if (!shared) {
+      await _shareResultAsText();
+    }
+  }
+
+  Future<bool> _shareResultAsImage() async {
+    if (_shareBoundaryKey.currentContext == null) {
+      return false;
+    }
+
+    setState(() {
+      _isCapturing = true;
+    });
+    await Future.delayed(const Duration(milliseconds: 20));
+
+    try {
+      final boundary = _shareBoundaryKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) {
+        return false;
+      }
+
+      final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+      final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+      final ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        return false;
+      }
+
+      final Uint8List bytes = byteData.buffer.asUint8List();
+      final shareText = _buildShareText();
+      final xFile = XFile.fromData(
+        bytes,
+        mimeType: 'image/png',
+        name: 'exercise_result.png',
+      );
+
+      await Share.shareXFiles(
+        [xFile],
+        subject: 'Town Pass 運動結果',
+        text: shareText,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      debugPrint('分享截圖失敗: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('無法分享截圖，請稍後再試')),
+        );
+      }
+      return false;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCapturing = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _shareResultAsText() async {
     final buffer = StringBuffer()
-      ..writeln('我的運動成果分享')
-      ..writeln('${_data.startStation} ➜ ${_data.endStation}')
-      ..writeln('總運動時間：${_formatDuration(_data.totalDuration)}')
-      ..writeln('本趟積分：${_data.points} 點');
+      ..writeln(_buildShareText());
     await Share.share(
       buffer.toString(),
       subject: 'Town Pass 運動結果',
+    );
+  }
+
+  String _buildShareText() {
+    final lines = <String>[
+      '我的運動成果分享',
+      '${_data.startStation} ➜ ${_data.endStation}',
+      '總運動時間：${_formatDuration(_data.totalDuration)}',
+    ];
+
+    if (_data.calories > 0) {
+      lines.add('消耗熱量：${_data.calories} kcal');
+    }
+
+    lines.add('本趟積分：${_data.points} 點');
+
+    if (_data.exerciseHistory.isNotEmpty) {
+      lines.add('');
+      lines.add('運動歷程：');
+      final history = _data.exerciseHistory;
+      for (final record in history.take(3)) {
+        final segment = record.stationSegment?.isNotEmpty == true
+            ? '（${record.stationSegment}）'
+            : '';
+        lines.add(
+          '- ${record.exerciseName}$segment · ${record.durationDisplay} · ${record.calories} kcal',
+        );
+      }
+      if (history.length > 3) {
+        lines.add('... 共 ${history.length} 段運動');
+      }
+    }
+
+    return lines.join('\n');
+  }
+}
+
+class _ShareResultCard extends StatelessWidget {
+  const _ShareResultCard({
+    required this.data,
+    required this.durationText,
+  });
+
+  final ExerciseResultData data;
+  final String durationText;
+
+  @override
+  Widget build(BuildContext context) {
+    final history = data.exerciseHistory;
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [TPColors.primary500, TPColors.primary300],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: TPColors.primary500.withOpacity(0.25),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    TPText(
+                      'Town Pass',
+                      style: TPTextStyles.caption,
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 4),
+                    TPText(
+                      '我的運動成果',
+                      style: TPTextStyles.h2SemiBold,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+              SvgPicture.asset(
+                'assets/svg/logo_S.svg',
+                width: 48,
+                height: 48,
+                colorFilter:
+                    const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.14),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.directions_subway_filled_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TPText(
+                        '${data.startStation} ➜ ${data.endStation}',
+                        style: TPTextStyles.h3SemiBold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _ShareMetricTile(
+                      icon: Icons.timer_outlined,
+                      label: '總運動時間',
+                      value: durationText,
+                    ),
+                    _ShareMetricTile(
+                      icon: Icons.local_fire_department_outlined,
+                      label: '消耗熱量',
+                      value:
+                          data.calories > 0 ? '${data.calories} kcal' : '— kcal',
+                    ),
+                    _ShareMetricTile(
+                      icon: Icons.emoji_events_outlined,
+                      label: '本趟積分',
+                      value: '${data.points} 點',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (history.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            const TPText(
+              '運動歷程',
+              style: TPTextStyles.bodySemiBold,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 12),
+            ...history.take(3).map(
+              (record) => _ShareHistoryRow(record: record),
+            ),
+            if (history.length > 3) ...[
+              const SizedBox(height: 8),
+              TPText(
+                '... 等 ${history.length} 段運動',
+                style: TPTextStyles.caption,
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ShareMetricTile extends StatelessWidget {
+  const _ShareMetricTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: Colors.white,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TPText(
+                label,
+                style: TPTextStyles.caption,
+                color: Colors.white.withOpacity(0.75),
+              ),
+              const SizedBox(height: 2),
+              TPText(
+                value,
+                style: TPTextStyles.bodySemiBold,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShareHistoryRow extends StatelessWidget {
+  const _ShareHistoryRow({
+    required this.record,
+  });
+
+  final ExerciseRecord record;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.18),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.fitness_center,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TPText(
+                  record.exerciseName,
+                  style: TPTextStyles.bodySemiBold,
+                  color: Colors.white,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                TPText(
+                  '${record.durationDisplay} · ${record.calories} kcal',
+                  style: TPTextStyles.caption,
+                  color: Colors.white.withOpacity(0.75),
+                ),
+                if (record.stationSegment?.isNotEmpty == true) ...[
+                  const SizedBox(height: 4),
+                  TPText(
+                    record.stationSegment!,
+                    style: TPTextStyles.caption,
+                    color: Colors.white.withOpacity(0.65),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

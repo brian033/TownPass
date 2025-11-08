@@ -127,6 +127,8 @@ class _ExerciseRecommendationViewState
       totalDuration: totalDuration,
       venues: const [],
       points: pointsEarned,
+      calories: totalCalories,
+      exerciseHistory: exercises,
     );
 
     Get.off(() => ExerciseResultView(initialData: resultData));
