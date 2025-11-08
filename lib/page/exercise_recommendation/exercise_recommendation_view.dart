@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
+import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
 import 'package:town_pass/util/tp_app_bar.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
@@ -9,6 +10,8 @@ class ExerciseRecommendationView extends StatelessWidget {
   ExerciseRecommendationView({super.key});
 
   final controller = Get.put(ExerciseRecommendationController());
+  final GlobalKey<ExerciseTimerCardState> _timerCardKey =
+      GlobalKey<ExerciseTimerCardState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +39,37 @@ class ExerciseRecommendationView extends StatelessWidget {
               color: TPColors.grayscale900,
             ),
             const SizedBox(height: 16),
-            const Expanded(
-              child: Center(
-                child: TPText(
-                  '運動推薦功能開發中...',
-                  style: TPTextStyles.bodyRegular,
-                  color: TPColors.grayscale500,
-                ),
+            Expanded(
+              child: Column(
+                children: [
+                  ExerciseTimerCard(key: _timerCardKey),
+                  const SizedBox(height: 16),
+                  // 測試按鈕 (之後要移除)
+                  ElevatedButton(
+                    onPressed: () {
+                      _timerCardKey.currentState?.setDisplayCard(
+                        '深蹲',
+                        100,
+                        '伏地挺身',
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: TPColors.primary500,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const TPText(
+                      '測試開始運動 (Mock)',
+                      style: TPTextStyles.bodyRegular,
+                      color: TPColors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -117,4 +144,3 @@ class ExerciseRecommendationView extends StatelessWidget {
     );
   }
 }
-
