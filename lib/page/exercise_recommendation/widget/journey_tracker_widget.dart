@@ -13,11 +13,13 @@ class JourneyTrackerWidget extends StatefulWidget {
     required this.routeResult,
     required this.timerCardKey,
     required this.exerciseInfoCardKey,
+    this.onJourneyCompleted,
   });
 
   final MrtRouteResult routeResult;
   final GlobalKey<ExerciseTimerCardState> timerCardKey;
   final GlobalKey<ExerciseInfoCardState> exerciseInfoCardKey;
+  final void Function(Duration totalDuration)? onJourneyCompleted;
 
   @override
   State<JourneyTrackerWidget> createState() => JourneyTrackerWidgetState();
@@ -26,6 +28,7 @@ class JourneyTrackerWidget extends StatefulWidget {
 class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   int _currentLegIndex = 0;
   bool _journeyStarted = false;
+  bool _journeyCompleted = false;
   RecommendedExercise? _currentExercise;
   RecommendedExercise? _nextExercise;
   Timer? _autoProgressTimer;
@@ -48,6 +51,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
     setState(() {
       _journeyStarted = true;
+      _journeyCompleted = false;
       _currentLegIndex = 0;
     });
 
@@ -127,6 +131,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     _autoProgressTimer?.cancel();
     _countdownTimer?.cancel();
 
+    if (_journeyCompleted) {
+      return;
+    }
+
     final currentLeg = widget.routeResult.legs[_currentLegIndex];
     final totalSeconds = currentLeg.travelSeconds + currentLeg.stopSeconds;
 
@@ -146,10 +154,30 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
     // 啟動自動進站計時器
     _autoProgressTimer = Timer(Duration(seconds: totalSeconds), () {
+      if (!mounted) return;
       if (_currentLegIndex < widget.routeResult.legs.length - 1) {
         _nextStation();
+      } else {
+        _completeJourney();
       }
     });
+  }
+
+  void _completeJourney() {
+    if (_journeyCompleted) {
+      return;
+    }
+
+    _autoProgressTimer?.cancel();
+    _countdownTimer?.cancel();
+
+    setState(() {
+      _journeyCompleted = true;
+      _remainingSecondsToNextStation = 0;
+    });
+
+    widget.onJourneyCompleted
+        ?.call(Duration(seconds: widget.routeResult.totalSeconds));
   }
 
   @override
@@ -172,7 +200,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                 style: TPTextStyles.bodySemiBold,
                 color: TPColors.grayscale900,
               ),
-              if (_journeyStarted)
+              if (_journeyStarted && !_journeyCompleted)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -323,6 +351,27 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       );
     }
 
+    if (_journeyCompleted) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(
+              Icons.flag_rounded,
+              color: TPColors.primary500,
+              size: 28,
+            ),
+            SizedBox(height: 8),
+            TPText(
+              '旅程完成，準備查看結果！',
+              style: TPTextStyles.bodySemiBold,
+              color: TPColors.primary500,
+            ),
+          ],
+        ),
+      );
+    }
+
     // 顯示「上一站」和「下一站」按鈕
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -344,15 +393,15 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         ElevatedButton(
           onPressed: _currentLegIndex < widget.routeResult.legs.length - 1
               ? _nextStation
-              : null,
+              : _completeJourney,
           style: ElevatedButton.styleFrom(
             backgroundColor: TPColors.primary500,
             foregroundColor: TPColors.white,
             disabledBackgroundColor: TPColors.grayscale100,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
-          child: const TPText(
-            '下一站',
+          child: TPText(
+            _currentLegIndex < widget.routeResult.legs.length - 1 ? '下一站' : '完成旅程',
             style: TPTextStyles.bodySemiBold,
             color: TPColors.white,
           ),
