@@ -105,10 +105,19 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
     _submitPointsIfNeeded(data);
   }
 
+  /// 計算所有運動記錄的總時間
+  Duration _calculateTotalExerciseDuration() {
+    if (_data.exerciseHistory.isEmpty) {
+      return _data.totalDuration;
+    }
+    final totalSeconds = _data.exerciseHistory
+        .map((record) => record.duration)
+        .fold<int>(0, (sum, duration) => sum + duration);
+    return Duration(seconds: totalSeconds);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final durationText = _formatDuration(_data.totalDuration);
-
     return Scaffold(
       backgroundColor: TPColors.white,
       appBar: const TPAppBar(
@@ -119,7 +128,7 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
             sliver: SliverToBoxAdapter(
-              child: _buildSharePreview(durationText),
+              child: _buildSharePreview(),
             ),
           ),
           SliverPadding(
@@ -172,7 +181,7 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
     );
   }
 
-  Widget _buildSharePreview(String durationText) {
+  Widget _buildSharePreview() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -180,7 +189,6 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
           key: _shareBoundaryKey,
           child: _ShareResultCard(
             data: _data,
-            durationText: durationText,
           ),
         ),
         const SizedBox(height: 12),
@@ -360,10 +368,11 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
   }
 
   String _buildShareText() {
+    final totalDuration = _calculateTotalExerciseDuration();
     final lines = <String>[
       '我的運動成果分享',
       '${_data.startStation} ➜ ${_data.endStation}',
-      '總運動時間：${_formatDuration(_data.totalDuration)}',
+      '總運動時間：${_formatDuration(totalDuration)}',
     ];
 
     if (_data.calories > 0) {
@@ -396,15 +405,35 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
 class _ShareResultCard extends StatelessWidget {
   const _ShareResultCard({
     required this.data,
-    required this.durationText,
   });
 
   final ExerciseResultData data;
-  final String durationText;
+
+  /// 計算所有運動記錄的總時間
+  Duration _calculateTotalExerciseDuration() {
+    if (data.exerciseHistory.isEmpty) {
+      return data.totalDuration;
+    }
+    final totalSeconds = data.exerciseHistory
+        .map((record) => record.duration)
+        .fold<int>(0, (sum, duration) => sum + duration);
+    return Duration(seconds: totalSeconds);
+  }
+
+  String _formatDuration(Duration duration) {
+    final totalMinutes = duration.inMinutes;
+    final totalSeconds = duration.inSeconds.remainder(60);
+    return totalSeconds == 0
+        ? '$totalMinutes 分鐘'
+        : '$totalMinutes 分 $totalSeconds 秒';
+  }
 
   @override
   Widget build(BuildContext context) {
     final history = data.exerciseHistory;
+    // 使用計算出的總時間，而不是傳入的 durationText
+    final calculatedTotalDuration = _calculateTotalExerciseDuration();
+    final calculatedDurationText = _formatDuration(calculatedTotalDuration);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -490,7 +519,7 @@ class _ShareResultCard extends StatelessWidget {
                     _ShareMetricTile(
                       icon: Icons.timer_outlined,
                       label: '總運動時間',
-                      value: durationText,
+                      value: calculatedDurationText,
                     ),
                     _ShareMetricTile(
                       icon: Icons.local_fire_department_outlined,
