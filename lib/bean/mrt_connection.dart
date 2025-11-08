@@ -109,12 +109,14 @@ class MrtRouteResult {
     required this.endStation,
     required this.legs,
     this.exercises = const [],
+    this.movements = const [],
   });
 
   final MrtStation startStation;
   final MrtStation endStation;
   final List<MrtRouteLeg> legs;
   final List<RecommendedExercise> exercises;
+  final List<String> movements; // 每段路程的運動名稱
 
   int get totalSeconds =>
       legs.fold(0, (previousValue, leg) => previousValue + leg.segmentSeconds);

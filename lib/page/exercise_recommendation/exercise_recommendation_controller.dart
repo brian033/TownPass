@@ -106,7 +106,15 @@ class ExerciseRecommendationController extends GetxController {
       // 將秒數轉換為分鐘
       final minutes = (leg.travelSeconds + leg.stopSeconds) / 60.0;
       timeList.add(minutes);
-      movementList.add('運動'); // 預設運動類型
+    }
+
+    // 使用 routeResult 中的 movements，如果為空則使用預設值
+    if (routeResult!.movements.isNotEmpty && 
+        routeResult!.movements.length == routeResult!.legs.length) {
+      movementList.addAll(routeResult!.movements);
+    } else {
+      // 如果沒有 movements 或長度不匹配，使用預設值
+      movementList.addAll(List.filled(routeResult!.legs.length, '運動'));
     }
 
     setPathData(

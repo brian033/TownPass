@@ -613,11 +613,21 @@ class NewComponentViewController extends GetxController {
           'Filtered exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
     }
 
+    // 生成運動分配序列
+    final movements = _generateExerciseSequence(
+      filteredExercises,
+      legs.length,
+    );
+
+    print('=== Generated movements ===');
+    print('Movements: ${movements.join(" -> ")}');
+
     return MrtRouteResult(
       startStation: startStation,
       endStation: endStation,
       legs: legs,
       exercises: filteredExercises,
+      movements: movements,
     );
   }
 
@@ -643,6 +653,224 @@ class NewComponentViewController extends GetxController {
     print('DEBUG: Filtered exercises count = ${filtered.length}');
 
     return filtered;
+  }
+
+  /// 生成運動分配序列
+  /// [exercises] 可用的運動列表
+  /// [requiredCount] 需要的運動數量（路段數量）
+  List<String> _generateExerciseSequence(
+    List<RecommendedExercise> exercises,
+    int requiredCount,
+  ) {
+    if (exercises.isEmpty) {
+      // 如果沒有可用運動，返回空字符串列表
+      return List.filled(requiredCount, '');
+    }
+
+    if (requiredCount == 0) {
+      return [];
+    }
+
+    final exerciseNames = exercises.map((e) => e.name).toList();
+    final exerciseCount = exerciseNames.length;
+
+    // 情況1: 如果只有一個動作，允許重複該動作
+    if (exerciseCount == 1) {
+      return List.filled(requiredCount, exerciseNames[0]);
+    }
+
+    // 情況2: 如果可用動作數量 < 所需動作數量，只要前後兩個動作不相同
+    if (exerciseCount < requiredCount) {
+      return _generateSequenceWithNoAdjacentRepeat(
+        exerciseNames,
+        requiredCount,
+      );
+    }
+
+    // 情況3: 如果 3 * 可用動作數量 <= 所需動作數量
+    // 每個動作的數量都一樣或相近，順序隨機但不能重複超過2次
+    if (3 * exerciseCount <= requiredCount) {
+      return _generateBalancedSequence(
+        exerciseNames,
+        requiredCount,
+      );
+    }
+
+    // 情況4: 其他情況，動作不要重複（盡量不重複）
+    return _generateNonRepeatingSequence(
+      exerciseNames,
+      requiredCount,
+    );
+  }
+
+  /// 生成前後兩個動作不相等的序列（用於動作數量不足時）
+  List<String> _generateSequenceWithNoAdjacentRepeat(
+    List<String> exercises,
+    int requiredCount,
+  ) {
+    final result = <String>[];
+    final random = math.Random();
+
+    for (int i = 0; i < requiredCount; i++) {
+      String selected;
+      if (i == 0) {
+        // 第一個隨機選擇
+        selected = exercises[random.nextInt(exercises.length)];
+      } else {
+        // 確保與上一個不同
+        final previous = result[i - 1];
+        final available = exercises.where((e) => e != previous).toList();
+        if (available.isEmpty) {
+          // 如果所有動作都與上一個相同（理論上不會發生），隨機選擇
+          selected = exercises[random.nextInt(exercises.length)];
+        } else {
+          selected = available[random.nextInt(available.length)];
+        }
+      }
+      result.add(selected);
+    }
+
+    return result;
+  }
+
+  /// 生成平衡的序列（每個動作數量相近，但不能連續重複超過2次）
+  List<String> _generateBalancedSequence(
+    List<String> exercises,
+    int requiredCount,
+  ) {
+    // 計算每個動作應該出現的次數
+    final baseCount = requiredCount ~/ exercises.length;
+    final remainder = requiredCount % exercises.length;
+
+    // 構建每個動作的出現次數列表
+    final counts = <int>[];
+    for (int i = 0; i < exercises.length; i++) {
+      counts.add(baseCount + (i < remainder ? 1 : 0));
+    }
+
+    // 創建包含所有動作的列表（根據出現次數）
+    final exercisePool = <String>[];
+    for (int i = 0; i < exercises.length; i++) {
+      for (int j = 0; j < counts[i]; j++) {
+        exercisePool.add(exercises[i]);
+      }
+    }
+
+    // 使用貪心算法生成序列，確保沒有連續重複超過2次
+    return _buildSequenceWithMaxConsecutive(exercisePool, 2);
+  }
+
+  /// 構建序列，確保同一個動作不會連續出現超過指定次數
+  List<String> _buildSequenceWithMaxConsecutive(
+    List<String> exercisePool,
+    int maxConsecutive,
+  ) {
+    if (exercisePool.isEmpty) return [];
+    
+    // 統計每個動作的數量
+    final counts = <String, int>{};
+    for (final exercise in exercisePool) {
+      counts[exercise] = (counts[exercise] ?? 0) + 1;
+    }
+    
+    final result = <String>[];
+    final available = Map<String, int>.from(counts);
+    String? lastExercise;
+    int consecutiveCount = 0;
+    
+    while (available.values.any((count) => count > 0)) {
+      String? selected;
+      
+      // 優先選擇與上一個不同的動作
+      if (lastExercise != null && consecutiveCount >= maxConsecutive) {
+        // 如果已經連續達到上限，必須選擇不同的
+        for (final entry in available.entries) {
+          if (entry.key != lastExercise && entry.value > 0) {
+            selected = entry.key;
+            break;
+          }
+        }
+      } else {
+        // 嘗試選擇與上一個不同的動作
+        for (final entry in available.entries) {
+          if (entry.key != lastExercise && entry.value > 0) {
+            selected = entry.key;
+            break;
+          }
+        }
+        
+        // 如果所有動作都與上一個相同，選擇數量最多的（避免後續無法分配）
+        if (selected == null) {
+          int maxCount = 0;
+          for (final entry in available.entries) {
+            if (entry.value > maxCount) {
+              maxCount = entry.value;
+              selected = entry.key;
+            }
+          }
+        }
+      }
+      
+      if (selected == null || available[selected] == null || available[selected]! <= 0) {
+        break;
+      }
+      
+      // 更新計數
+      available[selected] = available[selected]! - 1;
+      if (available[selected] == 0) {
+        available.remove(selected);
+      }
+      
+      // 更新連續計數
+      if (selected == lastExercise) {
+        consecutiveCount++;
+      } else {
+        consecutiveCount = 1;
+        lastExercise = selected;
+      }
+      
+      result.add(selected);
+    }
+    
+    return result;
+  }
+
+  /// 生成不重複的序列（盡量不重複）
+  List<String> _generateNonRepeatingSequence(
+    List<String> exercises,
+    int requiredCount,
+  ) {
+    if (requiredCount <= exercises.length) {
+      // 如果需要的數量不超過可用動作數量，直接使用所有動作
+      final shuffled = List<String>.from(exercises);
+      shuffled.shuffle(math.Random());
+      // 如果需要的數量少於可用動作，只取前面幾個
+      return shuffled.take(requiredCount).toList();
+    }
+
+    // 如果需要更多，循環使用但不連續重複
+    final result = <String>[];
+    final random = math.Random();
+    String? lastExercise;
+
+    for (int i = 0; i < requiredCount; i++) {
+      String selected;
+      if (lastExercise == null) {
+        selected = exercises[random.nextInt(exercises.length)];
+      } else {
+        // 盡量選擇與上一個不同的
+        final available = exercises.where((e) => e != lastExercise).toList();
+        if (available.isEmpty) {
+          selected = exercises[random.nextInt(exercises.length)];
+        } else {
+          selected = available[random.nextInt(available.length)];
+        }
+      }
+      result.add(selected);
+      lastExercise = selected;
+    }
+
+    return result;
   }
 }
 
