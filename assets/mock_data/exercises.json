@@ -14,7 +14,8 @@
       "tips": "保持呼吸順暢，動作放慢",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "如有肩膀受傷請諮詢醫生"
+      "safetyNotes": "如有肩膀受傷請諮詢醫生",
+      "doInCrowded": true
     },
     {
       "id": "ex002",
@@ -34,7 +35,8 @@
       "tips": "動作要輕柔，不要用力拉扯",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "如有頸部疼痛請停止"
+      "safetyNotes": "如有頸部疼痛請停止",
+      "doInCrowded": true
     },
     {
       "id": "ex003",
@@ -54,7 +56,8 @@
       "tips": "扭轉時保持臀部穩定不動",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "孕婦或有脊椎問題者請諮詢醫生"
+      "safetyNotes": "孕婦或有脊椎問題者請諮詢醫生",
+      "doInCrowded": false
     },
     {
       "id": "ex004",
@@ -74,7 +77,8 @@
       "tips": "保持核心穩定，不要晃動",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "膝蓋有傷者請小心"
+      "safetyNotes": "膝蓋有傷者請小心",
+      "doInCrowded": false
     },
     {
       "id": "ex005",
@@ -89,7 +93,8 @@
       "tips": "呼吸保持平穩",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "不要過度拉伸"
+      "safetyNotes": "不要過度拉伸",
+      "doInCrowded": true
     },
     {
       "id": "ex006",
@@ -110,7 +115,8 @@
       "tips": "專注在呼吸上，放鬆全身",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "感到頭暈請停止"
+      "safetyNotes": "感到頭暈請停止",
+      "doInCrowded": true
     },
     {
       "id": "ex007",
@@ -130,7 +136,8 @@
       "tips": "動作輕柔，保持平衡",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "腳踝受傷者請諮詢醫生"
+      "safetyNotes": "腳踝受傷者請諮詢醫生",
+      "doInCrowded": false
     },
     {
       "id": "ex008",
@@ -150,7 +157,8 @@
       "tips": "不要前傾或後仰",
       "imageUrl": "",
       "videoUrl": "",
-      "safetyNotes": "有側腰疼痛請停止"
+      "safetyNotes": "有側腰疼痛請停止",
+      "doInCrowded": true
     }
   ]
 }

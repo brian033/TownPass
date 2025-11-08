@@ -7,6 +7,7 @@ import 'package:town_pass/bean/body_part.dart';
 import 'package:town_pass/bean/exercise.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_view.dart';
+import 'package:town_pass/service/train_crowding_service.dart';
 
 class NewComponentViewController extends GetxController {
   // 資料列表
@@ -55,6 +56,9 @@ class NewComponentViewController extends GetxController {
   final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
   final Map<String, MrtStation> _stationById = <String, MrtStation>{};
   final Map<String, MrtStation> _stationByName = <String, MrtStation>{};
+  
+  // 擁擠度服務
+  final TrainCrowdingService _crowdingService = TrainCrowdingService();
 
   // 預估時間（分鐘）
   int get estimatedMinutes {
@@ -98,6 +102,7 @@ class NewComponentViewController extends GetxController {
         loadBodyParts(),
         loadExercises(),
         loadExercisesForRecommendation(),
+        _crowdingService.initialize(), // 初始化擁擠度服務
       ]);
 
       await loadMrtConnections();
@@ -402,7 +407,31 @@ class NewComponentViewController extends GetxController {
     }
 
     // 篩選符合選擇部位的運動
-    final filteredExercises = _filterExercisesByBodyPart();
+    var filteredExercises = _filterExercisesByBodyPart();
+    
+    print('=== Before crowding filter ===');
+    print('Total exercises: ${filteredExercises.length}');
+    print('Exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
+
+    // 檢查第一段路徑的擁擠度
+    if (legs.isNotEmpty) {
+      final firstLeg = legs.first;
+      final isCrowded = _crowdingService.checkIfCrowded(
+        firstLeg.fromStation.name,
+        firstLeg.toStation.name,
+      );
+      
+      // 根據擁擠度進一步篩選運動
+      filteredExercises = _crowdingService.filterExercisesByCrowding(
+        filteredExercises,
+        isCrowded,
+      );
+      
+      print('=== After crowding filter ===');
+      print('Route from ${firstLeg.fromStation.name} to ${firstLeg.toStation.name}: '
+          'isCrowded = $isCrowded, available exercises = ${filteredExercises.length}');
+      print('Filtered exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
+    }
 
     return MrtRouteResult(
       startStation: startStation,
