@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/bean/mrt_station.dart';
+import 'package:town_pass/bean/exercise_history.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_info_card.dart';
@@ -95,7 +96,8 @@ class _ExerciseRecommendationViewState
     );
   }
 
-  void _handleJourneyCompleted(Duration totalDuration) {
+  void _handleJourneyCompleted(
+      Duration totalDuration, List<ExerciseRecord> exercises) {
     if (_hasNavigatedToResult) {
       return;
     }
@@ -107,6 +109,17 @@ class _ExerciseRecommendationViewState
 
     _hasNavigatedToResult = true;
     final pointsEarned = route.legs.length;
+
+    // 計算總卡路里
+    final totalCalories =
+        exercises.fold<int>(0, (sum, exercise) => sum + exercise.calories);
+
+    // 儲存運動歷史紀錄
+    controller.saveExerciseRecord(
+      exercises: exercises,
+      totalCalories: totalCalories,
+      totalDuration: totalDuration.inSeconds,
+    );
 
     final resultData = ExerciseResultData(
       startStation: controller.startStation.name,
@@ -184,7 +197,6 @@ class _ExerciseRecommendationViewState
       ),
     );
   }
-
 
   Widget _buildDebugExercisesCard() {
     final exercises = controller.routeResult?.exercises ?? [];

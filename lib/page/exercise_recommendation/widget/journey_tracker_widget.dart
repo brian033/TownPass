@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/bean/mrt_station.dart';
+import 'package:town_pass/bean/exercise_history.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_text.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
@@ -20,7 +21,7 @@ class JourneyTrackerWidget extends StatefulWidget {
   final MrtRouteResult routeResult;
   final GlobalKey<ExerciseTimerCardState> timerCardKey;
   final GlobalKey<ExerciseInfoCardState> exerciseInfoCardKey;
-  final void Function(Duration totalDuration)? onJourneyCompleted;
+  final void Function(Duration totalDuration, List<ExerciseRecord> exercises)? onJourneyCompleted;
 
   @override
   State<JourneyTrackerWidget> createState() => JourneyTrackerWidgetState();
@@ -36,6 +37,9 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   Timer? _autoProgressTimer;
   int _remainingSecondsToNextStation = 0;
   Timer? _countdownTimer;
+
+  /// 記錄完成的運動列表
+  final List<ExerciseRecord> _completedExercises = [];
 
   /// 對外提供當前運動的 getter
   RecommendedExercise? get currentExercise => _currentExercise;
@@ -192,6 +196,24 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
     // 更新 ExerciseInfoCard
     widget.exerciseInfoCardKey.currentState?.setExercise(_currentExercise!);
+
+    // 記錄這次運動
+    _recordExercise(currentLeg, _currentExercise!, remainingSeconds);
+  }
+
+  /// 記錄完成的運動
+  void _recordExercise(MrtRouteLeg leg, RecommendedExercise exercise, int duration) {
+    final calories = (exercise.calPerSec * duration).round();
+    final stationSegment = '${leg.fromStation.name} → ${leg.toStation.name}';
+
+    final record = ExerciseRecord(
+      exerciseName: exercise.name,
+      duration: duration,
+      calories: calories,
+      stationSegment: stationSegment,
+    );
+
+    _completedExercises.add(record);
   }
 
   /// 啟動自動進站計時器和倒數計時器
@@ -245,7 +267,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     });
 
     widget.onJourneyCompleted
-        ?.call(Duration(seconds: widget.routeResult.totalSeconds));
+        ?.call(Duration(seconds: widget.routeResult.totalSeconds), _completedExercises);
   }
 
   @override
@@ -472,7 +494,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
       builder: (context, constraints) {
         const dashWidth = 4.0;
         const dashSpace = 4.0;
-        
+
         return CustomPaint(
           size: Size(constraints.maxWidth, height),
           painter: _DashedLinePainter(
@@ -611,7 +633,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
     final isInLastThree = currentIndex >= path.length - 3;
     final isLastMinusOne = currentIndex == path.length - 2;
     final isLast = currentIndex >= path.length - 1;
-    
+
     if (currentIndex == 0) {
       // At start - left shows start station, middle-left shows next station (like middle-right)
       startStation = path[0];
@@ -725,7 +747,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
             // Show connecting line if middle-right node is visible
             // It should be visible when nextStation exists and is different from destination
             // Also show when at last station (currentIndex >= path.length - 1) if middle-right is showing
-            if (nextStation != null && 
+            if (nextStation != null &&
                 nextStation.id != destinationStation.id &&
                 currentIndex <= path.length - 1)
               Expanded(
@@ -765,7 +787,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
               child: Center(
                 child: _buildStationName(
                   station: currentStation,
-                  isActive: (currentIndex > 0 && currentIndex < path.length - 1) || 
+                  isActive: (currentIndex > 0 && currentIndex < path.length - 1) ||
                             (currentIndex == path.length - 3),
                 ),
               ),
@@ -779,7 +801,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
                 ),
               ),
             ),
-            if (nextStation != null && 
+            if (nextStation != null &&
                 nextStation.id != destinationStation.id &&
                 currentIndex <= path.length - 1)
               Expanded(flex: 2, child: const SizedBox.shrink()),
@@ -919,7 +941,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget> {
     required int pathLength,
     required double nextSize,
   }) {
-    if (nextStation == null || 
+    if (nextStation == null ||
         destinationStation == null ||
         nextStation.id == destinationStation.id ||
         currentIndex > pathLength - 1) {
@@ -1000,4 +1022,5 @@ class _DashedLinePainter extends CustomPainter {
         oldDelegate.dashSpace != dashSpace;
   }
 }
+
 

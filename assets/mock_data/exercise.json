@@ -1,7 +1,7 @@
 [
   {
     "name": "站姿側向伸展",
-    "calPerSec": 0.8,
+    "calPerSec": 0.08,
     "doInCrowded": false,
     "parts": ["upper_body", "core"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/1jXLYEw.gif",
@@ -9,7 +9,7 @@
   },
   {
     "name": "站姿骨盆傾斜",
-    "calPerSec": 0.7,
+    "calPerSec": 0.07,
     "doInCrowded": true,
     "parts": ["core", "lower_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/cuKYxhu.gif",
@@ -17,7 +17,7 @@
   },
   {
     "name": "側向手腕拉伸",
-    "calPerSec": 0.5,
+    "calPerSec": 0.05,
     "doInCrowded": true,
     "parts": ["upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/UtmIqcI.gif",
@@ -25,7 +25,7 @@
   },
   {
     "name": "後三角肌伸展",
-    "calPerSec": 0.6,
+    "calPerSec": 0.06,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/xifhB5W.gif",
@@ -33,7 +33,7 @@
   },
   {
     "name": "上背伸展",
-    "calPerSec": 0.8,
+    "calPerSec": 0.08,
     "doInCrowded": false,
     "parts": ["neck_shoulder", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/GSDioYu.gif",
@@ -41,7 +41,7 @@
   },
   {
     "name": "動態胸部伸展",
-    "calPerSec": 1.1,
+    "calPerSec": 0.11,
     "doInCrowded": false,
     "parts": ["upper_body", "neck_shoulder"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/3uj0Ozg.gif",
@@ -49,7 +49,7 @@
   },
   {
     "name": "胸部與前肩伸展",
-    "calPerSec": 0.7,
+    "calPerSec": 0.07,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/Uto7l43.gif",
@@ -57,7 +57,7 @@
   },
   {
     "name": "背部胸肌伸展",
-    "calPerSec": 0.9,
+    "calPerSec": 0.09,
     "doInCrowded": false,
     "parts": ["upper_body", "neck_shoulder"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/chfnQnM.gif",
@@ -65,7 +65,7 @@
   },
   {
     "name": "胸部與前肩伸展（微幅）",
-    "calPerSec": 0.6,
+    "calPerSec": 0.06,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercises/iDGtjyi.gif",

@@ -9,11 +9,8 @@ import 'package:town_pass/bean/body_part.dart';
 import 'package:town_pass/bean/exercise.dart';
 import 'package:town_pass/bean/mrt_connection.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_view.dart';
-<<<<<<< HEAD
 import 'package:town_pass/service/train_crowding_service.dart';
-=======
 import 'package:town_pass/service/geo_locator_service.dart';
->>>>>>> release/1.0
 
 class NewComponentViewController extends GetxController {
   // 資料列表
@@ -84,7 +81,7 @@ class NewComponentViewController extends GetxController {
   final Map<String, List<_GraphEdge>> _graph = <String, List<_GraphEdge>>{};
   final Map<String, MrtStation> _stationById = <String, MrtStation>{};
   final Map<String, MrtStation> _stationByName = <String, MrtStation>{};
-  
+
   // 擁擠度服務
   final TrainCrowdingService _crowdingService = TrainCrowdingService();
 
@@ -115,7 +112,8 @@ class NewComponentViewController extends GetxController {
   }
 
   // 計算兩點間的距離（Haversine formula）單位：公里
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
     // 如果座標為 0，返回一個很大的距離
     if (lat2 == 0.0 && lon2 == 0.0) {
       return double.infinity;
@@ -127,8 +125,9 @@ class NewComponentViewController extends GetxController {
 
     final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_degreesToRadians(lat1)) *
-        math.cos(_degreesToRadians(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
+            math.cos(_degreesToRadians(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
 
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
@@ -154,11 +153,8 @@ class NewComponentViewController extends GetxController {
         loadBodyParts(),
         loadExercises(),
         loadExercisesForRecommendation(),
-<<<<<<< HEAD
         _crowdingService.initialize(), // 初始化擁擠度服務
-=======
         _loadUserPosition(),
->>>>>>> release/1.0
       ]);
 
       await loadMrtConnections();
@@ -174,7 +170,8 @@ class NewComponentViewController extends GetxController {
   Future<void> _loadUserPosition() async {
     try {
       _userPosition = await _geoLocatorService.position();
-      print('User position loaded: ${_userPosition?.latitude}, ${_userPosition?.longitude}');
+      print(
+          'User position loaded: ${_userPosition?.latitude}, ${_userPosition?.longitude}');
     } catch (e) {
       print('Could not get user position: $e');
       // 不影響其他功能，繼續執行
@@ -233,7 +230,8 @@ class NewComponentViewController extends GetxController {
       final List<dynamic> jsonData = json.decode(jsonString);
       _exercisesForRecommendation.clear();
       _exercisesForRecommendation.addAll(
-        jsonData.map((e) => RecommendedExercise.fromJson(e as Map<String, dynamic>)),
+        jsonData.map(
+            (e) => RecommendedExercise.fromJson(e as Map<String, dynamic>)),
       );
     } catch (e) {
       print('Error loading exercises for recommendation: $e');
@@ -280,17 +278,18 @@ class NewComponentViewController extends GetxController {
     selectedEndStation.value = null;
     selectedBodyParts.clear();
   }
-  
+
   // 切換身體部位的選擇狀態
   void toggleBodyPart(BodyPart bodyPart) {
-    final index = selectedBodyParts.indexWhere((part) => part.id == bodyPart.id);
+    final index =
+        selectedBodyParts.indexWhere((part) => part.id == bodyPart.id);
     if (index >= 0) {
       selectedBodyParts.removeAt(index);
     } else {
       selectedBodyParts.add(bodyPart);
     }
   }
-  
+
   // 檢查身體部位是否已選擇
   bool isBodyPartSelected(BodyPart bodyPart) {
     return selectedBodyParts.any((part) => part.id == bodyPart.id);
@@ -490,10 +489,11 @@ class NewComponentViewController extends GetxController {
 
     // 篩選符合選擇部位的運動
     var filteredExercises = _filterExercisesByBodyPart();
-    
+
     print('=== Before crowding filter ===');
     print('Total exercises: ${filteredExercises.length}');
-    print('Exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
+    print(
+        'Exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
 
     // 檢查第一段路徑的擁擠度
     if (legs.isNotEmpty) {
@@ -502,17 +502,19 @@ class NewComponentViewController extends GetxController {
         firstLeg.fromStation.name,
         firstLeg.toStation.name,
       );
-      
+
       // 根據擁擠度進一步篩選運動
       filteredExercises = _crowdingService.filterExercisesByCrowding(
         filteredExercises,
         isCrowded,
       );
-      
+
       print('=== After crowding filter ===');
-      print('Route from ${firstLeg.fromStation.name} to ${firstLeg.toStation.name}: '
+      print(
+          'Route from ${firstLeg.fromStation.name} to ${firstLeg.toStation.name}: '
           'isCrowded = $isCrowded, available exercises = ${filteredExercises.length}');
-      print('Filtered exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
+      print(
+          'Filtered exercises: ${filteredExercises.map((e) => '${e.name}(${e.doInCrowded})').join(", ")}');
     }
 
     return MrtRouteResult(
@@ -533,11 +535,13 @@ class NewComponentViewController extends GetxController {
     // 取得所有選擇的部位 ID
     final selectedPartIds = selectedBodyParts.map((part) => part.id).toSet();
     print('DEBUG: selectedPartIds = $selectedPartIds');
-    print('DEBUG: _exercisesForRecommendation.length = ${_exercisesForRecommendation.length}');
+    print(
+        'DEBUG: _exercisesForRecommendation.length = ${_exercisesForRecommendation.length}');
 
     // 篩選 parts 陣列中包含任何選擇部位的運動
     final filtered = _exercisesForRecommendation
-        .where((exercise) => exercise.parts.any((part) => selectedPartIds.contains(part)))
+        .where((exercise) =>
+            exercise.parts.any((part) => selectedPartIds.contains(part)))
         .toList();
 
     print('DEBUG: Filtered exercises count = ${filtered.length}');
