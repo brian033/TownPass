@@ -33,13 +33,13 @@ class OfficialServiceCardNew extends OfficialServiceCard {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TPText(
-                    '新元件',
+                    '捷運動',
                     style: TPTextStyles.h3SemiBold,
                     color: TPColors.primary500,
                     overflow: TextOverflow.ellipsis,
                   ),
                   TPText(
-                    'New Component',
+                    'MSport',
                     style: TPTextStyles.caption,
                     color: TPColors.grayscale700,
                     overflow: TextOverflow.ellipsis,
@@ -49,7 +49,7 @@ class OfficialServiceCardNew extends OfficialServiceCard {
             ),
             SizedBox.fromSize(
               size: const Size.square(48),
-              child: Assets.svg.iconMore.svg(),
+              child: Assets.svg.iconPlayground.svg(),
             ),
           ],
         ),
@@ -57,4 +57,3 @@ class OfficialServiceCardNew extends OfficialServiceCard {
     );
   }
 }
-

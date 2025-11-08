@@ -37,4 +37,3 @@ class NewComponentView extends StatelessWidget {
     );
   }
 }
-
