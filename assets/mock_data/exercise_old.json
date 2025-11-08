@@ -1,0 +1,58 @@
+[
+  {
+    "name": "深蹲",
+    "calPerSec": 0.05,
+    "doInCrowded": false,
+    "parts": ["lower_body", "core"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "深蹲是一種簡單有效的下肢運動，可以鍛鍊大腿肌肉，增強下肢力量。"
+  },
+  {
+    "name": "硬舉",
+    "calPerSec": 0.06,
+    "doInCrowded": false,
+    "parts": ["lower_body", "core", "upper_body"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "硬舉是全身性複合動作，主要訓練背部、臀部和腿部肌群，提升整體力量。"
+  },
+  {
+    "name": "站姿肩頸拉伸",
+    "calPerSec": 0.02,
+    "doInCrowded": true,
+    "parts": ["neck_shoulder", "upper_body"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "輕柔的肩頸伸展動作，適合在捷運上進行，可以有效緩解長時間使用手機或久坐造成的肩頸僵硬。"
+  },
+  {
+    "name": "扶手深蹲",
+    "calPerSec": 0.04,
+    "doInCrowded": false,
+    "parts": ["lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "利用捷運扶手輔助的深蹲動作，在非尖峰時段可以進行，強化大腿和臀部肌肉。"
+  },
+  {
+    "name": "站姿核心收縮",
+    "calPerSec": 0.03,
+    "doInCrowded": true,
+    "parts": ["core"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "站立時收緊腹部核心肌群，不需要大動作也能有效訓練核心穩定性，適合在擁擠車廂中進行。"
+  },
+  {
+    "name": "手臂環繞伸展",
+    "calPerSec": 0.025,
+    "doInCrowded": false,
+    "parts": ["upper_body", "neck_shoulder"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "透過手臂的緩慢環繞動作，放鬆肩膀和上背部肌肉，改善上半身血液循環。"
+  },
+  {
+    "name": "全身伸展",
+    "calPerSec": 0.03,
+    "doInCrowded": false,
+    "parts": ["full_body"],
+    "media": "https://tpe-hackathon.brian033.dev/squat.png",
+    "description": "結合上下肢與軀幹的溫和伸展動作，促進全身血液循環，消除長途搭乘的疲勞感。"
+  }
+]

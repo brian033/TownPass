@@ -1,58 +1,74 @@
 [
   {
-    "name": "深蹲",
-    "calPerSec": 0.05,
+    "name": "Standing Lateral Stretch",
+    "calPerSec": 0.8,
     "doInCrowded": false,
-    "parts": ["lower_body", "core"],
-    "media": "exercises/image.png",
-    "description": "深蹲是一種簡單有效的下肢運動，可以鍛鍊大腿肌肉，增強下肢力量。"
+    "parts": ["upper_body", "core"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/1jXLYEw.gif",
+    "description": "雙腳與肩同寬站立，雙臂水平伸展後慢慢向一側折腰，延展肋間與背闊肌，適合長時間站立後舒緩緊繃。"
   },
   {
-    "name": "硬舉",
-    "calPerSec": 0.06,
-    "doInCrowded": false,
-    "parts": ["lower_body", "core", "upper_body"],
-    "media": "exercises/image.png",
-    "description": "硬舉是全身性複合動作，主要訓練背部、臀部和腿部肌群，提升整體力量。"
+    "name": "Standing Pelvic Tilt",
+    "calPerSec": 0.7,
+    "doInCrowded": true,
+    "parts": ["core", "lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/cuKYxhu.gif",
+    "description": "保持站姿並收緊核心，向前後輕微傾動骨盆，喚醒腰椎與臀部穩定肌群，幫助矯正通勤久站的僵硬。"
   },
   {
-    "name": "站姿肩頸拉伸",
-    "calPerSec": 0.02,
+    "name": "Side Wrist Pull Stretch",
+    "calPerSec": 0.5,
+    "doInCrowded": true,
+    "parts": ["upper_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/UtmIqcI.gif",
+    "description": "一手拉住另一手手腕讓手臂保持與地面平行，緩慢牽引以延展前臂與腕屈肌，舒緩長時間使用手機的緊繃。"
+  },
+  {
+    "name": "Rear Deltoid Stretch",
+    "calPerSec": 0.6,
     "doInCrowded": true,
     "parts": ["neck_shoulder", "upper_body"],
-    "media": "exercises/image.png",
-    "description": "輕柔的肩頸伸展動作，適合在捷運上進行，可以有效緩解長時間使用手機或久坐造成的肩頸僵硬。"
+    "media": "https://tpe-hackathon.brian033.dev/exercises/xifhB5W.gif",
+    "description": "將手臂橫過胸前並以另一手固定，放鬆後三角肌與肩胛周邊肌肉，短時間即可減少肩頸壓力。"
   },
   {
-    "name": "扶手深蹲",
-    "calPerSec": 0.04,
+    "name": "Upper Back Stretch",
+    "calPerSec": 0.8,
     "doInCrowded": false,
-    "parts": ["lower_body"],
-    "media": "exercises/image.png",
-    "description": "利用捷運扶手輔助的深蹲動作，在非尖峰時段可以進行，強化大腿和臀部肌肉。"
+    "parts": ["neck_shoulder", "upper_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/GSDioYu.gif",
+    "description": "雙臂交握由胸前推向前上方並抬高過頭，延長上背與肩胛間筋膜，適合在站立等待時恢復姿勢。"
   },
   {
-    "name": "站姿核心收縮",
-    "calPerSec": 0.03,
-    "doInCrowded": true,
-    "parts": ["core"],
-    "media": "exercises/image.png",
-    "description": "站立時收緊腹部核心肌群，不需要大動作也能有效訓練核心穩定性，適合在擁擠車廂中進行。"
-  },
-  {
-    "name": "手臂環繞伸展",
-    "calPerSec": 0.025,
+    "name": "Dynamic Chest Stretch",
+    "calPerSec": 1.1,
     "doInCrowded": false,
     "parts": ["upper_body", "neck_shoulder"],
-    "media": "exercises/image.png",
-    "description": "透過手臂的緩慢環繞動作，放鬆肩膀和上背部肌肉，改善上半身血液循環。"
+    "media": "https://tpe-hackathon.brian033.dev/exercises/3uj0Ozg.gif",
+    "description": "雙臂向側展開後交叉於胸前，反覆開合以動態拉伸胸大肌與前三角，促進血液循環但需要稍多揮動空間。"
   },
   {
-    "name": "全身伸展",
-    "calPerSec": 0.03,
+    "name": "Chest And Front Of Shoulder Stretch",
+    "calPerSec": 0.7,
+    "doInCrowded": true,
+    "parts": ["neck_shoulder", "upper_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/Uto7l43.gif",
+    "description": "雙臂在胸前交叉並扣住，向前推出同時夾緊肩胛骨，集中放鬆胸口與前三角肌，動作幅度小適合車廂內。"
+  },
+  {
+    "name": "Back Pec Stretch",
+    "calPerSec": 0.9,
     "doInCrowded": false,
-    "parts": ["full_body"],
-    "media": "exercises/image.png",
-    "description": "結合上下肢與軀幹的溫和伸展動作，促進全身血液循環，消除長途搭乘的疲勞感。"
+    "parts": ["upper_body", "neck_shoulder"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/chfnQnM.gif",
+    "description": "手臂交叉後手指相扣並翻掌向外，再緩慢抬高至胸口以上，拉開胸背交界，較需要垂直空間。"
+  },
+  {
+    "name": "Chest And Front Of Shoulder Stretch (Micro)",
+    "calPerSec": 0.6,
+    "doInCrowded": true,
+    "parts": ["neck_shoulder", "upper_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercises/iDGtjyi.gif",
+    "description": "維持雙臂在胸前的小幅交叉，輕推掌心並微收肩胛，細緻放鬆胸肩前側，動作極小不易影響旁人。"
   }
 ]

@@ -61,17 +61,44 @@ class ExerciseInfoCardState extends State<ExerciseInfoCard> {
           // 圖片
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: Image.asset(
-              'assets/image/${_currentExercise!.media}',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
+            child: Image.network(
+              _currentExercise!.media,
+              fit: BoxFit.fitHeight,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
                 return Container(
                   color: TPColors.grayscale100,
                   child: const Center(
-                    child: Icon(
-                      Icons.fitness_center,
-                      color: TPColors.grayscale400,
-                      size: 48,
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(TPColors.primary500),
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                // 圖片載入失敗時顯示 fallback
+                return Container(
+                  color: TPColors.grayscale100,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.fitness_center,
+                          color: TPColors.grayscale400,
+                          size: 48,
+                        ),
+                        const SizedBox(height: 8),
+                        TPText(
+                          _currentExercise!.name,
+                          style: TPTextStyles.caption,
+                          color: TPColors.grayscale500,
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -135,4 +162,3 @@ class ExerciseInfoCardState extends State<ExerciseInfoCard> {
     );
   }
 }
-
