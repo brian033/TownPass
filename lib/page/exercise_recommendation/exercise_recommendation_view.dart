@@ -110,7 +110,12 @@ class _ExerciseRecommendationViewState
     _hasNavigatedToResult = true;
     final pointsEarned = route.legs.length;
 
-    // 計算總卡路里
+    // 使用實際運動紀錄計算總時長與總卡路里
+    final totalDurationSeconds =
+        exercises.fold<int>(0, (sum, exercise) => sum + exercise.duration);
+    final actualDuration = totalDurationSeconds > 0
+        ? Duration(seconds: totalDurationSeconds)
+        : totalDuration;
     final totalCalories =
         exercises.fold<int>(0, (sum, exercise) => sum + exercise.calories);
 
@@ -118,13 +123,14 @@ class _ExerciseRecommendationViewState
     controller.saveExerciseRecord(
       exercises: exercises,
       totalCalories: totalCalories,
-      totalDuration: totalDuration.inSeconds,
+      totalDuration:
+          totalDurationSeconds > 0 ? totalDurationSeconds : totalDuration.inSeconds,
     );
 
     final resultData = ExerciseResultData(
       startStation: controller.startStation.name,
       endStation: controller.endStation.name,
-      totalDuration: totalDuration,
+      totalDuration: actualDuration,
       venues: const [],
       points: pointsEarned,
       calories: totalCalories,

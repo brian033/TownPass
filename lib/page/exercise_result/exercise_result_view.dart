@@ -97,12 +97,37 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
         exerciseHistory: const [],
       );
 
+  ExerciseResultData _normalizeData(ExerciseResultData data) {
+    final history = data.exerciseHistory;
+    if (history.isEmpty) {
+      return data;
+    }
+
+    final totalDurationSeconds =
+        history.fold<int>(0, (sum, record) => sum + record.duration);
+    final totalCalories =
+        history.fold<int>(0, (sum, record) => sum + record.calories);
+
+    return ExerciseResultData(
+      startStation: data.startStation,
+      endStation: data.endStation,
+      totalDuration: totalDurationSeconds > 0
+          ? Duration(seconds: totalDurationSeconds)
+          : data.totalDuration,
+      venues: data.venues,
+      points: data.points,
+      calories: totalCalories,
+      exerciseHistory: history,
+    );
+  }
+
   void setExerciseResult(ExerciseResultData data) {
+    final normalizedData = _normalizeData(data);
     setState(() {
-      _data = data;
+      _data = normalizedData;
     });
-    _loadVenuesForStation(data.endStation);
-    _submitPointsIfNeeded(data);
+    _loadVenuesForStation(normalizedData.endStation);
+    _submitPointsIfNeeded(normalizedData);
   }
 
   @override
