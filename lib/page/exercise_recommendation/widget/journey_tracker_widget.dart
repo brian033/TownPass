@@ -174,6 +174,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         setState(() {
           _remainingSecondsToNextStation = 0;
           _isAtFinalStation = true;
+          // 清除轉乘狀態（如果前一站有轉乘提示，到終點站需要撤掉）
+          _needsTransferAtCurrentStation = false;
+          _currentTransferInfo = null;
+          _isTransferPaused = false;
         });
         widget.timerCardKey.currentState?.clear(showFinalMessage: true);
         widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
@@ -279,13 +283,23 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       _isTransferPaused = false;
     });
 
-    // 如果在起點或終點，不檢查轉乘
-    if (_currentLegIndex == 0 || _currentLegIndex >= widget.routeResult.legs.length) {
+    // 如果在起點，不檢查轉乘
+    if (_currentLegIndex == 0) {
+      return;
+    }
+
+    // 如果已經到達終點站，不檢查轉乘
+    if (_currentLegIndex >= widget.routeResult.legs.length) {
       return;
     }
 
     final path = _buildPath();
     if (path.length < 3 || _currentLegIndex >= path.length) {
+      return;
+    }
+
+    // 如果當前站是終點站（path 的最後一個元素），不需要檢查轉乘
+    if (_currentLegIndex == path.length - 1) {
       return;
     }
 
@@ -651,9 +665,9 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: TPColors.orange50,
+              color: TPColors.secondary50,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: TPColors.orange300, width: 1.5),
+              border: Border.all(color: TPColors.secondary200, width: 1.5),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -661,12 +675,12 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: TPColors.orange100,
+                    color: TPColors.secondary100,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.transfer_within_a_station,
-                    color: TPColors.orange600,
+                    color: TPColors.secondary500,
                     size: 24,
                   ),
                 ),
@@ -677,13 +691,13 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                     TPText(
                       '轉乘站：${_currentTransferInfo!.transferStation.name}',
                       style: TPTextStyles.bodySemiBold,
-                      color: TPColors.orange700,
+                      color: TPColors.secondary700,
                     ),
                     const SizedBox(height: 2),
                     const TPText(
                       '請完成轉乘後點擊繼續',
                       style: TPTextStyles.caption,
-                      color: TPColors.orange600,
+                      color: TPColors.secondary600,
                     ),
                   ],
                 ),
@@ -714,8 +728,8 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                 onPressed: _handleTransferPause,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _isTransferPaused 
-                      ? TPColors.orange500 
-                      : TPColors.primary500,
+                      ? TPColors.secondary400 
+                      : TPColors.secondary300,
                   foregroundColor: TPColors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 ),
