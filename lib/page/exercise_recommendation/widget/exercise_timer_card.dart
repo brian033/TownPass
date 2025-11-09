@@ -16,6 +16,7 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
   Timer? _timer;
   bool _isTimerFinished = false;
   bool _showFinalMessage = false;
+  bool _isPaused = false;
 
   /// 清空顯示內容
   void clear({bool showFinalMessage = false}) {
@@ -38,6 +39,7 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
       _remainingSeconds = remainingSeconds;
       _isTimerFinished = false;
       _showFinalMessage = false;
+      _isPaused = false; // 重置暂停状态
     });
 
     // 開始倒數計時
@@ -46,6 +48,9 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isPaused) {
+        return; // 如果暂停，不更新计时器
+      }
       if (_remainingSeconds != null && _remainingSeconds! > 0) {
         setState(() {
           _remainingSeconds = _remainingSeconds! - 1;
@@ -57,6 +62,24 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
         });
       }
     });
+  }
+
+  /// 暂停计时器
+  void pauseTimer() {
+    if (_isPaused) return;
+    setState(() {
+      _isPaused = true;
+    });
+    // 计时器继续运行，但不会更新显示
+  }
+
+  /// 继续计时器
+  void resumeTimer() {
+    if (!_isPaused) return;
+    setState(() {
+      _isPaused = false;
+    });
+    // 计时器继续运行，恢复更新显示
   }
 
   String _formatTime(int seconds) {

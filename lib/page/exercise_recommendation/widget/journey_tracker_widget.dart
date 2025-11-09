@@ -39,6 +39,8 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   Timer? _autoProgressTimer;
   int _remainingSecondsToNextStation = 0;
   Timer? _countdownTimer;
+  bool _isPaused = false;
+  int _pausedRemainingSeconds = 0; // 暂停时的剩余秒数
 
   /// 記錄完成的運動列表
   final List<ExerciseRecord> _completedExercises = [];
@@ -76,6 +78,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   }
 
 
+
   /// 獲取當前位置索引
   int _getCurrentIndex() {
     if (!_journeyStarted || widget.routeResult.legs.isEmpty) {
@@ -86,6 +89,38 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     // 當 _currentLegIndex = 0 時，我們在第一個 leg 中，應該顯示 path[0]（起點站）
     // 當 _currentLegIndex = 1 時，我們在第二個 leg 中，應該顯示 path[1]（第一個 leg 的終點站）
     return _currentLegIndex;
+  }
+
+  /// 判斷當前節點是否是轉乘站
+  /// 返回 true 表示當前節點是轉乘站
+  bool _isCurrentNodeTransferStation() {
+    final path = _buildPath();
+    final legs = widget.routeResult.legs;
+    final currentStationIndex = _getCurrentIndex();
+    
+    // 起始站和結束站不需要檢查，它們都不是轉乘站
+    if (currentStationIndex <= 0 || currentStationIndex >= path.length - 1) {
+      return false;
+    }
+    
+    // 站點在路徑中的關係：
+    // path[0] = legs[0].fromStation (起始站)
+    // path[i] = legs[i-1].toStation = legs[i].fromStation (i > 0)
+    // path[path.length-1] = legs[legs.length-1].toStation (結束站)
+    
+    // 對於 path[currentStationIndex]，它是：
+    // - legs[currentStationIndex - 1] 的終點站 (前一個leg)
+    // - legs[currentStationIndex] 的起點站 (後一個leg)
+    
+    if (currentStationIndex - 1 < 0 || currentStationIndex >= legs.length) {
+      return false;
+    }
+    
+    final previousLeg = legs[currentStationIndex - 1];
+    final nextLeg = legs[currentStationIndex];
+    
+    // 如果前一個leg的線路和後一個leg的線路不同，則是轉乘站
+    return previousLeg.lineName != nextLeg.lineName;
   }
 
   /// 獲取當前路段的進度（0.0 到 1.0）
@@ -110,6 +145,39 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     _autoProgressTimer?.cancel();
     _countdownTimer?.cancel();
     super.dispose();
+  }
+
+  /// 暂停旅程
+  void _pauseJourney() {
+    if (_isPaused || _journeyCompleted) return;
+    
+    setState(() {
+      _isPaused = true;
+      _pausedRemainingSeconds = _remainingSecondsToNextStation;
+    });
+    
+    // 取消计时器
+    _autoProgressTimer?.cancel();
+    _countdownTimer?.cancel();
+    
+    // 暂停推荐运动计时器
+    widget.timerCardKey.currentState?.pauseTimer();
+  }
+
+  /// 继续旅程
+  void _resumeJourney() {
+    if (!_isPaused || _journeyCompleted) return;
+    
+    setState(() {
+      _isPaused = false;
+    });
+    
+    // 恢复计时器，使用暂停时的剩余时间
+    _startAutoProgressTimerWithRemaining(_pausedRemainingSeconds);
+    _pausedRemainingSeconds = 0;
+    
+    // 继续推荐运动计时器
+    widget.timerCardKey.currentState?.resumeTimer();
   }
 
   /// 開始行程
@@ -247,7 +315,23 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         }
         
         _updateTimerCard();
-        _startAutoProgressTimer();
+        
+        // 檢查當前節點是否是轉乘站
+        if (_isCurrentNodeTransferStation()) {
+          // 如果是轉乘站且未暫停，則自動暫停
+          if (!_isPaused) {
+            _pauseJourney();
+          }
+          // 如果已經暫停，保持暫停狀態
+        } else {
+          // 如果不是轉乘站，自動恢復（如果之前是暫停狀態）
+          if (_isPaused) {
+            _resumeJourney();
+          } else {
+            // 如果未暫停，正常啟動計時器
+            _startAutoProgressTimer();
+          }
+        }
       }
     }
   }
@@ -274,7 +358,23 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       
       // 上一站時不記錄運動，只更新顯示
       _updateTimerCard();
-      _startAutoProgressTimer();
+      
+      // 檢查當前節點是否是轉乘站
+      if (_isCurrentNodeTransferStation()) {
+        // 如果是轉乘站且未暫停，則自動暫停
+        if (!_isPaused) {
+          _pauseJourney();
+        }
+        // 如果已經暫停，保持暫停狀態
+      } else {
+        // 如果不是轉乘站，自動恢復（如果之前是暫停狀態）
+        if (_isPaused) {
+          _resumeJourney();
+        } else {
+          // 如果未暫停，正常啟動計時器
+          _startAutoProgressTimer();
+        }
+      }
     }
   }
 
@@ -423,23 +523,36 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
 
   /// 啟動自動進站計時器和倒數計時器
   void _startAutoProgressTimer() {
+    final currentLeg = widget.routeResult.legs[_currentLegIndex];
+    final totalSeconds = currentLeg.travelSeconds + currentLeg.stopSeconds;
+    _startAutoProgressTimerWithRemaining(totalSeconds);
+  }
+
+  /// 使用指定的剩余秒數啟動自動進站計時器和倒數計時器
+  void _startAutoProgressTimerWithRemaining(int remainingSeconds) {
     _autoProgressTimer?.cancel();
     _countdownTimer?.cancel();
 
-    if (_journeyCompleted) {
+    if (_journeyCompleted || _isPaused) {
       return;
     }
 
     final currentLeg = widget.routeResult.legs[_currentLegIndex];
     final totalSeconds = currentLeg.travelSeconds + currentLeg.stopSeconds;
+    final actualRemaining = remainingSeconds > 0 
+        ? remainingSeconds.clamp(0, totalSeconds)
+        : totalSeconds;
 
     // 設定初始剩餘秒數
     setState(() {
-      _remainingSecondsToNextStation = totalSeconds;
+      _remainingSecondsToNextStation = actualRemaining;
     });
 
     // 啟動倒數計時器（每秒更新一次）
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isPaused) {
+        return; // 如果暂停，不更新
+      }
       setState(() {
         if (_remainingSecondsToNextStation > 0) {
           _remainingSecondsToNextStation--;
@@ -448,8 +561,8 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     });
 
     // 啟動自動進站計時器
-    _autoProgressTimer = Timer(Duration(seconds: totalSeconds), () {
-      if (!mounted) return;
+    _autoProgressTimer = Timer(Duration(seconds: actualRemaining), () {
+      if (!mounted || _isPaused) return;
       // 統一使用 _nextStation() 處理，它會自動判斷是否到達最後一站
       _nextStation();
     });
@@ -502,30 +615,6 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
                 style: TPTextStyles.bodySemiBold,
                 color: TPColors.grayscale900,
               ),
-              if (_journeyStarted && !_journeyCompleted)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: TPColors.primary50,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: TPColors.primary200),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.timer_outlined,
-                        size: 16,
-                        color: TPColors.primary500,
-                      ),
-                      const SizedBox(width: 4),
-                      TPText(
-                        _formatTime(_remainingSecondsToNextStation),
-                        style: TPTextStyles.caption,
-                        color: TPColors.primary500,
-                      ),
-                    ],
-                  ),
-                ),
             ],
           ),
           const SizedBox(height: 16),
@@ -563,15 +652,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       path: path,
       currentIndex: currentIndex,
       segmentProgress: segmentProgress,
+      legs: widget.routeResult.legs,
     );
   }
 
-  /// 格式化時間顯示
-  String _formatTime(int seconds) {
-    final minutes = seconds ~/ 60;
-    final secs = seconds % 60;
-    return '$minutes:${secs.toString().padLeft(2, '0')}';
-  }
 
   /// 建立控制按鈕
   Widget _buildControlButtons() {
@@ -598,25 +682,62 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       return _buildCompletedMessage();
     }
 
-    // 顯示「上一站」和「下一站」按鈕
+    // 檢查當前節點是否是轉乘站
+    final isTransferStation = _isCurrentNodeTransferStation();
+    
+    // 顯示「上一站」、「暫停/繼續」和「下一站」按鈕
+    // 暫停按鈕始終顯示，但在非轉乘站時禁用
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         ElevatedButton(
+          // 暫停狀態下也可以按上一站
           onPressed: _currentLegIndex > 0 ? _previousStation : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: TPColors.grayscale300,
-            foregroundColor: TPColors.grayscale700,
+            backgroundColor: TPColors.primary500,
+            foregroundColor: TPColors.white,
             disabledBackgroundColor: TPColors.grayscale100,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
           child: const TPText(
             '上一站',
-            style: TPTextStyles.bodyRegular,
-            color: TPColors.grayscale700,
+            style: TPTextStyles.bodySemiBold,
+            color: TPColors.white,
+          ),
+        ),
+        // 暫停/繼續按鈕始終顯示，但在非轉乘站時禁用
+        ElevatedButton(
+          onPressed: isTransferStation 
+              ? (_isPaused ? _resumeJourney : _pauseJourney)
+              : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isTransferStation
+                ? (_isPaused ? TPColors.secondary500 : TPColors.orange500)
+                : TPColors.grayscale200,
+            foregroundColor: isTransferStation
+                ? TPColors.white
+                : TPColors.grayscale400,
+            disabledBackgroundColor: TPColors.grayscale200,
+            disabledForegroundColor: TPColors.grayscale400,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _isPaused ? Icons.play_arrow : Icons.pause,
+                size: 20,
+              ),
+              const SizedBox(width: 4),
+              TPText(
+                _isPaused ? '繼續' : '暫停',
+                style: TPTextStyles.bodySemiBold,
+              ),
+            ],
           ),
         ),
         ElevatedButton(
+          // 暫停狀態下也可以按下一站
           onPressed: _isAtFinalStation ? _completeJourney : _nextStation,
           style: ElevatedButton.styleFrom(
             backgroundColor: TPColors.primary500,
@@ -660,11 +781,13 @@ class _AnimatedPathWidget extends StatefulWidget {
   final List<MrtStation> path;
   final int currentIndex;
   final double segmentProgress;
+  final List<MrtRouteLeg> legs;
 
   const _AnimatedPathWidget({
     required this.path,
     required this.currentIndex,
     required this.segmentProgress,
+    required this.legs,
   });
 
   @override
@@ -676,6 +799,38 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   int? _animatingIndex; // 当前正在播放动画的节点索引
+
+  /// 判斷指定索引的站是否需要轉乘
+  /// [stationIndex] 站在路徑中的索引
+  /// 返回 true 表示該站是轉乘站
+  bool _isTransferStation(int stationIndex) {
+    final path = widget.path;
+    final legs = widget.legs;
+    
+    // 起始站和結束站不需要檢查，它們都不是轉乘站
+    if (stationIndex <= 0 || stationIndex >= path.length - 1) {
+      return false;
+    }
+    
+    // 站點在路徑中的關係：
+    // path[0] = legs[0].fromStation (起始站)
+    // path[i] = legs[i-1].toStation = legs[i].fromStation (i > 0)
+    // path[path.length-1] = legs[legs.length-1].toStation (結束站)
+    
+    // 對於 path[stationIndex]，它是：
+    // - legs[stationIndex - 1] 的終點站 (前一個leg)
+    // - legs[stationIndex] 的起點站 (後一個leg)
+    
+    if (stationIndex - 1 < 0 || stationIndex >= legs.length) {
+      return false;
+    }
+    
+    final previousLeg = legs[stationIndex - 1];
+    final nextLeg = legs[stationIndex];
+    
+    // 如果前一個leg的線路和後一個leg的線路不同，則是轉乘站
+    return previousLeg.lineName != nextLeg.lineName;
+  }
 
   @override
   void initState() {
@@ -806,12 +961,10 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
             nodeIndex: 0,
           ),
           const SizedBox(height: 8),
-          TPText(
-            _truncateStationName(station.name),
-            style: TPTextStyles.caption,
-            color: TPColors.grayscale700,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          _buildStationName(
+            station: station,
+            isActive: true,
+            stationIndex: 0,
           ),
         ],
       ),
@@ -1054,6 +1207,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
                 child: _buildStationName(
                   station: startStation,
                   isActive: currentIndex == 0 && currentIndex < path.length - 1,
+                  stationIndex: 0, // Start station is always at index 0
                 ),
               ),
             ),
@@ -1064,6 +1218,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
                   station: currentStation,
                   isActive: (currentIndex > 0 && currentIndex < path.length - 1) ||
                             (currentIndex == path.length - 3),
+                  stationIndex: _getStationIndex(currentStation, path),
                 ),
               ),
             ),
@@ -1073,6 +1228,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
                 child: _buildStationName(
                   station: nextStation,
                   isActive: currentIndex == path.length - 2,
+                  stationIndex: nextStation != null ? _getStationIndex(nextStation, path) : null,
                 ),
               ),
             ),
@@ -1085,6 +1241,7 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
                 child: _buildStationName(
                   station: destinationStation,
                   isActive: currentIndex >= path.length - 1,
+                  stationIndex: path.length - 1, // Destination is always at last index
                 ),
               ),
             ),
@@ -1109,16 +1266,10 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
           nodeIndex: nodeIndex,
         ),
         const SizedBox(height: 8),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: TPText(
-            _truncateStationName(station.name),
-            style: TPTextStyles.caption,
-            color: isActive ? TPColors.grayscale900 : TPColors.grayscale600,
-            maxLines: 1,
-            overflow: TextOverflow.visible,
-            textAlign: TextAlign.center,
-          ),
+        _buildStationName(
+          station: station,
+          isActive: isActive,
+          stationIndex: nodeIndex,
         ),
       ],
     );
@@ -1129,6 +1280,9 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
     required double size,
     int? nodeIndex,
   }) {
+    // 判断是否是转乘站
+    final isTransfer = nodeIndex != null && _isTransferStation(nodeIndex);
+    
     Widget circleWidget = Container(
       width: 24,
       height: 24,
@@ -1138,13 +1292,26 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
               shape: BoxShape.circle,
             )
           : BoxDecoration(
-              color: TPColors.grayscale400,
+              // 如果是转乘站，使用更深的背景色以便白色文字更清晰
+              color: isTransfer ? TPColors.grayscale600 : TPColors.grayscale400,
               shape: BoxShape.circle,
               border: Border.all(
                 color: TPColors.grayscale300,
                 width: 2,
               ),
             ),
+      child: isTransfer
+          ? Center(
+              child: Text(
+                '轉',
+                style: TextStyle(
+                  color: TPColors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : null,
     );
 
     // 如果是当前节点且正在播放动画，应用动画缩放
@@ -1268,10 +1435,12 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
   Widget _buildStationName({
     required MrtStation? station,
     required bool isActive,
+    int? stationIndex,
   }) {
     if (station == null) {
       return const SizedBox.shrink();
     }
+    
     return FittedBox(
       fit: BoxFit.scaleDown,
       child: TPText(

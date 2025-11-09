@@ -68,10 +68,10 @@ class _ExerciseRecommendationViewState
               color: TPColors.grayscale900,
             ),
             const SizedBox(height: 16),
-            _buildInfoCard(),
+            // _buildInfoCard(),
             // const SizedBox(height: 24),
             // _buildDebugExercisesCard(),
-            const SizedBox(height: 24),
+            // const SizedBox(height: 24),
             if (controller.routeResult != null)
               JourneyTrackerWidget(
                 key: _journeyTrackerKey,
