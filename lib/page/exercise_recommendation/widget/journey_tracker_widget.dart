@@ -10,6 +10,7 @@ import 'package:town_pass/util/tp_text.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_timer_card.dart';
 import 'package:town_pass/page/exercise_recommendation/widget/exercise_info_card.dart';
 import 'package:town_pass/page/exercise_recommendation/exercise_recommendation_controller.dart';
+import 'package:town_pass/service/mrt_transfer_service.dart';
 
 class JourneyTrackerWidget extends StatefulWidget {
   const JourneyTrackerWidget({
@@ -53,6 +54,12 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   DateTime? _currentExerciseStartTime;
   /// 追蹤最後記錄的實際時間（用於部分記錄）
   DateTime? _lastRecordedTime;
+
+  /// 轉乘相關狀態
+  final MrtTransferService _transferService = MrtTransferService();
+  bool _isTransferPaused = false; // 是否處於轉乘暫停狀態
+  bool _needsTransferAtCurrentStation = false; // 當前站是否需要轉乘
+  TransferInfo? _currentTransferInfo; // 當前轉乘資訊
 
   /// 對外提供當前運動的 getter
   RecommendedExercise? get currentExercise => _currentExercise;
@@ -132,7 +139,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   }
 
   /// 下一站
-  void _nextStation() {
+  void _nextStation() async {
     // path 有 legs.length + 1 个站（起点 + 每个 leg 的终点）
     // 当 _currentLegIndex = legs.length - 1 时，我们在 last - 1 station，应该能前进到 last station
     if (_currentLegIndex < widget.routeResult.legs.length) {
@@ -192,8 +199,17 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
           _currentExerciseStartTime = DateTime.now(); // 記錄新動作開始的實際時間
         }
         
+        // 先更新運動資訊顯示
         _updateTimerCard();
-        _startAutoProgressTimer();
+        
+        // 再檢查是否需要轉乘（這樣運動資訊會先顯示出來）
+        await _checkTransferAtCurrentStation();
+        
+        // 如果需要轉乘，不自動開始計時（已在 _checkTransferAtCurrentStation 中暫停）
+        // 如果不需要轉乘，才啟動計時器
+        if (!_needsTransferAtCurrentStation) {
+          _startAutoProgressTimer();
+        }
       }
     }
   }
@@ -244,6 +260,88 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       do {
         _nextExercise = exercises[random.nextInt(exercises.length)];
       } while (_nextExercise == _currentExercise);
+    }
+  }
+
+  /// 檢查當前站是否需要轉乘
+  Future<void> _checkTransferAtCurrentStation() async {
+    // 重置轉乘狀態
+    setState(() {
+      _needsTransferAtCurrentStation = false;
+      _currentTransferInfo = null;
+      _isTransferPaused = false;
+    });
+
+    // 如果在起點或終點，不檢查轉乘
+    if (_currentLegIndex == 0 || _currentLegIndex >= widget.routeResult.legs.length) {
+      return;
+    }
+
+    final path = _buildPath();
+    if (path.length < 3 || _currentLegIndex >= path.length) {
+      return;
+    }
+
+    // 獲取當前站、前一站、下一站
+    final currentStation = path[_currentLegIndex];
+    final previousStation = path[_currentLegIndex - 1];
+    final nextStation = _currentLegIndex + 1 < path.length 
+        ? path[_currentLegIndex + 1] 
+        : null;
+
+    // 如果沒有下一站，不需要檢查轉乘
+    if (nextStation == null) {
+      return;
+    }
+
+    // 檢查是否需要轉乘
+    final transferInfo = await _transferService.getTransferInfo(
+      currentStation: currentStation,
+      previousStation: previousStation,
+      nextStation: nextStation,
+    );
+
+    if (transferInfo != null && transferInfo.needsTransfer) {
+      setState(() {
+        _needsTransferAtCurrentStation = true;
+        _currentTransferInfo = transferInfo;
+        _isTransferPaused = true; // 自動進入暫停狀態
+      });
+
+      // 暫停捷運路線計時器
+      _autoProgressTimer?.cancel();
+      _countdownTimer?.cancel();
+      
+      // 暫停運動計時器
+      widget.timerCardKey.currentState?.pause();
+
+      print('🚇 偵測到轉乘：${transferInfo.toString()}');
+    }
+  }
+
+  /// 處理轉乘暫停/繼續按鈕點擊
+  void _handleTransferPause() {
+    setState(() {
+      _isTransferPaused = !_isTransferPaused;
+    });
+
+    if (!_isTransferPaused) {
+      // 繼續捷運路線計時
+      _startAutoProgressTimer();
+      
+      // 繼續運動計時
+      widget.timerCardKey.currentState?.resume();
+      
+      print('✅ 轉乘完成，繼續計時');
+    } else {
+      // 暫停捷運路線計時
+      _autoProgressTimer?.cancel();
+      _countdownTimer?.cancel();
+      
+      // 暫停運動計時
+      widget.timerCardKey.currentState?.pause();
+      
+      print('⏸️ 轉乘暫停中');
     }
   }
 
@@ -566,7 +664,114 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       return _buildCompletedMessage();
     }
 
-    // 顯示「上一站」和「下一站」按鈕
+    // 如果需要轉乘，顯示特殊的按鈕佈局
+    if (_needsTransferAtCurrentStation && _currentTransferInfo != null) {
+      return Column(
+        children: [
+          // 轉乘提示
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: TPColors.orange50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: TPColors.orange300, width: 1.5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: TPColors.orange100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.transfer_within_a_station,
+                    color: TPColors.orange600,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TPText(
+                      '轉乘站：${_currentTransferInfo!.transferStation.name}',
+                      style: TPTextStyles.bodySemiBold,
+                      color: TPColors.orange700,
+                    ),
+                    const SizedBox(height: 2),
+                    const TPText(
+                      '請完成轉乘後點擊繼續',
+                      style: TPTextStyles.caption,
+                      color: TPColors.orange600,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // 按鈕區域
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // 上一站按鈕
+              ElevatedButton(
+                onPressed: _currentLegIndex > 0 ? _previousStation : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: TPColors.grayscale300,
+                  foregroundColor: TPColors.grayscale700,
+                  disabledBackgroundColor: TPColors.grayscale100,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                child: const TPText(
+                  '上一站',
+                  style: TPTextStyles.bodyRegular,
+                  color: TPColors.grayscale700,
+                ),
+              ),
+              // 轉乘暫停/繼續按鈕
+              ElevatedButton.icon(
+                onPressed: _handleTransferPause,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _isTransferPaused 
+                      ? TPColors.orange500 
+                      : TPColors.primary500,
+                  foregroundColor: TPColors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                icon: Icon(
+                  _isTransferPaused ? Icons.play_arrow : Icons.pause,
+                  size: 20,
+                ),
+                label: TPText(
+                  _isTransferPaused ? '繼續' : '暫停',
+                  style: TPTextStyles.bodySemiBold,
+                  color: TPColors.white,
+                ),
+              ),
+              // 下一站按鈕
+              ElevatedButton(
+                onPressed: _nextStation,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: TPColors.primary500,
+                  foregroundColor: TPColors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                child: const TPText(
+                  '下一站',
+                  style: TPTextStyles.bodySemiBold,
+                  color: TPColors.white,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+
+    // 一般情況：顯示「上一站」和「下一站」按鈕
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [

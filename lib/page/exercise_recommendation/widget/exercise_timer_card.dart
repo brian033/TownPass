@@ -16,6 +16,7 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
   Timer? _timer;
   bool _isTimerFinished = false;
   bool _showFinalMessage = false;
+  bool _isPaused = false; // 計時器是否暫停
 
   /// 清空顯示內容
   void clear({bool showFinalMessage = false}) {
@@ -25,7 +26,26 @@ class ExerciseTimerCardState extends State<ExerciseTimerCard> {
       _remainingSeconds = null;
       _isTimerFinished = false;
       _showFinalMessage = showFinalMessage;
+      _isPaused = false;
     });
+  }
+
+  /// 暫停計時器
+  void pause() {
+    _timer?.cancel();
+    setState(() {
+      _isPaused = true;
+    });
+  }
+
+  /// 恢復計時器
+  void resume() {
+    if (_isPaused && _remainingSeconds != null && _remainingSeconds! > 0) {
+      setState(() {
+        _isPaused = false;
+      });
+      _startTimer();
+    }
   }
 
   /// 設置卡片顯示內容並開始倒數計時
