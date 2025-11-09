@@ -712,15 +712,15 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
               ElevatedButton(
                 onPressed: _currentLegIndex > 0 ? _previousStation : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: TPColors.grayscale300,
-                  foregroundColor: TPColors.grayscale700,
+                  backgroundColor: TPColors.primary500,
+                  foregroundColor: TPColors.white,
                   disabledBackgroundColor: TPColors.grayscale100,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 ),
                 child: const TPText(
                   '上一站',
-                  style: TPTextStyles.bodyRegular,
-                  color: TPColors.grayscale700,
+                  style: TPTextStyles.bodySemiBold,
+                  color: TPColors.white,
                 ),
               ),
               // 轉乘暫停/繼續按鈕
@@ -770,15 +770,15 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         ElevatedButton(
           onPressed: _currentLegIndex > 0 ? _previousStation : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: TPColors.grayscale300,
-            foregroundColor: TPColors.grayscale700,
+            backgroundColor: TPColors.primary500,
+            foregroundColor: TPColors.white,
             disabledBackgroundColor: TPColors.grayscale100,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           ),
           child: const TPText(
             '上一站',
-            style: TPTextStyles.bodyRegular,
-            color: TPColors.grayscale700,
+            style: TPTextStyles.bodySemiBold,
+            color: TPColors.white,
           ),
         ),
         ElevatedButton(
@@ -1295,8 +1295,8 @@ class _AnimatedPathWidgetState extends State<_AnimatedPathWidget>
     int? nodeIndex,
   }) {
     Widget circleWidget = Container(
-      width: 24,
-      height: 24,
+      width: 32,
+      height: 32,
       decoration: isActive
           ? BoxDecoration(
               color: TPColors.primary500,
