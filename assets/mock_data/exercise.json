@@ -1,19 +1,19 @@
 [
   {
-    "name": "站姿側向伸展",
-    "calPerSec": 0.08,
-    "doInCrowded": false,
-    "parts": ["upper_body", "core"],
+    "name": "站姿斜方肌上部伸展",
+    "calPerSec": 0.03,
+    "doInCrowded": true,
+    "parts": ["neck_shoulder", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/1jXLYEw.gif",
-    "description": "雙腳與肩同寬站立，雙臂水平伸展後慢慢向一側折腰，延展肋間與背闊肌，適合長時間站立後舒緩緊繃。"
+    "description": "站立姿勢，一手輕扶頭側，另一手自然下垂。將頭緩慢向一側傾斜，感受肩頸與上背部被拉伸。可放鬆斜方肌上部與胸鎖乳突肌，舒緩久坐或低頭造成的僵硬。"
   },
   {
-    "name": "站姿骨盆傾斜",
-    "calPerSec": 0.07,
+    "name": "站姿背部伸展",
+    "calPerSec": 0.04,
     "doInCrowded": true,
-    "parts": ["core", "lower_body"],
+    "parts": ["core", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/cuKYxhu.gif",
-    "description": "保持站姿並收緊核心，向前後輕微傾動骨盆，喚醒腰椎與臀部穩定肌群，幫助矯正通勤久站的僵硬。"
+    "description": "站立姿勢，雙手叉腰，慢慢向後仰伸展上半身，感受背部與腰部被拉開。可放鬆豎脊肌並改善長時間久坐或駝背造成的下背緊繃。"
   },
   {
     "name": "側向手腕拉伸",
@@ -37,7 +37,7 @@
     "doInCrowded": false,
     "parts": ["neck_shoulder", "upper_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/GSDioYu.gif",
-    "description": "雙臂交握由胸前推向前上方並抬高過頭，延長上背與肩胛間筋膜，適合在站立等待時恢復姿勢。"
+    "description": "雙臂交握由胸前推向前方，延長上背與肩胛間筋膜，適合在站立等待時恢復姿勢。"
   },
   {
     "name": "動態胸部伸展",
@@ -48,28 +48,20 @@
     "description": "雙臂向側展開後交叉於胸前，反覆開合以動態拉伸胸大肌與前三角，促進血液循環但需要稍多揮動空間。"
   },
   {
-    "name": "胸部與前肩伸展",
-    "calPerSec": 0.07,
-    "doInCrowded": true,
-    "parts": ["neck_shoulder", "upper_body"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Uto7l43.gif",
-    "description": "雙臂在胸前交叉並扣住，向前推出同時夾緊肩胛骨，集中放鬆胸口與前三角肌，動作幅度小適合車廂內。"
-  },
-  {
-    "name": "背部胸肌伸展",
-    "calPerSec": 0.09,
+    "name": "桌上背闊肌伸展",
+    "calPerSec": 0.04,
     "doInCrowded": false,
-    "parts": ["upper_body", "neck_shoulder"],
+    "parts": ["upper_body", "neck_shoulder", "core"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/chfnQnM.gif",
-    "description": "手臂交叉後手指相扣並翻掌向外，再緩慢抬高至胸口以上，拉開胸背交界，較需要垂直空間。"
+    "description": "站在桌邊或椅子前，雙手放在桌上，髖部向後推並低頭下壓，讓背部呈一直線。可有效伸展背闊肌與胸部肌群，放鬆肩膀與上背緊繃。"
   },
   {
-    "name": "胸部與前肩伸展（微幅）",
-    "calPerSec": 0.06,
+    "name": "毛巾胸肌伸展",
+    "calPerSec": 0.04,
     "doInCrowded": true,
-    "parts": ["neck_shoulder", "upper_body"],
+    "parts": ["upper_body", "neck_shoulder"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/iDGtjyi.gif",
-    "description": "維持雙臂在胸前的小幅交叉，輕推掌心並微收肩胛，細緻放鬆胸肩前側，動作極小不易影響旁人。"
+    "description": "站姿，雙手各握毛巾兩端置於頭後，手肘微彎，胸口打開並緩慢向外展手臂。可有效伸展胸大肌與前三角肌，改善駝背與肩膀緊繃。"
   },
   {
     "name": "站姿側屈伸展",
@@ -88,20 +80,20 @@
     "description": "採弓箭步，前腿屈膝、後腿伸直，雙臂往外打開到肩高並輕旋掌心，於前後晃動時感受胸大肌與髖屈肌被動態牽引。"
   },
   {
-    "name": "站姿抱膝伸展",
-    "calPerSec": 0.06,
-    "doInCrowded": false,
-    "parts": ["lower_body", "core"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/ChatGPT Image 2025年11月8日 下午11_35_37.png",
-    "description": "保持站姿用雙手抱住單膝向胸口靠近，停留兩秒後換腳，可放鬆臀中肌並喚醒核心，適合等車時調整骨盆。"
+    "name": "站姿胸肌與肱二頭肌伸展",
+    "calPerSec": 0.04,
+    "doInCrowded": true,
+    "parts": ["upper_body", "neck_shoulder"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/ChatGPT Image 2025年11月8日 下午11_28_22.png",
+    "description": "站姿，一手自然下垂、掌心向前，另一手輕扶頭部將頭偏向對側，感覺胸前與手臂前側被拉開。可放鬆胸大肌與肱二頭肌，改善肩膀內旋與久坐緊繃。"
   },
   {
-    "name": "靠牆提踵運動",
-    "calPerSec": 0.07,
-    "doInCrowded": false,
-    "parts": ["lower_body"],
+    "name": "站姿頸部側屈伸展",
+    "calPerSec": 0.03,
+    "doInCrowded": true,
+    "parts": ["neck_shoulder"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/ChatGPT Image 2025年11月8日 下午11_38_20.png",
-    "description": "面向牆壁以雙手支撐，交替抬起腳跟做提踵，維持核心收緊，可促進小腿血液循環、減少久站水腫。"
+    "description": "站立姿勢，一手自然下垂，另一手輕放頭側，慢慢將頭向一側傾斜，感受頸部與肩膀上方肌肉被拉伸。可舒緩長時間低頭或打電腦造成的僵硬。"
   },
   {
     "name": "站姿肩胛開合運動",
@@ -112,83 +104,83 @@
     "description": "站直後雙臂向前平舉並交叉，肩胛骨向外推，接著打開手臂呈V字，循環動作可在狹小空間活化上背。"
   },
   {
-    "name": "坐姿脊椎扭轉",
-    "calPerSec": 0.055,
-    "doInCrowded": false,
-    "parts": ["core", "upper_body"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_9toa4l9toa4l9toa.png",
-    "description": "坐姿保持脊椎延伸，雙手扶住膝外側，吸氣延長脊柱、吐氣時緩慢扭向後方，重點在胸椎旋轉而非腰部出力。"
-  },
-  {
-    "name": "跪姿上背伸展",
-    "calPerSec": 0.07,
-    "doInCrowded": false,
-    "parts": ["neck_shoulder", "upper_body"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_a1k3y3a1k3y3a1k3.png",
-    "description": "跪姿或半跪姿時，雙手在胸前交扣並往前推出，藉由上背拱起與手肘外開，釋放肩胛間的緊繃與胸椎僵硬。"
-  },
-  {
-    "name": "站姿肩袖旋轉",
-    "calPerSec": 0.05,
-    "doInCrowded": false,
-    "parts": ["neck_shoulder"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_ad7d42ad7d42ad7d.png",
-    "description": "將手肘貼近身體、前臂呈90度，握拳向外旋轉再回正，可暖身肩袖並改善整天打字造成的內旋姿勢。"
-  },
-  {
-    "name": "靠牆天使運動",
-    "calPerSec": 0.06,
-    "doInCrowded": false,
-    "parts": ["neck_shoulder", "upper_body"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_gq8kl9gq8kl9gq8k.png",
-    "description": "背靠牆壁、手肘彎曲貼牆畫雪天使軌跡，維持下背貼牆可矯正聳肩，同時訓練肩胛控制。"
-  },
-  {
-    "name": "門框胸部旋轉伸展",
-    "calPerSec": 0.07,
-    "doInCrowded": false,
-    "parts": ["upper_body", "core"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_gtq92mgtq92mgtq9.png",
-    "description": "面向門框或柱子，一手扶住支點後旋轉胸口向外，保持骨盆正對前方，專注於胸大肌與腹斜肌的延展。"
-  },
-  {
-    "name": "弓箭步側腰伸展",
-    "calPerSec": 0.09,
-    "doInCrowded": false,
-    "parts": ["full_body", "core"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_o6jvpoo6jvpoo6jv.png",
-    "description": "弓箭步下沉的同時，將後側手臂往頭上方伸展、前手扶住大腿，形成對角線拉伸，能同時伸展側腰與髖屈肌。"
-  },
-  {
-    "name": "雙手互扣上舉伸展",
-    "calPerSec": 0.065,
-    "doInCrowded": false,
-    "parts": ["upper_body", "neck_shoulder"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_o6rz33o6rz33o6rz.png",
-    "description": "雙手於胸前互扣並翻掌向外推，再逐漸抬高到頭頂，搭配吸吐可釋放前臂屈肌與胸口緊繃。"
-  },
-  {
-    "name": "弓箭步髖伸展",
-    "calPerSec": 0.085,
-    "doInCrowded": false,
+    "name": "原地抬膝",
+    "calPerSec": 0.12,
+    "doInCrowded": true,
     "parts": ["lower_body", "core"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_om6cj9om6cj9om6c.png",
-    "description": "前跨一步讓重心落在前腿，後腿伸直腳跟踩地，雙手放在骨盆前後小幅擺動，帶動髖伸展與核心穩定。"
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_9toa4l9toa4l9toa.png",
+    "description": "站立原地交替抬膝至腰部高度，手臂自然擺動以保持平衡。能有效啟動大腿前側、臀部與核心肌群，是暖身與心肺啟動常見動作。"
   },
   {
-    "name": "站姿胸椎開合運動",
-    "calPerSec": 0.075,
-    "doInCrowded": false,
-    "parts": ["neck_shoulder", "upper_body"],
-    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_qwcwemqwcwemqwcw.png",
-    "description": "站姿抱住前臂並讓肩胛向後下沉，再配合胸口微微上提，進行胸椎開合以改善駝背與呼吸深度。"
+    "name": "弓箭步牆面伸展",
+    "calPerSec": 0.05,
+    "doInCrowded": true,
+    "parts": ["lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_a1k3y3a1k3y3a1k3.png",
+    "description": "面向牆壁站立，一腳在前一腳在後呈弓箭步姿勢，雙手扶牆，後腳腳跟貼地並感受小腿與臀部被拉伸。可放鬆小腿與髖屈肌，改善久站與運動後緊繃。"
   },
   {
-    "name": "坐姿背闊肌放鬆",
-    "calPerSec": 0.055,
-    "doInCrowded": false,
+    "name": "站姿臀中肌伸展",
+    "calPerSec": 0.05,
+    "doInCrowded": true,
+    "parts": ["lower_body", "core"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_ad7d42ad7d42ad7d.png",
+    "description": "單腳站立，另一腳抬起並將腳踝放在支撐腿的大腿上方，像數字4的形狀。可扶住固定物保持平衡，微微下坐感受臀部與髖部外側被拉伸，放鬆久坐僵硬的臀肌。"
+  },
+  {
+    "name": "站姿髖關節外展",
+    "calPerSec": 0.08,
+    "doInCrowded": true,
+    "parts": ["lower_body", "core"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_gq8kl9gq8kl9gq8k.png",
+    "description": "單手扶著固定物，另一條腿保持伸直向外側抬起至約45度，慢慢放下。可強化臀中肌與大腿外側，改善骨盆穩定與走路姿勢，適合狹窄空間中進行。"
+  },
+  {
+    "name": "站姿胸肌伸展",
+    "calPerSec": 0.04,
+    "doInCrowded": true,
     "parts": ["upper_body", "neck_shoulder"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_gtq92mgtq92mgtq9.png",
+    "description": "站立姿勢，雙手在身後十指交扣並伸直手臂，微微抬高手臂同時挺胸。可有效伸展胸大肌與前三角肌，改善駝背與肩膀緊繃。"
+  },
+  {
+    "name": "坐姿膝關節伸展",
+    "calPerSec": 0.05,
+    "doInCrowded": true,
+    "parts": ["lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_o6jvpoo6jvpoo6jv.png",
+    "description": "坐在椅子邊緣，雙腳自然下垂。慢慢將一腳向前伸直到膝蓋打直，再放下回原位。可訓練股四頭肌並促進膝蓋穩定，適合久坐或下肢復健者。"
+  },
+  {
+    "name": "坐姿脊椎扭轉伸展",
+    "calPerSec": 0.04,
+    "doInCrowded": true,
+    "parts": ["core", "lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_o6rz33o6rz33o6rz.png",
+    "description": "坐在椅子邊緣，一腳跨過另一腳，對側手肘抵住膝蓋外側並緩慢扭轉上半身。保持背部挺直，感受腰部與臀部的伸展。可放鬆下背與脊椎兩側肌群，改善久坐僵硬。"
+  },
+  {
+    "name": "站姿側弓步伸展",
+    "calPerSec": 0.06,
+    "doInCrowded": true,
+    "parts": ["lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_om6cj9om6cj9om6c.png",
+    "description": "單手扶著固定物，雙腳打開比肩寬，一腳彎曲、一腳伸直，身體向伸直腿方向傾斜。感受大腿內側與小腿肌肉被拉伸，有助於改善髖部活動度與下半身柔軟度。"
+  },
+  {
+    "name": "站姿抬膝收腹",
+    "calPerSec": 0.1,
+    "doInCrowded": true,
+    "parts": ["core", "lower_body"],
+    "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_qwcwemqwcwemqwcw.png",
+    "description": "單手扶著固定物，另一手自然放下。將同側膝蓋抬向胸口並收緊腹部，再慢慢放下。能啟動腹直肌與髖屈肌，是提升核心穩定與喚醒下半身的暖身動作。"
+  },
+  {
+    "name": "坐姿毛巾夾抓訓練",
+    "calPerSec": 0.05,
+    "doInCrowded": true,
+    "parts": ["lower_body"],
     "media": "https://tpe-hackathon.brian033.dev/exercisev2/Gemini_Generated_Image_z2pz1sz2pz1sz2pz.png",
-    "description": "坐於椅緣雙腳踩穩，雙臂交疊後向前推出，同時下巴微收、背部拱起，維持三秒後放鬆恢復，反覆進行放鬆背闊肌。"
+    "description": "坐在椅子上，將毛巾放在腳下，用腳趾反覆夾起並放開毛巾。可強化足底小肌群與腳趾控制力，改善足弓支撐與下肢穩定性。"
   }
 ]

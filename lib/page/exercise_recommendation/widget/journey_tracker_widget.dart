@@ -54,6 +54,9 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   DateTime? _currentExerciseStartTime;
   /// 追蹤最後記錄的實際時間（用於部分記錄）
   DateTime? _lastRecordedTime;
+  
+  /// 預先分配每個 leg index 對應的運動（在開始旅程時生成）
+  List<RecommendedExercise> _preAssignedExercises = [];
 
   /// 轉乘相關狀態
   final MrtTransferService _transferService = MrtTransferService();
@@ -127,7 +130,12 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       _isAtFinalStation = false;
     });
 
-    _selectRandomExercises();
+    // 預先分配所有站點的動作（num legs 個動作）
+    _preAssignAllExercises();
+
+    // 設置當前動作（從預分配的列表中獲取）
+    _updateCurrentExerciseFromPreAssigned();
+    
     // 初始化動作追蹤狀態
     _currentExerciseStartLegIndex = 0;
     _previousExerciseName = _currentExercise?.name;
@@ -136,6 +144,52 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     _lastRecordedTime = null; // 重置最後記錄的時間
     _updateTimerCard();
     _startAutoProgressTimer();
+  }
+  
+  /// 預先分配所有站點的動作
+  void _preAssignAllExercises() {
+    final exercises = widget.routeResult.exercises;
+    final numLegs = widget.routeResult.legs.length;
+    
+    if (exercises.isEmpty) {
+      _preAssignedExercises = [];
+      return;
+    }
+    
+    final random = Random();
+    _preAssignedExercises = List.generate(
+      numLegs,
+      (index) => exercises[random.nextInt(exercises.length)],
+    );
+  }
+  
+  /// 從預分配的列表中更新當前動作
+  void _updateCurrentExerciseFromPreAssigned() {
+    if (_currentLegIndex >= _preAssignedExercises.length) {
+      _currentExercise = null;
+      _nextExercise = null;
+      return;
+    }
+    
+    _currentExercise = _preAssignedExercises[_currentLegIndex];
+    
+    // 為 next exercise 選擇一個不同的運動（如果還有下一站）
+    if (_currentLegIndex + 1 < _preAssignedExercises.length) {
+      // 有下一站，使用預分配的下一個動作
+      _nextExercise = _preAssignedExercises[_currentLegIndex + 1];
+    } else {
+      // 如果是最後一站，沒有真正的下一站，但為了顯示需要，使用當前動作或選擇一個不同的運動
+      final exercises = widget.routeResult.exercises;
+      if (exercises.length == 1) {
+        _nextExercise = _currentExercise;
+      } else {
+        // 選擇一個與當前不同的運動作為預覽（雖然不會真正到達）
+        final random = Random();
+        do {
+          _nextExercise = exercises[random.nextInt(exercises.length)];
+        } while (_nextExercise == _currentExercise);
+      }
+    }
   }
 
   /// 下一站
@@ -182,8 +236,8 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         widget.timerCardKey.currentState?.clear(showFinalMessage: true);
         widget.exerciseInfoCardKey.currentState?.clear(showFinalMessage: true);
       } else {
-        // 選擇新的動作（可能會改變）
-        _selectRandomExercises();
+        // 從預分配的列表中獲取當前動作
+        _updateCurrentExerciseFromPreAssigned();
         final newExerciseName = _currentExercise?.name;
         
         // 如果動作改變了，記錄前一個動作（使用保存的資訊和時間）
@@ -226,8 +280,9 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         _isAtFinalStation = false;
       });
       
-      // 選擇新的動作（可能會改變）
-      _selectRandomExercises();
+      // 從預分配的列表中獲取當前動作
+      _updateCurrentExerciseFromPreAssigned();
+      
       final newExerciseName = _currentExercise?.name;
       
       // 如果動作改變了，更新開始的 leg index 和時間（但不記錄，因為是回退）
@@ -250,29 +305,6 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
     }
   }
 
-  /// 隨機選擇兩個運動（current != next）
-  void _selectRandomExercises() {
-    final exercises = widget.routeResult.exercises;
-    if (exercises.isEmpty) {
-      _currentExercise = null;
-      _nextExercise = null;
-      return;
-    }
-
-    final random = Random();
-
-    // 選擇 current
-    _currentExercise = exercises[random.nextInt(exercises.length)];
-
-    // 選擇 next（確保不同）
-    if (exercises.length == 1) {
-      _nextExercise = _currentExercise;
-    } else {
-      do {
-        _nextExercise = exercises[random.nextInt(exercises.length)];
-      } while (_nextExercise == _currentExercise);
-    }
-  }
 
   /// 檢查當前站是否需要轉乘
   Future<void> _checkTransferAtCurrentStation() async {

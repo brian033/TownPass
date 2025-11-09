@@ -20,6 +20,7 @@ enum MyServiceItemId {
   disasterReport,
   vaccineAppointment,
   medicalAppointment,
+  metroSport,
   cityRadio,
   familyCenter,
   greenMap,
@@ -119,6 +120,13 @@ extension MyServiceIdExt on MyServiceItemId {
           icon: Assets.svg.iconRegistration.svg(),
           category: MyServiceCategory.healthCare,
           destinationUrl: '',
+        ),
+      MyServiceItemId.metroSport => MyServiceItem(
+          title: '捷運動',
+          description: '捷運旅程一鍵規劃伸展運動',
+          icon: Assets.svg.iconPlayground.svg(),
+          category: MyServiceCategory.cityLife,
+          destinationUrl: 'local://new_component',
         ),
       MyServiceItemId.cityRadio => MyServiceItem(
           title: '台北電台',
