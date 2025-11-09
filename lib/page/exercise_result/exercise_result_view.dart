@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -252,8 +252,7 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
   }
 
   Future<void> _loadVenuesForStation(String stationName) async {
-    final places =
-        await ExercisePlacesRepository.findByStation(stationName);
+    final places = await ExercisePlacesRepository.findByStation(stationName);
     if (!mounted || _data.endStation != stationName) {
       return;
     }
@@ -337,8 +336,8 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
     await Future.delayed(const Duration(milliseconds: 20));
 
     try {
-      final boundary = _shareBoundaryKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary?;
+      final boundary = _shareBoundaryKey.currentContext!.findRenderObject()
+          as RenderRepaintBoundary?;
       if (boundary == null) {
         return false;
       }
@@ -363,6 +362,14 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
         [xFile],
         subject: 'Town Pass 運動結果',
         // text: shareText,
+        sharePositionOrigin: Platform.isIOS
+            ? Rect.fromLTWH(
+                0,
+                0,
+                MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height / 2,
+              )
+            : null,
       );
       return true;
     } catch (error, stackTrace) {
@@ -384,8 +391,7 @@ class ExerciseResultViewState extends State<ExerciseResultView> {
   }
 
   Future<void> _shareResultAsText() async {
-    final buffer = StringBuffer()
-      ..writeln(_buildShareText());
+    final buffer = StringBuffer()..writeln(_buildShareText());
     await Share.share(
       buffer.toString(),
       subject: 'Town Pass 運動結果',
@@ -549,8 +555,9 @@ class _ShareResultCard extends StatelessWidget {
                     _ShareMetricTile(
                       icon: Icons.local_fire_department_outlined,
                       label: '消耗熱量',
-                      value:
-                          data.calories > 0 ? '${data.calories} kcal' : '— kcal',
+                      value: data.calories > 0
+                          ? '${data.calories} kcal'
+                          : '— kcal',
                     ),
                     _ShareMetricTile(
                       icon: Icons.emoji_events_outlined,
@@ -571,8 +578,8 @@ class _ShareResultCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             ...history.take(3).map(
-              (record) => _ShareHistoryRow(record: record),
-            ),
+                  (record) => _ShareHistoryRow(record: record),
+                ),
             if (history.length > 3) ...[
               const SizedBox(height: 8),
               TPText(
@@ -757,21 +764,21 @@ class _VenueCard extends StatelessWidget {
                       ),
                     ),
                   ),
-loadingBuilder: (context, child, progress) {
-  if (progress == null) {
-    return child;
-  }
-  return Container(
-    color: TPColors.grayscale100,
-    child: const Center(
-      child: CircularProgressIndicator(
-        valueColor:
-            AlwaysStoppedAnimation<Color>(TPColors.primary500),
-        strokeWidth: 2,
-      ),
-    ),
-  );
-},
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) {
+                      return child;
+                    }
+                    return Container(
+                      color: TPColors.grayscale100,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              TPColors.primary500),
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -826,5 +833,3 @@ loadingBuilder: (context, child, progress) {
     );
   }
 }
-
-
