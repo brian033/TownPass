@@ -215,7 +215,7 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
   }
 
   /// 上一站
-  void _previousStation() {
+  void _previousStation() async {
     if (_currentLegIndex > 0) {
       setState(() {
         _currentLegIndex--;
@@ -233,9 +233,16 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
         _currentExerciseStartTime = DateTime.now(); // 重置開始時間，因為動作改變了
       }
       
-      // 上一站時不記錄運動，只更新顯示
+      // 先更新運動資訊顯示
       _updateTimerCard();
-      _startAutoProgressTimer();
+      
+      // 檢查是否需要轉乘（回到上一站時也要檢查）
+      await _checkTransferAtCurrentStation();
+      
+      // 如果需要轉乘，不自動開始計時
+      if (!_needsTransferAtCurrentStation) {
+        _startAutoProgressTimer();
+      }
     }
   }
 
@@ -560,39 +567,10 @@ class JourneyTrackerWidgetState extends State<JourneyTrackerWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TPText(
-                '旅程追蹤',
-                style: TPTextStyles.bodySemiBold,
-                color: TPColors.grayscale900,
-              ),
-              if (_journeyStarted && !_journeyCompleted)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: TPColors.primary50,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: TPColors.primary200),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.timer_outlined,
-                        size: 16,
-                        color: TPColors.primary500,
-                      ),
-                      const SizedBox(width: 4),
-                      TPText(
-                        _formatTime(_remainingSecondsToNextStation),
-                        style: TPTextStyles.caption,
-                        color: TPColors.primary500,
-                      ),
-                    ],
-                  ),
-                ),
-            ],
+          TPText(
+            '旅程追蹤',
+            style: TPTextStyles.bodySemiBold,
+            color: TPColors.grayscale900,
           ),
           const SizedBox(height: 16),
           _buildProgressBar(),
