@@ -1,0 +1,1658 @@
+{
+  "version": "1.0.0",
+  "lastUpdate": "2025-11-08",
+  "stations": [
+    {
+      "id": "七張",
+      "stationCode": "七張",
+      "name": "七張",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 24.9885,
+        "lng": 121.5435
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "三和國中",
+      "stationCode": "三和國中",
+      "name": "三和國中",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0815,
+        "lng": 121.4885
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "三民高中",
+      "stationCode": "三民高中",
+      "name": "三民高中",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0645,
+        "lng": 121.4835
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "三重",
+      "stationCode": "三重",
+      "name": "三重",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0615,
+        "lng": 121.4845
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "三重國小",
+      "stationCode": "三重國小",
+      "name": "三重國小",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0705,
+        "lng": 121.4905
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "中原",
+      "stationCode": "中原",
+      "name": "中原",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.0085,
+        "lng": 121.4755
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "中和",
+      "stationCode": "中和",
+      "name": "中和",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.002,
+        "lng": 121.499
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "R08",
+      "stationCode": "R08",
+      "name": "中山",
+      "nameEn": "Zhongshan",
+      "lines": ["green", "red"],
+      "lineColors": ["#007749", "#E3002C"],
+      "location": {
+        "lat": 25.0527,
+        "lng": 121.5202
+      },
+      "district": "中山區",
+      "city": "台北市"
+    },
+    {
+      "id": "中山國中",
+      "stationCode": "中山國中",
+      "name": "中山國中",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0629,
+        "lng": 121.5445
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "中山國小",
+      "stationCode": "中山國小",
+      "name": "中山國小",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0627,
+        "lng": 121.5263
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "中正紀念堂",
+      "stationCode": "中正紀念堂",
+      "name": "中正紀念堂",
+      "nameEn": "Chiang Kai-Shek Memorial Hall",
+      "lines": ["green", "red"],
+      "lineColors": ["#007749", "#E3002C"],
+      "location": {
+        "lat": 25.0327,
+        "lng": 121.5183
+      },
+      "district": "中正區",
+      "city": "台北市"
+    },
+    {
+      "id": "丹鳳",
+      "stationCode": "丹鳳",
+      "name": "丹鳳",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0285,
+        "lng": 121.4155
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "亞東醫院",
+      "stationCode": "亞東醫院",
+      "name": "亞東醫院",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0065,
+        "lng": 121.4525
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "信義安和",
+      "stationCode": "信義安和",
+      "name": "信義安和",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.033,
+        "lng": 121.552
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "先嗇宮",
+      "stationCode": "先嗇宮",
+      "name": "先嗇宮",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0465,
+        "lng": 121.4615
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "內湖",
+      "stationCode": "內湖",
+      "name": "內湖",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0835,
+        "lng": 121.5935
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "G09",
+      "stationCode": "G09",
+      "name": "公館",
+      "nameEn": "Gongguan",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0146,
+        "lng": 121.5346
+      },
+      "district": "中正區",
+      "city": "台北市"
+    },
+    {
+      "id": "六張犁",
+      "stationCode": "六張犁",
+      "name": "六張犁",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0235,
+        "lng": 121.5525
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "劍南路",
+      "stationCode": "劍南路",
+      "name": "劍南路",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0855,
+        "lng": 121.5555
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "劍潭",
+      "stationCode": "劍潭",
+      "name": "劍潭",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0845,
+        "lng": 121.5255
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "動物園",
+      "stationCode": "動物園",
+      "name": "動物園",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 24.998,
+        "lng": 121.58
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "北投",
+      "stationCode": "北投",
+      "name": "北投",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.132,
+        "lng": 121.4986
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "北門",
+      "stationCode": "北門",
+      "name": "北門",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0495,
+        "lng": 121.5105
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "十四張",
+      "stationCode": "十四張",
+      "name": "十四張",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 24.9785,
+        "lng": 121.5435
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "南京三民",
+      "stationCode": "南京三民",
+      "name": "南京三民",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0515,
+        "lng": 121.5635
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "O05",
+      "stationCode": "O05",
+      "name": "南京復興",
+      "nameEn": "Nanjing Fuxing",
+      "lines": ["brown", "green"],
+      "lineColors": ["#AD8B00", "#007749"],
+      "location": {
+        "lat": 25.052,
+        "lng": 121.544
+      },
+      "district": "中山區",
+      "city": "台北市"
+    },
+    {
+      "id": "南勢角",
+      "stationCode": "南勢角",
+      "name": "南勢角",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 24.989,
+        "lng": 121.513
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "O01",
+      "stationCode": "O01",
+      "name": "南港",
+      "nameEn": "Nangang",
+      "lines": ["blue", "orange"],
+      "lineColors": ["#0070BD", "#F5A81C"],
+      "location": {
+        "lat": 25.052,
+        "lng": 121.6066
+      },
+      "district": "南港區",
+      "city": "台北市"
+    },
+    {
+      "id": "南港展覽館",
+      "stationCode": "南港展覽館",
+      "name": "南港展覽館",
+      "nameEn": "",
+      "lines": ["blue", "brown"],
+      "lineColors": ["#0070BD", "#AD8B00"],
+      "location": {
+        "lat": 25.055,
+        "lng": 121.617
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "南港軟體園區",
+      "stationCode": "南港軟體園區",
+      "name": "南港軟體園區",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0595,
+        "lng": 121.6165
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "古亭",
+      "stationCode": "古亭",
+      "name": "古亭",
+      "nameEn": "Guting",
+      "lines": ["green", "orange"],
+      "lineColors": ["#007749", "#F5A81C"],
+      "location": {
+        "lat": 25.0269,
+        "lng": 121.5236
+      },
+      "district": "中正區",
+      "city": "台北市"
+    },
+    {
+      "id": "R11",
+      "stationCode": "R11",
+      "name": "台北101/世貿",
+      "nameEn": "Taipei 101/World Trade Center",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.033,
+        "lng": 121.5654
+      },
+      "district": "信義區",
+      "city": "台北市"
+    },
+    {
+      "id": "台北小巨蛋",
+      "stationCode": "台北小巨蛋",
+      "name": "台北小巨蛋",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0515,
+        "lng": 121.5515
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "台北橋",
+      "stationCode": "台北橋",
+      "name": "台北橋",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.063,
+        "lng": 121.513
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "R10",
+      "stationCode": "R10",
+      "name": "台北車站",
+      "nameEn": "Taipei Main Station",
+      "lines": ["blue", "red"],
+      "lineColors": ["#0070BD", "#E3002C"],
+      "location": {
+        "lat": 25.0478,
+        "lng": 121.517
+      },
+      "district": "中正區",
+      "city": "台北市"
+    },
+    {
+      "id": "台大醫院",
+      "stationCode": "台大醫院",
+      "name": "台大醫院",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0405,
+        "lng": 121.5165
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "G08",
+      "stationCode": "G08",
+      "name": "台電大樓",
+      "nameEn": "Taipower Building",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0206,
+        "lng": 121.5276
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "唭哩岸",
+      "stationCode": "唭哩岸",
+      "name": "唭哩岸",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1205,
+        "lng": 121.5065
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "善導寺",
+      "stationCode": "善導寺",
+      "name": "善導寺",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.044,
+        "lng": 121.529
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "BL11",
+      "stationCode": "BL11",
+      "name": "國父紀念館",
+      "nameEn": "Sun Yat-sen Memorial Hall",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0412,
+        "lng": 121.557
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "圓山",
+      "stationCode": "圓山",
+      "name": "圓山",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0715,
+        "lng": 121.5205
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "土城",
+      "stationCode": "土城",
+      "name": "土城",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 24.9725,
+        "lng": 121.4435
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "士林",
+      "stationCode": "士林",
+      "name": "士林",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1035,
+        "lng": 121.525
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "大坪林",
+      "stationCode": "大坪林",
+      "name": "大坪林",
+      "nameEn": "",
+      "lines": ["green", "yellow"],
+      "lineColors": ["#007749", "#F7B500"],
+      "location": {
+        "lat": 24.9825,
+        "lng": 121.5415
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "大安",
+      "stationCode": "大安",
+      "name": "大安",
+      "nameEn": "",
+      "lines": ["brown", "red"],
+      "lineColors": ["#AD8B00", "#E3002C"],
+      "location": {
+        "lat": 25.0335,
+        "lng": 121.5435
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "大安森林公園",
+      "stationCode": "大安森林公園",
+      "name": "大安森林公園",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0335,
+        "lng": 121.5355
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "大橋頭",
+      "stationCode": "大橋頭",
+      "name": "大橋頭",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0635,
+        "lng": 121.5135
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "大湖公園",
+      "stationCode": "大湖公園",
+      "name": "大湖公園",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0835,
+        "lng": 121.6025
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "大直",
+      "stationCode": "大直",
+      "name": "大直",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0795,
+        "lng": 121.5465
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "奇岩",
+      "stationCode": "奇岩",
+      "name": "奇岩",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1255,
+        "lng": 121.5015
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "小南門",
+      "stationCode": "小南門",
+      "name": "小南門",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0375,
+        "lng": 121.5085
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "小碧潭",
+      "stationCode": "小碧潭",
+      "name": "小碧潭",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 24.9755,
+        "lng": 121.5305
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "BL15",
+      "stationCode": "BL15",
+      "name": "市政府",
+      "nameEn": "Taipei City Hall",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0408,
+        "lng": 121.5657
+      },
+      "district": "信義區",
+      "city": "台北市"
+    },
+    {
+      "id": "幸福",
+      "stationCode": "幸福",
+      "name": "幸福",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.0165,
+        "lng": 121.4655
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "府中",
+      "stationCode": "府中",
+      "name": "府中",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0085,
+        "lng": 121.4595
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "後山埤",
+      "stationCode": "後山埤",
+      "name": "後山埤",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0455,
+        "lng": 121.5835
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "徐匯中學",
+      "stationCode": "徐匯中學",
+      "name": "徐匯中學",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0795,
+        "lng": 121.4805
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "復興崗",
+      "stationCode": "復興崗",
+      "name": "復興崗",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1375,
+        "lng": 121.4955
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "BL12",
+      "stationCode": "BL12",
+      "name": "忠孝復興",
+      "nameEn": "Zhongxiao Fuxing",
+      "lines": ["blue", "brown"],
+      "lineColors": ["#0070BD", "#AD8B00"],
+      "location": {
+        "lat": 25.0418,
+        "lng": 121.544
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "忠孝敦化",
+      "stationCode": "忠孝敦化",
+      "name": "忠孝敦化",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0415,
+        "lng": 121.5505
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "O07",
+      "stationCode": "O07",
+      "name": "忠孝新生",
+      "nameEn": "Zhongxiao Xinsheng",
+      "lines": ["blue", "orange"],
+      "lineColors": ["#0070BD", "#F5A81C"],
+      "location": {
+        "lat": 25.0423,
+        "lng": 121.5329
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "忠義",
+      "stationCode": "忠義",
+      "name": "忠義",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1315,
+        "lng": 121.5025
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "文德",
+      "stationCode": "文德",
+      "name": "文德",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0785,
+        "lng": 121.5855
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "新北投",
+      "stationCode": "新北投",
+      "name": "新北投",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1375,
+        "lng": 121.5025
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "新北產業園區",
+      "stationCode": "新北產業園區",
+      "name": "新北產業園區",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.0615,
+        "lng": 121.4655
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "新埔",
+      "stationCode": "新埔",
+      "name": "新埔",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0235,
+        "lng": 121.4685
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "新埔民生",
+      "stationCode": "新埔民生",
+      "name": "新埔民生",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.0265,
+        "lng": 121.4705
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "G01",
+      "stationCode": "G01",
+      "name": "新店",
+      "nameEn": "Xindian",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 24.9575,
+        "lng": 121.537
+      },
+      "district": "新店區",
+      "city": "新北市"
+    },
+    {
+      "id": "新店區公所",
+      "stationCode": "新店區公所",
+      "name": "新店區公所",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 24.9675,
+        "lng": 121.5415
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "新莊",
+      "stationCode": "新莊",
+      "name": "新莊",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0365,
+        "lng": 121.4525
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "昆陽",
+      "stationCode": "昆陽",
+      "name": "昆陽",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0505,
+        "lng": 121.5935
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "明德",
+      "stationCode": "明德",
+      "name": "明德",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1095,
+        "lng": 121.5185
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "景安",
+      "stationCode": "景安",
+      "name": "景安",
+      "nameEn": "",
+      "lines": ["orange", "yellow"],
+      "lineColors": ["#F5A81C", "#F7B500"],
+      "location": {
+        "lat": 24.9935,
+        "lng": 121.5055
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "景平",
+      "stationCode": "景平",
+      "name": "景平",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 24.9905,
+        "lng": 121.5105
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "景美",
+      "stationCode": "景美",
+      "name": "景美",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0065,
+        "lng": 121.5405
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "木柵",
+      "stationCode": "木柵",
+      "name": "木柵",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 24.9885,
+        "lng": 121.5735
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "東湖",
+      "stationCode": "東湖",
+      "name": "東湖",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0685,
+        "lng": 121.6115
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "O12",
+      "stationCode": "O12",
+      "name": "東門",
+      "nameEn": "Dongmen",
+      "lines": ["orange", "red"],
+      "lineColors": ["#F5A81C", "#E3002C"],
+      "location": {
+        "lat": 25.0338,
+        "lng": 121.5284
+      },
+      "district": "大安區",
+      "city": "台北市"
+    },
+    {
+      "id": "松山",
+      "stationCode": "松山",
+      "name": "松山",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0505,
+        "lng": 121.5775
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "松山機場",
+      "stationCode": "松山機場",
+      "name": "松山機場",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0695,
+        "lng": 121.5515
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "松江南京",
+      "stationCode": "松江南京",
+      "name": "松江南京",
+      "nameEn": "",
+      "lines": ["green", "orange"],
+      "lineColors": ["#007749", "#F5A81C"],
+      "location": {
+        "lat": 25.0525,
+        "lng": 121.5335
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "板新",
+      "stationCode": "板新",
+      "name": "板新",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.0195,
+        "lng": 121.4635
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "BR10",
+      "stationCode": "BR10",
+      "name": "板橋",
+      "nameEn": "Banqiao",
+      "lines": ["blue", "yellow"],
+      "lineColors": ["#0070BD", "#F7B500"],
+      "location": {
+        "lat": 25.0138,
+        "lng": 121.4627
+      },
+      "district": "板橋區",
+      "city": "新北市"
+    },
+    {
+      "id": "橋和",
+      "stationCode": "橋和",
+      "name": "橋和",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 25.0025,
+        "lng": 121.4855
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "民權西路",
+      "stationCode": "民權西路",
+      "name": "民權西路",
+      "nameEn": "Minquan West Road",
+      "lines": ["orange", "red"],
+      "lineColors": ["#F5A81C", "#E3002C"],
+      "location": {
+        "lat": 25.0627,
+        "lng": 121.5183
+      },
+      "district": "大同區",
+      "city": "台北市"
+    },
+    {
+      "id": "永安市場",
+      "stationCode": "永安市場",
+      "name": "永安市場",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0025,
+        "lng": 121.5105
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "永寧",
+      "stationCode": "永寧",
+      "name": "永寧",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 24.9685,
+        "lng": 121.4355
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "永春",
+      "stationCode": "永春",
+      "name": "永春",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0405,
+        "lng": 121.5765
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "江子翠",
+      "stationCode": "江子翠",
+      "name": "江子翠",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.0295,
+        "lng": 121.4705
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "海山",
+      "stationCode": "海山",
+      "name": "海山",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 24.9905,
+        "lng": 121.4485
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "淡水",
+      "stationCode": "淡水",
+      "name": "淡水",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1676,
+        "lng": 121.445
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "港墘",
+      "stationCode": "港墘",
+      "name": "港墘",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0805,
+        "lng": 121.5755
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "石牌",
+      "stationCode": "石牌",
+      "name": "石牌",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1141,
+        "lng": 121.515
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "秀朗橋",
+      "stationCode": "秀朗橋",
+      "name": "秀朗橋",
+      "nameEn": "",
+      "lines": ["yellow"],
+      "lineColors": ["#F7B500"],
+      "location": {
+        "lat": 24.9955,
+        "lng": 121.5205
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "科技大樓",
+      "stationCode": "科技大樓",
+      "name": "科技大樓",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0265,
+        "lng": 121.5435
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "竹圍",
+      "stationCode": "竹圍",
+      "name": "竹圍",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1375,
+        "lng": 121.4615
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "紅樹林",
+      "stationCode": "紅樹林",
+      "name": "紅樹林",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1575,
+        "lng": 121.4585
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "芝山",
+      "stationCode": "芝山",
+      "name": "芝山",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1035,
+        "lng": 121.5225
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "菜寮",
+      "stationCode": "菜寮",
+      "name": "菜寮",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0505,
+        "lng": 121.4905
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "萬芳社區",
+      "stationCode": "萬芳社區",
+      "name": "萬芳社區",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 24.9785,
+        "lng": 121.5685
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "萬芳醫院",
+      "stationCode": "萬芳醫院",
+      "name": "萬芳醫院",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 24.9885,
+        "lng": 121.5635
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "萬隆",
+      "stationCode": "萬隆",
+      "name": "萬隆",
+      "nameEn": "",
+      "lines": ["green"],
+      "lineColors": ["#007749"],
+      "location": {
+        "lat": 25.0025,
+        "lng": 121.5385
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "葫洲",
+      "stationCode": "葫洲",
+      "name": "葫洲",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0715,
+        "lng": 121.6075
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "蘆洲",
+      "stationCode": "蘆洲",
+      "name": "蘆洲",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0915,
+        "lng": 121.4645
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "行天宮",
+      "stationCode": "行天宮",
+      "name": "行天宮",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0585,
+        "lng": 121.5335
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "西湖",
+      "stationCode": "西湖",
+      "name": "西湖",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0825,
+        "lng": 121.5675
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "西門",
+      "stationCode": "西門",
+      "name": "西門",
+      "nameEn": "Ximen",
+      "lines": ["blue", "green"],
+      "lineColors": ["#0070BD", "#007749"],
+      "location": {
+        "lat": 25.0421,
+        "lng": 121.508
+      },
+      "district": "萬華區",
+      "city": "台北市"
+    },
+    {
+      "id": "R12",
+      "stationCode": "R12",
+      "name": "象山",
+      "nameEn": "Xiangshan",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.033,
+        "lng": 121.5698
+      },
+      "district": "信義區",
+      "city": "台北市"
+    },
+    {
+      "id": "輔大",
+      "stationCode": "輔大",
+      "name": "輔大",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0365,
+        "lng": 121.4305
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "辛亥",
+      "stationCode": "辛亥",
+      "name": "辛亥",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0215,
+        "lng": 121.5565
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "迴龍",
+      "stationCode": "迴龍",
+      "name": "迴龍",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.0215,
+        "lng": 121.4155
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "關渡",
+      "stationCode": "關渡",
+      "name": "關渡",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.1255,
+        "lng": 121.4665
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "雙連",
+      "stationCode": "雙連",
+      "name": "雙連",
+      "nameEn": "",
+      "lines": ["red"],
+      "lineColors": ["#E3002C"],
+      "location": {
+        "lat": 25.0585,
+        "lng": 121.5205
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "頂埔",
+      "stationCode": "頂埔",
+      "name": "頂埔",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 24.9585,
+        "lng": 121.4185
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "頂溪",
+      "stationCode": "頂溪",
+      "name": "頂溪",
+      "nameEn": "",
+      "lines": ["orange"],
+      "lineColors": ["#F5A81C"],
+      "location": {
+        "lat": 25.013,
+        "lng": 121.518
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "頭前庄",
+      "stationCode": "頭前庄",
+      "name": "頭前庄",
+      "nameEn": "",
+      "lines": ["orange", "yellow"],
+      "lineColors": ["#F5A81C", "#F7B500"],
+      "location": {
+        "lat": 25.0395,
+        "lng": 121.4605
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "麟光",
+      "stationCode": "麟光",
+      "name": "麟光",
+      "nameEn": "",
+      "lines": ["brown"],
+      "lineColors": ["#AD8B00"],
+      "location": {
+        "lat": 25.0185,
+        "lng": 121.5585
+      },
+      "district": "",
+      "city": "台北市"
+    },
+    {
+      "id": "龍山寺",
+      "stationCode": "龍山寺",
+      "name": "龍山寺",
+      "nameEn": "",
+      "lines": ["blue"],
+      "lineColors": ["#0070BD"],
+      "location": {
+        "lat": 25.036,
+        "lng": 121.4999
+      },
+      "district": "",
+      "city": "台北市"
+    }
+  ]
+}

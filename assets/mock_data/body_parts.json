@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "bodyParts": [
+    {
+      "id": "upper_body",
+      "name": "上半身",
+      "nameEn": "Upper Body",
+      "description": "肩膀、手臂、胸部、背部",
+      "icon": "upper_body",
+      "targetMuscles": ["shoulders", "arms", "chest", "back"],
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "lower_body",
+      "name": "下半身",
+      "nameEn": "Lower Body",
+      "description": "大腿、小腿、臀部",
+      "icon": "lower_body",
+      "targetMuscles": ["thighs", "calves", "glutes"],
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "core",
+      "name": "核心",
+      "nameEn": "Core",
+      "description": "腹部、腰部",
+      "icon": "core",
+      "targetMuscles": ["abs", "obliques", "lower_back"],
+      "color": "#95E1D3"
+    },
+    {
+      "id": "full_body",
+      "name": "全身",
+      "nameEn": "Full Body",
+      "description": "全身伸展與放鬆",
+      "icon": "full_body",
+      "targetMuscles": ["全身"],
+      "color": "#F38181"
+    },
+    {
+      "id": "neck_shoulder",
+      "name": "頸部與肩膀",
+      "nameEn": "Neck & Shoulders",
+      "description": "舒緩上班族常見痠痛",
+      "icon": "neck_shoulder",
+      "targetMuscles": ["neck", "shoulders", "upper_back"],
+      "color": "#AA96DA"
+    }
+  ]
+}

@@ -1,0 +1,1676 @@
+[
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運淡水站",
+    "stationB": "捷運紅樹林站",
+    "travelSeconds": 175,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運紅樹林站",
+    "stationB": "捷運竹圍站",
+    "travelSeconds": 138,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運竹圍站",
+    "stationB": "捷運關渡站",
+    "travelSeconds": 148,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運關渡站",
+    "stationB": "捷運忠義站",
+    "travelSeconds": 80,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運忠義站",
+    "stationB": "捷運復興崗站",
+    "travelSeconds": 112,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運復興崗站",
+    "stationB": "捷運北投站",
+    "travelSeconds": 135,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運北投站",
+    "stationB": "捷運奇岩站",
+    "travelSeconds": 91,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運奇岩站",
+    "stationB": "捷運唭哩岸站",
+    "travelSeconds": 75,
+    "stopSeconds": 23,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運唭哩岸站",
+    "stationB": "捷運石牌站",
+    "travelSeconds": 103,
+    "stopSeconds": 24,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運石牌站",
+    "stationB": "捷運明德站",
+    "travelSeconds": 63,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運明德站",
+    "stationB": "捷運芝山站",
+    "travelSeconds": 79,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運芝山站",
+    "stationB": "捷運士林站",
+    "travelSeconds": 94,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運士林站",
+    "stationB": "捷運劍潭站",
+    "travelSeconds": 95,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運劍潭站",
+    "stationB": "捷運圓山站",
+    "travelSeconds": 112,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運圓山站",
+    "stationB": "捷運民權西路站",
+    "travelSeconds": 88,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運民權西路站",
+    "stationB": "捷運雙連站",
+    "travelSeconds": 60,
+    "stopSeconds": 34,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運雙連站",
+    "stationB": "捷運中山站",
+    "travelSeconds": 62,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運中山站",
+    "stationB": "捷運台北車站",
+    "travelSeconds": 68,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運台北車站",
+    "stationB": "捷運台大醫院站",
+    "travelSeconds": 67,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運台大醫院站",
+    "stationB": "捷運中正紀念堂站",
+    "travelSeconds": 95,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運中正紀念堂站",
+    "stationB": "捷運東門站",
+    "travelSeconds": 175,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運東門站",
+    "stationB": "捷運大安森林公園站",
+    "travelSeconds": 75,
+    "stopSeconds": 31,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運大安森林公園站",
+    "stationB": "捷運大安站",
+    "travelSeconds": 74,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運大安站",
+    "stationB": "捷運信義安和站",
+    "travelSeconds": 90,
+    "stopSeconds": 37,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運信義安和站",
+    "stationB": "捷運台北101/世貿站",
+    "travelSeconds": 94,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "淡水-象山",
+    "stationA": "捷運台北101/世貿站",
+    "stationB": "捷運象山站",
+    "travelSeconds": 93,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運北投站",
+    "stationB": "捷運奇岩站",
+    "travelSeconds": 91,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運奇岩站",
+    "stationB": "捷運唭哩岸站",
+    "travelSeconds": 75,
+    "stopSeconds": 23,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運唭哩岸站",
+    "stationB": "捷運石牌站",
+    "travelSeconds": 103,
+    "stopSeconds": 24,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運石牌站",
+    "stationB": "捷運明德站",
+    "travelSeconds": 63,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運明德站",
+    "stationB": "捷運芝山站",
+    "travelSeconds": 79,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運芝山站",
+    "stationB": "捷運士林站",
+    "travelSeconds": 94,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運士林站",
+    "stationB": "捷運劍潭站",
+    "travelSeconds": 95,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運劍潭站",
+    "stationB": "捷運圓山站",
+    "travelSeconds": 112,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運圓山站",
+    "stationB": "捷運民權西路站",
+    "travelSeconds": 88,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運民權西路站",
+    "stationB": "捷運雙連站",
+    "travelSeconds": 60,
+    "stopSeconds": 34,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運雙連站",
+    "stationB": "捷運中山站",
+    "travelSeconds": 62,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運中山站",
+    "stationB": "捷運台北車站",
+    "travelSeconds": 68,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運台北車站",
+    "stationB": "捷運台大醫院站",
+    "travelSeconds": 67,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運台大醫院站",
+    "stationB": "捷運中正紀念堂站",
+    "travelSeconds": 95,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運中正紀念堂站",
+    "stationB": "捷運東門站",
+    "travelSeconds": 175,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運東門站",
+    "stationB": "捷運大安森林公園站",
+    "travelSeconds": 75,
+    "stopSeconds": 31,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-大安",
+    "stationA": "捷運大安森林公園站",
+    "stationB": "捷運大安站",
+    "travelSeconds": 74,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運松山站",
+    "stationB": "捷運南京三民站",
+    "travelSeconds": 138,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運南京三民站",
+    "stationB": "捷運台北小巨蛋站",
+    "travelSeconds": 102,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運台北小巨蛋站",
+    "stationB": "捷運南京復興站",
+    "travelSeconds": 84,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運南京復興站",
+    "stationB": "捷運松江南京站",
+    "travelSeconds": 92,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運松江南京站",
+    "stationB": "捷運中山站",
+    "travelSeconds": 106,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運中山站",
+    "stationB": "捷運北門站",
+    "travelSeconds": 116,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運北門站",
+    "stationB": "捷運西門站",
+    "travelSeconds": 86,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運西門站",
+    "stationB": "捷運小南門站",
+    "travelSeconds": 83,
+    "stopSeconds": 34,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運小南門站",
+    "stationB": "捷運中正紀念堂站",
+    "travelSeconds": 76,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運中正紀念堂站",
+    "stationB": "捷運古亭站",
+    "travelSeconds": 87,
+    "stopSeconds": 38,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運古亭站",
+    "stationB": "捷運台電大樓站",
+    "travelSeconds": 85,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運台電大樓站",
+    "stationB": "捷運公館站",
+    "travelSeconds": 79,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運公館站",
+    "stationB": "捷運萬隆站",
+    "travelSeconds": 122,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運萬隆站",
+    "stationB": "捷運景美站",
+    "travelSeconds": 89,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運景美站",
+    "stationB": "捷運大坪林站",
+    "travelSeconds": 92,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運大坪林站",
+    "stationB": "捷運七張站",
+    "travelSeconds": 78,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運七張站",
+    "stationB": "捷運新店區公所站",
+    "travelSeconds": 81,
+    "stopSeconds": 24,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-新店",
+    "stationA": "捷運新店區公所站",
+    "stationB": "捷運新店站",
+    "travelSeconds": 111,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運松山站",
+    "stationB": "捷運南京三民站",
+    "travelSeconds": 138,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運南京三民站",
+    "stationB": "捷運台北小巨蛋站",
+    "travelSeconds": 102,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運台北小巨蛋站",
+    "stationB": "捷運南京復興站",
+    "travelSeconds": 84,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運南京復興站",
+    "stationB": "捷運松江南京站",
+    "travelSeconds": 92,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運松江南京站",
+    "stationB": "捷運中山站",
+    "travelSeconds": 106,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運中山站",
+    "stationB": "捷運北門站",
+    "travelSeconds": 116,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運北門站",
+    "stationB": "捷運西門站",
+    "travelSeconds": 86,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運西門站",
+    "stationB": "捷運小南門站",
+    "travelSeconds": 83,
+    "stopSeconds": 34,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運小南門站",
+    "stationB": "捷運中正紀念堂站",
+    "travelSeconds": 76,
+    "stopSeconds": 27,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運中正紀念堂站",
+    "stationB": "捷運古亭站",
+    "travelSeconds": 87,
+    "stopSeconds": 38,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "松山-台電大樓",
+    "stationA": "捷運古亭站",
+    "stationB": "捷運台電大樓站",
+    "travelSeconds": 85,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "七張-小碧潭",
+    "stationA": "捷運七張站",
+    "stationB": "捷運小碧潭站",
+    "travelSeconds": 203,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "北投-新北投",
+    "stationA": "捷運北投站",
+    "stationB": "捷運新北投站",
+    "travelSeconds": 157,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運南港展覽館站",
+    "stationB": "捷運南港站",
+    "travelSeconds": 112,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運南港站",
+    "stationB": "捷運昆陽站",
+    "travelSeconds": 109,
+    "stopSeconds": 24,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運昆陽站",
+    "stationB": "捷運後山埤站",
+    "travelSeconds": 107,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運後山埤站",
+    "stationB": "捷運永春站",
+    "travelSeconds": 76,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運永春站",
+    "stationB": "捷運市政府站",
+    "travelSeconds": 87,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運市政府站",
+    "stationB": "捷運國父紀念館站",
+    "travelSeconds": 77,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運國父紀念館站",
+    "stationB": "捷運忠孝敦化站",
+    "travelSeconds": 71,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運忠孝敦化站",
+    "stationB": "捷運忠孝復興站",
+    "travelSeconds": 65,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運忠孝復興站",
+    "stationB": "捷運忠孝新生站",
+    "travelSeconds": 90,
+    "stopSeconds": 40,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運忠孝新生站",
+    "stationB": "捷運善導寺站",
+    "travelSeconds": 81,
+    "stopSeconds": 40,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運善導寺站",
+    "stationB": "捷運台北車站",
+    "travelSeconds": 66,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運台北車站",
+    "stationB": "捷運西門站",
+    "travelSeconds": 120,
+    "stopSeconds": 42,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運西門站",
+    "stationB": "捷運龍山寺站",
+    "travelSeconds": 110,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運龍山寺站",
+    "stationB": "捷運江子翠站",
+    "travelSeconds": 192,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運江子翠站",
+    "stationB": "捷運新埔站",
+    "travelSeconds": 77,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運新埔站",
+    "stationB": "捷運板橋站",
+    "travelSeconds": 107,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運板橋站",
+    "stationB": "捷運府中站",
+    "travelSeconds": 67,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運府中站",
+    "stationB": "捷運亞東醫院站",
+    "travelSeconds": 102,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運亞東醫院站",
+    "stationB": "捷運海山站",
+    "travelSeconds": 142,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運海山站",
+    "stationB": "捷運土城站",
+    "travelSeconds": 106,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運土城站",
+    "stationB": "捷運永寧站",
+    "travelSeconds": 95,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-頂埔",
+    "stationA": "捷運永寧站",
+    "stationB": "捷運頂埔站",
+    "travelSeconds": 180,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運南港展覽館站",
+    "stationB": "捷運南港站",
+    "travelSeconds": 112,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運南港站",
+    "stationB": "捷運昆陽站",
+    "travelSeconds": 109,
+    "stopSeconds": 24,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運昆陽站",
+    "stationB": "捷運後山埤站",
+    "travelSeconds": 107,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運後山埤站",
+    "stationB": "捷運永春站",
+    "travelSeconds": 76,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運永春站",
+    "stationB": "捷運市政府站",
+    "travelSeconds": 87,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運市政府站",
+    "stationB": "捷運國父紀念館站",
+    "travelSeconds": 77,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運國父紀念館站",
+    "stationB": "捷運忠孝敦化站",
+    "travelSeconds": 71,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運忠孝敦化站",
+    "stationB": "捷運忠孝復興站",
+    "travelSeconds": 65,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運忠孝復興站",
+    "stationB": "捷運忠孝新生站",
+    "travelSeconds": 90,
+    "stopSeconds": 40,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運忠孝新生站",
+    "stationB": "捷運善導寺站",
+    "travelSeconds": 81,
+    "stopSeconds": 40,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運善導寺站",
+    "stationB": "捷運台北車站",
+    "travelSeconds": 66,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運台北車站",
+    "stationB": "捷運西門站",
+    "travelSeconds": 120,
+    "stopSeconds": 42,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運西門站",
+    "stationB": "捷運龍山寺站",
+    "travelSeconds": 110,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運龍山寺站",
+    "stationB": "捷運江子翠站",
+    "travelSeconds": 192,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運江子翠站",
+    "stationB": "捷運新埔站",
+    "travelSeconds": 77,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運新埔站",
+    "stationB": "捷運板橋站",
+    "travelSeconds": 107,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運板橋站",
+    "stationB": "捷運府中站",
+    "travelSeconds": 67,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南港展覽館-亞東醫院",
+    "stationA": "捷運府中站",
+    "stationB": "捷運亞東醫院站",
+    "travelSeconds": 102,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運南港展覽館站",
+    "stationB": "捷運南港軟體園區站",
+    "travelSeconds": 78,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運南港軟體園區站",
+    "stationB": "捷運東湖站",
+    "travelSeconds": 85,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運東湖站",
+    "stationB": "捷運葫洲站",
+    "travelSeconds": 78,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運葫洲站",
+    "stationB": "捷運大湖公園站",
+    "travelSeconds": 121,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運大湖公園站",
+    "stationB": "捷運內湖站",
+    "travelSeconds": 71,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運內湖站",
+    "stationB": "捷運文德站",
+    "travelSeconds": 78,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運文德站",
+    "stationB": "捷運港墘站",
+    "travelSeconds": 72,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運港墘站",
+    "stationB": "捷運西湖站",
+    "travelSeconds": 65,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運西湖站",
+    "stationB": "捷運劍南路站",
+    "travelSeconds": 110,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運劍南路站",
+    "stationB": "捷運大直站",
+    "travelSeconds": 103,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運大直站",
+    "stationB": "捷運松山機場站",
+    "travelSeconds": 172,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運松山機場站",
+    "stationB": "捷運中山國中站",
+    "travelSeconds": 142,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運中山國中站",
+    "stationB": "捷運南京復興站",
+    "travelSeconds": 66,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運南京復興站",
+    "stationB": "捷運忠孝復興站",
+    "travelSeconds": 86,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運忠孝復興站",
+    "stationB": "捷運大安站",
+    "travelSeconds": 67,
+    "stopSeconds": 45,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運大安站",
+    "stationB": "捷運科技大樓站",
+    "travelSeconds": 69,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運科技大樓站",
+    "stationB": "捷運六張犁站",
+    "travelSeconds": 122,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運六張犁站",
+    "stationB": "捷運麟光站",
+    "travelSeconds": 72,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運麟光站",
+    "stationB": "捷運辛亥站",
+    "travelSeconds": 124,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運辛亥站",
+    "stationB": "捷運萬芳醫院站",
+    "travelSeconds": 106,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運萬芳醫院站",
+    "stationB": "捷運萬芳社區站",
+    "travelSeconds": 99,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運萬芳社區站",
+    "stationB": "捷運木柵站",
+    "travelSeconds": 47,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "動物園-南港展覽館",
+    "stationA": "捷運木柵站",
+    "stationB": "捷運動物園站",
+    "travelSeconds": 67,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運蘆洲站",
+    "stationB": "捷運三民高中站",
+    "travelSeconds": 111,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運三民高中站",
+    "stationB": "捷運徐匯中學站",
+    "travelSeconds": 92,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運徐匯中學站",
+    "stationB": "捷運三和國中站",
+    "travelSeconds": 82,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運三和國中站",
+    "stationB": "捷運三重國小站",
+    "travelSeconds": 107,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運三重國小站",
+    "stationB": "捷運大橋頭站",
+    "travelSeconds": 151,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運大橋頭站",
+    "stationB": "捷運民權西路站",
+    "travelSeconds": 72,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運民權西路站",
+    "stationB": "捷運中山國小站",
+    "travelSeconds": 72,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運中山國小站",
+    "stationB": "捷運行天宮站",
+    "travelSeconds": 96,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運行天宮站",
+    "stationB": "捷運松江南京站",
+    "travelSeconds": 78,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運松江南京站",
+    "stationB": "捷運忠孝新生站",
+    "travelSeconds": 102,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運忠孝新生站",
+    "stationB": "捷運東門站",
+    "travelSeconds": 136,
+    "stopSeconds": 38,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運東門站",
+    "stationB": "捷運古亭站",
+    "travelSeconds": 208,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運古亭站",
+    "stationB": "捷運頂溪站",
+    "travelSeconds": 187,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運頂溪站",
+    "stationB": "捷運永安市場站",
+    "travelSeconds": 103,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運永安市場站",
+    "stationB": "捷運景安站",
+    "travelSeconds": 90,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-蘆洲",
+    "stationA": "捷運景安站",
+    "stationB": "捷運南勢角站",
+    "travelSeconds": 97,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運迴龍站",
+    "stationB": "捷運丹鳳站",
+    "travelSeconds": 168,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運丹鳳站",
+    "stationB": "捷運輔大站",
+    "travelSeconds": 113,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運輔大站",
+    "stationB": "捷運新莊站",
+    "travelSeconds": 137,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運新莊站",
+    "stationB": "捷運頭前庄站",
+    "travelSeconds": 94,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運頭前庄站",
+    "stationB": "捷運先嗇宮站",
+    "travelSeconds": 108,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運先嗇宮站",
+    "stationB": "捷運三重站",
+    "travelSeconds": 142,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運三重站",
+    "stationB": "捷運菜寮站",
+    "travelSeconds": 84,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運菜寮站",
+    "stationB": "捷運台北橋站",
+    "travelSeconds": 97,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運台北橋站",
+    "stationB": "捷運大橋頭站",
+    "travelSeconds": 127,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運大橋頭站",
+    "stationB": "捷運民權西路站",
+    "travelSeconds": 72,
+    "stopSeconds": 26,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運民權西路站",
+    "stationB": "捷運中山國小站",
+    "travelSeconds": 72,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運中山國小站",
+    "stationB": "捷運行天宮站",
+    "travelSeconds": 96,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運行天宮站",
+    "stationB": "捷運松江南京站",
+    "travelSeconds": 78,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運松江南京站",
+    "stationB": "捷運忠孝新生站",
+    "travelSeconds": 102,
+    "stopSeconds": 30,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運忠孝新生站",
+    "stationB": "捷運東門站",
+    "travelSeconds": 136,
+    "stopSeconds": 38,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運東門站",
+    "stationB": "捷運古亭站",
+    "travelSeconds": 208,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運古亭站",
+    "stationB": "捷運頂溪站",
+    "travelSeconds": 187,
+    "stopSeconds": 33,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運頂溪站",
+    "stationB": "捷運永安市場站",
+    "travelSeconds": 103,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運永安市場站",
+    "stationB": "捷運景安站",
+    "travelSeconds": 90,
+    "stopSeconds": 29,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "南勢角-迴龍",
+    "stationA": "捷運景安站",
+    "stationB": "捷運南勢角站",
+    "travelSeconds": 97,
+    "stopSeconds": 28,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運新北產業園區站",
+    "stationB": "捷運幸福站",
+    "travelSeconds": 135,
+    "stopSeconds": 0,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運幸福站",
+    "stationB": "捷運頭前庄站",
+    "travelSeconds": 95,
+    "stopSeconds": 23,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運頭前庄站",
+    "stationB": "捷運新埔民生站",
+    "travelSeconds": 143,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運新埔民生站",
+    "stationB": "捷運板橋站",
+    "travelSeconds": 191,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運板橋站",
+    "stationB": "捷運板新站",
+    "travelSeconds": 153,
+    "stopSeconds": 40,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運板新站",
+    "stationB": "捷運中原站",
+    "travelSeconds": 111,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運中原站",
+    "stationB": "捷運橋和站",
+    "travelSeconds": 72,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運橋和站",
+    "stationB": "捷運中和站",
+    "travelSeconds": 104,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運中和站",
+    "stationB": "捷運景安站",
+    "travelSeconds": 194,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運景安站",
+    "stationB": "捷運景平站",
+    "travelSeconds": 84,
+    "stopSeconds": 35,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運景平站",
+    "stationB": "捷運秀朗橋站",
+    "travelSeconds": 79,
+    "stopSeconds": 25,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運秀朗橋站",
+    "stationB": "捷運十四張站",
+    "travelSeconds": 111,
+    "stopSeconds": 23,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  },
+  {
+    "line": "新北產業園區-大坪林",
+    "stationA": "捷運十四張站",
+    "stationB": "捷運大坪林站",
+    "travelSeconds": 145,
+    "stopSeconds": 23,
+    "updateTime": "20250603",
+    "effectiveDate": "20250603"
+  }
+]
